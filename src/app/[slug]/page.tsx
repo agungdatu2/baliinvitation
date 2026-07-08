@@ -58,10 +58,10 @@ export default async function InvitationPage({
     greeting: inv.greeting ?? undefined,
     musicUrl: inv.musicUrl ?? undefined,
     eventDate: inv.eventDate.toISOString(),
-    galleryImages: (inv.galleryImages as string[]) ?? [],
-    loveStory: (inv.loveStory as InvitationData["loveStory"]) ?? [],
-    events: (inv.events as InvitationData["events"]) ?? [],
-    bankAccounts: (inv.bankAccounts as InvitationData["bankAccounts"]) ?? [],
+    galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
+    loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],
+    events: (inv.events as unknown as InvitationData["events"]) ?? [],
+    bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],
   };
 
   return <Template data={data} guestName={searchParams.to ? decodeURIComponent(searchParams.to) : undefined} />;
