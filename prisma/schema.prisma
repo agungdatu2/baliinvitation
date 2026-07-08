@@ -1,0 +1,80 @@
+datasource db {
+  provider = "postgresql" // ganti ke "mysql" jika pakai MySQL/MariaDB (umum utk hosting cPanel)
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hash bcrypt
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+// Master daftar template yang tersedia (Lume, dst) agar admin bisa pilih di form
+model Template {
+  id          String       @id @default(cuid())
+  key         String       @unique // "lume"
+  name        String       // "Lume - Elegant Minimalist"
+  thumbnail   String?
+  isActive    Boolean      @default(true)
+  invitations Invitation[]
+}
+
+model Invitation {
+  id            String   @id @default(cuid())
+  slug          String   @unique // dipakai di URL: baliinvitation.com/{slug}
+  status        String   @default("draft") // draft | published
+
+  templateId    String
+  template      Template @relation(fields: [templateId], references: [id])
+
+  // Data client (internal, admin only)
+  clientName    String
+  clientPhone   String?
+  clientNotes   String?
+
+  // Data mempelai
+  groomNickname   String
+  groomFullName   String
+  groomParents    String
+  groomInstagram  String?
+  brideNickname   String
+  brideFullName   String
+  brideParents    String
+  brideInstagram  String?
+
+  // Konten undangan
+  coverImage    String?
+  quote         String?
+  greeting      String?  // paragraf "Om Swastiastu ..." / pembuka sesuai adat
+  musicUrl      String?
+
+  eventDate     DateTime // tanggal utama acara (dipakai countdown)
+
+  galleryImages Json     @default("[]") // string[] url foto
+  loveStory     Json     @default("[]") // { title: string; story: string }[]
+  events        Json     @default("[]") // { name, date, timeStart, timeEnd, location, mapsUrl }[]
+  bankAccounts  Json     @default("[]") // { bank, accountNumber, accountName }[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  rsvps         RSVP[]
+}
+
+model RSVP {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  guestName    String
+  attendance   String     // hadir | tidak_hadir | belum_tahu
+  guestCount   Int        @default(1)
+  message      String?
+  createdAt    DateTime   @default(now())
+}
