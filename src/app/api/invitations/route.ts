@@ -6,7 +6,12 @@ import { invitationSchema } from "@/lib/validations/invitation.schema";
 export async function GET() {
   const invitations = await prisma.invitation.findMany({
     orderBy: { createdAt: "desc" },
-    include: { template: true, _count: { select: { rsvps: true } } },
+    include: {
+      template: true,
+      package: true,
+      payments: true,
+      _count: { select: { rsvps: true } },
+    },
   });
   return NextResponse.json(invitations);
 }
@@ -31,11 +36,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Template tidak ditemukan" }, { status: 400 });
   }
 
+  let packageId: string | undefined;
+  let totalPrice: number | undefined;
+  if (d.packageId) {
+    const pkg = await prisma.package.findUnique({ where: { id: d.packageId } });
+    if (!pkg) {
+      return NextResponse.json({ error: "Paket tidak ditemukan" }, { status: 400 });
+    }
+    packageId = pkg.id;
+    totalPrice = pkg.price;
+  }
+
   const invitation = await prisma.invitation.create({
     data: {
       slug: d.slug,
       status: d.status,
       templateId: template.id,
+      packageId,
+      totalPrice,
       clientName: d.clientName,
       clientPhone: d.clientPhone,
       clientNotes: d.clientNotes,

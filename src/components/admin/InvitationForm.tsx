@@ -3,15 +3,27 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { invitationSchema, InvitationFormValues } from "@/lib/validations/invitation.schema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { formatRupiah } from "@/lib/utils/format";
 
-// Daftar template aktif — di produksi ambil dari GET /api/templates
-const TEMPLATE_OPTIONS = [{ key: "lume", name: "Lume - Elegant Minimalist" }];
+interface TemplateOption {
+  key: string;
+  name: string;
+  isActive: boolean;
+}
+
+interface PackageOption {
+  id: string;
+  name: string;
+  price: number;
+  isActive: boolean;
+}
 
 const defaultValues: InvitationFormValues = {
   slug: "",
   status: "draft",
   templateKey: "lume",
+  packageId: "",
   clientName: "",
   clientPhone: "",
   clientNotes: "",
@@ -39,6 +51,17 @@ const defaultValues: InvitationFormValues = {
 export default function InvitationForm() {
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<TemplateOption[]>([]);
+  const [packages, setPackages] = useState<PackageOption[]>([]);
+
+  useEffect(() => {
+    fetch("/api/templates")
+      .then((r) => r.json())
+      .then((data: TemplateOption[]) => setTemplates(data.filter((t) => t.isActive)));
+    fetch("/api/packages")
+      .then((r) => r.json())
+      .then((data: PackageOption[]) => setPackages(data.filter((p) => p.isActive)));
+  }, []);
 
   const {
     register,
@@ -97,7 +120,7 @@ export default function InvitationForm() {
           </Field>
           <Field label="Template">
             <select {...register("templateKey")} className="input">
-              {TEMPLATE_OPTIONS.map((t) => (
+              {templates.map((t) => (
                 <option key={t.key} value={t.key}>{t.name}</option>
               ))}
             </select>
@@ -106,6 +129,16 @@ export default function InvitationForm() {
             <select {...register("status")} className="input">
               <option value="draft">Draft</option>
               <option value="published">Published</option>
+            </select>
+          </Field>
+          <Field label="Paket (opsional)">
+            <select {...register("packageId")} className="input">
+              <option value="">- Tanpa paket -</option>
+              {packages.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} — {formatRupiah(p.price)}
+                </option>
+              ))}
             </select>
           </Field>
         </div>

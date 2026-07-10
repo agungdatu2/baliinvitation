@@ -25,3 +25,9 @@ npm-debug.log*
 
 # claude code local settings
 .claude/settings.local.json
+.claude/skills
+
+# skills CLI (installed by vercel/neon integration, not project code)
+.agents/
+skills-lock.json
+.env*
