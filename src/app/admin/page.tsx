@@ -28,6 +28,37 @@ export default async function AdminDashboard({
     return getPaymentStatus(inv.totalPrice, paid) === "unpaid" || getPaymentStatus(inv.totalPrice, paid) === "partial";
   }).length;
 
+  const [recentOpens, recentRsvps] = await Promise.all([
+    prisma.invitationView.findMany({
+      where: { guestId: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: { guest: { select: { name: true } }, invitation: { select: { clientName: true, id: true } } },
+    }),
+    prisma.rSVP.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: { invitation: { select: { clientName: true, id: true } } },
+    }),
+  ]);
+
+  const activityFeed = [
+    ...recentOpens.map((v) => ({
+      key: `view-${v.id}`,
+      createdAt: v.createdAt,
+      text: `${v.guest?.name ?? "Tamu"} membuka undangan ${v.invitation.clientName}`,
+      invitationId: v.invitation.id,
+    })),
+    ...recentRsvps.map((r) => ({
+      key: `rsvp-${r.id}`,
+      createdAt: r.createdAt,
+      text: `${r.guestName} mengisi RSVP untuk ${r.invitation.clientName}`,
+      invitationId: r.invitation.id,
+    })),
+  ]
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 10);
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6 pt-6">
@@ -51,6 +82,24 @@ export default async function AdminDashboard({
             Lihat di tab Income
           </Link>
         </p>
+      )}
+
+      {activityFeed.length > 0 && (
+        <div className="border rounded-lg bg-white p-4 mb-6">
+          <h2 className="font-medium mb-3">Aktivitas Portal Terbaru</h2>
+          <ul className="space-y-2 text-sm">
+            {activityFeed.map((a) => (
+              <li key={a.key} className="flex justify-between gap-4">
+                <Link href={`/admin/invitations/${a.invitationId}`} className="text-gray-700 hover:underline">
+                  {a.text}
+                </Link>
+                <span className="text-xs text-gray-400 whitespace-nowrap">
+                  {a.createdAt.toLocaleString("id-ID", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <div className="flex gap-2 mb-4 text-sm">
@@ -115,8 +164,8 @@ export default async function AdminDashboard({
                     <a href={`/${inv.slug}`} target="_blank" className="text-blue-600">
                       Lihat
                     </a>
-                    <Link href={`/admin/invitations/${inv.id}/edit`} className="text-gray-600">
-                      Edit
+                    <Link href={`/admin/invitations/${inv.id}`} className="text-gray-600">
+                      Kelola
                     </Link>
                   </td>
                 </tr>

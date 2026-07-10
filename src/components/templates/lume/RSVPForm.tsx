@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 
-export default function RSVPForm({ invitationId }: { invitationId: string }) {
-  const [form, setForm] = useState({ guestName: "", attendance: "hadir", guestCount: 1, message: "" });
+interface RSVPFormProps {
+  invitationId: string;
+  guestName?: string;
+  guestId?: string;
+}
+
+export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormProps) {
+  const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -13,7 +19,7 @@ export default function RSVPForm({ invitationId }: { invitationId: string }) {
     await fetch("/api/rsvp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invitationId, ...form }),
+      body: JSON.stringify({ invitationId, guestId, ...form }),
     });
     setLoading(false);
     setSent(true);

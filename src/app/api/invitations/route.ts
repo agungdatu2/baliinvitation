@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { invitationSchema } from "@/lib/validations/invitation.schema";
+import { generatePortalToken } from "@/lib/utils/tokens";
 
 // GET /api/invitations -> list semua undangan (untuk tabel dashboard admin)
 export async function GET() {
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
       templateId: template.id,
       packageId,
       totalPrice,
+      portalToken: generatePortalToken(),
       clientName: d.clientName,
       clientPhone: d.clientPhone,
       clientNotes: d.clientNotes,

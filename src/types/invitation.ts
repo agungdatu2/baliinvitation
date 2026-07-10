@@ -57,5 +57,6 @@ export interface InvitationData {
 // agar template baru tinggal "plug-and-play" tanpa ubah admin/API
 export interface TemplateProps {
   data: InvitationData;
-  guestName?: string; // dari query string ?to=Nama Tamu
+  guestName?: string; // dari Guest.name (?g=) atau fallback query string ?to=Nama Tamu
+  guestId?: string; // dari Guest yang resolve dari ?g= — dipakai RSVPForm untuk link balik ke Guest
 }

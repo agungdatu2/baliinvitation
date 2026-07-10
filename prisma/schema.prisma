@@ -50,6 +50,13 @@ model Invitation {
   package       Package? @relation(fields: [packageId], references: [id])
   totalPrice    Int?     // snapshot harga paket saat undangan dibuat
 
+  // Portal client self-service — token DI URL adalah otentikasinya (tidak ada login).
+  // Digenerate via crypto.randomBytes di API (bukan cuid) karena ini token akses,
+  // bukan sekadar id — harus tidak bisa ditebak sama sekali.
+  portalToken          String  @unique
+  portalEnabled        Boolean @default(true)
+  clientCanEditEvents  Boolean @default(true)
+
   // Data client (internal, admin only)
   clientName    String
   clientPhone   String?
@@ -83,6 +90,9 @@ model Invitation {
 
   rsvps         RSVP[]
   payments      Payment[]
+  guests        Guest[]
+  views         InvitationView[]
+  eventChangeRequests EventChangeRequest[]
 }
 
 model RSVP {
@@ -95,6 +105,74 @@ model RSVP {
   guestCount   Int        @default(1)
   message      String?
   createdAt    DateTime   @default(now())
+
+  guestId      String?    @unique
+  guest        Guest?     @relation(fields: [guestId], references: [id])
+}
+
+// Tamu per-undangan untuk link personalisasi & tracking (dibuat dari Portal Client atau admin)
+model Guest {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  name         String
+  waNumber     String?
+  category     String     @default("lainnya") // keluarga | teman | rekan | lainnya
+  guestCode    String     @unique // 8 char random, non-enumerable — lihat lib/utils/tokens.ts
+
+  status       String     @default("pending") // pending | sent | opened | responded (maju saja, tidak mundur)
+  sentAt       DateTime?
+  firstOpenedAt DateTime?
+
+  rsvp         RSVP?
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  views        InvitationView[]
+
+  @@index([invitationId])
+}
+
+// Log kunjungan halaman undangan publik — dipakai untuk funnel & bedakan tracked (?g=) vs untracked (?to=/direct)
+model InvitationView {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  guestId      String?
+  guest        Guest?     @relation(fields: [guestId], references: [id], onDelete: SetNull)
+
+  viaParam     String     // guest | to | direct
+  createdAt    DateTime   @default(now())
+
+  @@index([invitationId])
+}
+
+// Perubahan jadwal acara yang diajukan client dari Portal (events disimpan sbg Json array di Invitation,
+// jadi diacu lewat index array, bukan FK ke tabel Event terpisah)
+model EventChangeRequest {
+  id           String     @id @default(cuid())
+  invitationId String
+  invitation   Invitation @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  eventIndex   Int
+  oldValues    Json
+  newValues    Json
+  status       String     @default("pending") // pending | approved | rejected (auto: "approved" segera jika auto-approve on)
+
+  createdAt    DateTime   @default(now())
+
+  @@index([invitationId])
+}
+
+// Counter window sederhana untuk throttle endpoint sensitif (mark-sent, dll) — disimpan di Postgres
+// supaya konsisten lintas instance serverless (in-memory map tidak reliable di Vercel).
+model RateLimitHit {
+  key         String   @id // contoh: "mark-sent:{guestId}" atau "portal-auth:{ip}"
+  windowStart DateTime
+  count       Int      @default(1)
 }
 
 // Pembayaran/cicilan dari client untuk satu undangan (dipakai tab Income)

@@ -17,7 +17,7 @@ import ClosingFooter from "./ClosingFooter";
 // tamubali.com/lume: splash % -> gate nama tamu -> buka -> konten lengkap.
 // Semua data & gambar 100% dinamis dari `data` (hasil input Form Admin),
 // bukan hardcode, sehingga template ini dipakai ulang untuk semua client.
-export default function LumeTemplate({ data, guestName }: TemplateProps) {
+export default function LumeTemplate({ data, guestName, guestId }: TemplateProps) {
   const [opened, setOpened] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -60,7 +60,7 @@ export default function LumeTemplate({ data, guestName }: TemplateProps) {
             location={data.events?.[0]?.location}
           />
           <EventDetails events={data.events} />
-          <RSVPForm invitationId={data.id ?? data.slug} />
+          <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
           <Gallery images={data.galleryImages} variant="strip" />
           <WeddingGift accounts={data.bankAccounts} />
           <ClosingFooter data={data} />
