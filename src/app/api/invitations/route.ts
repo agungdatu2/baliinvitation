@@ -71,6 +71,8 @@ export async function POST(req: NextRequest) {
       quote: d.quote,
       greeting: d.greeting,
       musicUrl: d.musicUrl,
+      livestreamUrl: d.livestreamUrl,
+      livestreamNote: d.livestreamNote,
       eventDate: new Date(d.eventDate),
       galleryImages: d.galleryImages,
       loveStory: d.loveStory,

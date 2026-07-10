@@ -39,6 +39,8 @@ const defaultValues: InvitationFormValues = {
   quote: "",
   greeting: "",
   musicUrl: "",
+  livestreamUrl: "",
+  livestreamNote: "",
   eventDate: "",
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
@@ -193,6 +195,12 @@ export default function InvitationForm() {
         </Field>
         <Field label="URL Musik Latar (mp3)">
           <input {...register("musicUrl")} className="input" placeholder="https://..." />
+        </Field>
+        <Field label="Link Live Streaming (YouTube/Instagram Live, opsional)">
+          <input {...register("livestreamUrl")} className="input" placeholder="https://..." />
+        </Field>
+        <Field label="Catatan Jadwal Live Streaming (opsional)">
+          <input {...register("livestreamNote")} className="input" placeholder="11 April 2026, 11:00-13:00 WIB" />
         </Field>
         <Field label="Kalimat Pembuka / Greeting (Om Swastiastu, dst.)">
           <textarea {...register("greeting")} className="input" rows={3} />

@@ -44,6 +44,8 @@ export interface InvitationData {
   quote?: string;
   greeting?: string;
   musicUrl?: string;
+  livestreamUrl?: string;
+  livestreamNote?: string;
 
   eventDate: string; // ISO
 

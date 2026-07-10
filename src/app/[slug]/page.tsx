@@ -86,6 +86,8 @@ export default async function InvitationPage({
     quote: inv.quote ?? undefined,
     greeting: inv.greeting ?? undefined,
     musicUrl: inv.musicUrl ?? undefined,
+    livestreamUrl: inv.livestreamUrl ?? undefined,
+    livestreamNote: inv.livestreamNote ?? undefined,
     eventDate: inv.eventDate.toISOString(),
     galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
     loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],

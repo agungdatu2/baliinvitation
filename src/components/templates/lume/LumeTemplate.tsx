@@ -3,15 +3,19 @@
 import { useRef, useState } from "react";
 import { TemplateProps } from "@/types/invitation";
 import SplashGate from "./SplashGate";
+import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
 import CountdownCalendar from "./CountdownCalendar";
 import EventDetails from "./EventDetails";
+import LiveStreaming from "./LiveStreaming";
 import RSVPForm from "./RSVPForm";
 import WeddingGift from "./WeddingGift";
 import ClosingFooter from "./ClosingFooter";
+import Reveal from "./Reveal";
+import SectionDivider from "./SectionDivider";
 
 // Orchestrator utama tema "Lume" — struktur & fitur mengikuti alur
 // tamubali.com/lume: splash % -> gate nama tamu -> buka -> konten lengkap.
@@ -49,20 +53,56 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
 
       {opened && (
         <div className="animate-fadeIn">
-          <HeroGreeting data={data} />
+          <NavMenu />
+
+          <div id="hero">
+            <HeroGreeting data={data} />
+          </div>
           <Gallery images={data.galleryImages.slice(0, 2)} variant="grid" />
-          <CoupleProfile data={data} />
-          <LoveStory data={data} />
-          <Gallery images={data.galleryImages} variant="grid" />
-          <CountdownCalendar
-            eventDate={data.eventDate}
-            title={`${data.groomNickname} & ${data.brideNickname}`}
-            location={data.events?.[0]?.location}
-          />
-          <EventDetails events={data.events} />
-          <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
+
+          <SectionDivider />
+          <Reveal id="couple">
+            <CoupleProfile data={data} />
+          </Reveal>
+
+          <SectionDivider />
+          <Reveal id="love-story">
+            <LoveStory data={data} />
+          </Reveal>
+
+          <SectionDivider />
+          <Reveal>
+            <CountdownCalendar
+              eventDate={data.eventDate}
+              title={`${data.groomNickname} & ${data.brideNickname}`}
+              location={data.events?.[0]?.location}
+            />
+          </Reveal>
+          <Reveal id="events">
+            <EventDetails events={data.events} />
+          </Reveal>
+          <Reveal>
+            <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />
+          </Reveal>
+
+          <SectionDivider />
+          <Reveal id="rsvp">
+            <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
+          </Reveal>
+
+          <SectionDivider />
+          <div id="gallery">
+            <Reveal>
+              <Gallery images={data.galleryImages} variant="grid" />
+            </Reveal>
+          </div>
           <Gallery images={data.galleryImages} variant="strip" />
-          <WeddingGift accounts={data.bankAccounts} />
+
+          <SectionDivider />
+          <Reveal id="gift">
+            <WeddingGift accounts={data.bankAccounts} />
+          </Reveal>
+
           <ClosingFooter data={data} />
         </div>
       )}

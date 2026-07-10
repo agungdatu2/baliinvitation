@@ -48,6 +48,8 @@ export const invitationSchema = z.object({
   quote: z.string().optional(),
   greeting: z.string().optional(),
   musicUrl: z.string().optional(),
+  livestreamUrl: z.string().optional(),
+  livestreamNote: z.string().optional(),
 
   eventDate: z.string().min(1, "Tanggal acara utama wajib diisi"),
 

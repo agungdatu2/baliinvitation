@@ -78,6 +78,9 @@ model Invitation {
   greeting      String?  // paragraf "Om Swastiastu ..." / pembuka sesuai adat
   musicUrl      String?
 
+  livestreamUrl  String? // link YouTube/Instagram Live
+  livestreamNote String? // jadwal bebas, mis. "11 April 2026, 11:00-13:00 WIB"
+
   eventDate     DateTime // tanggal utama acara (dipakai countdown)
 
   galleryImages Json     @default("[]") // string[] url foto
