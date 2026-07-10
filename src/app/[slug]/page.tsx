@@ -5,13 +5,14 @@ import { InvitationData } from "@/types/invitation";
 
 export const dynamic = "force-dynamic";
 
+// status ("draft" | "published") is only an internal completeness flag for the
+// admin dashboard — it does not gate public access, so admins can preview a
+// draft via its slug before flipping it to published.
 async function getInvitation(slug: string) {
-  const inv = await prisma.invitation.findUnique({
+  return prisma.invitation.findUnique({
     where: { slug },
     include: { template: true },
   });
-  if (!inv || inv.status !== "published") return null;
-  return inv;
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
