@@ -14,7 +14,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
     <section className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 text-groove-bg">
       <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/10 via-transparent to-groove-stone/60" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 groove-glass-dark rounded-2xl px-8 py-10 md:px-12 md:py-14 mx-4">
         <Reveal delay={0}>
           <p className="uppercase tracking-[0.3em] text-xs text-groove-clay-light mb-3">{eventDateLabel}</p>
         </Reveal>

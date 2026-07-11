@@ -44,14 +44,14 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
         closing ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/20 via-groove-stone/45 to-groove-stone/80" />
+      <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/10 via-groove-stone/20 to-groove-stone/45" />
 
       <span aria-hidden="true" className="absolute top-6 left-6 w-8 h-8 border-t border-l border-groove-clay-light/60 z-10" />
       <span aria-hidden="true" className="absolute top-6 right-6 w-8 h-8 border-t border-r border-groove-clay-light/60 z-10" />
       <span aria-hidden="true" className="absolute bottom-6 left-6 w-8 h-8 border-b border-l border-groove-clay-light/60 z-10" />
       <span aria-hidden="true" className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-groove-clay-light/60 z-10" />
 
-      <div className="relative z-10">
+      <div className="relative z-10 groove-glass-dark rounded-2xl px-8 py-10 md:px-14 md:py-14 mx-4">
         <p className="uppercase tracking-[0.3em] text-xs text-groove-clay-light mb-4">The Wedding Of</p>
         <h1 className="font-groove-display italic text-5xl mb-2" style={{ fontWeight: 500 }}>
           {groomNickname} <span className="not-italic text-groove-clay-light">&amp;</span> {brideNickname}

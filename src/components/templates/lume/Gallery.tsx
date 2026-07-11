@@ -28,8 +28,12 @@ export default function Gallery({ images, variant = "grid" }: { images: string[]
         {items.map((src, i) => tile(src, i, "w-40 h-56 shrink-0 rounded-sm"))}
       </div>
     ) : (
-      <section className="grid grid-cols-2 md:grid-cols-3 gap-2 px-4 py-8 max-w-3xl mx-auto">
-        {items.map((src, i) => tile(src, i, "aspect-[3/4] rounded-sm"))}
+      <section className="px-6 py-10 max-w-3xl mx-auto">
+        <div className="groove-glass rounded-2xl p-4 md:p-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+            {items.map((src, i) => tile(src, i, "aspect-[3/4] rounded-sm"))}
+          </div>
+        </div>
       </section>
     );
 
