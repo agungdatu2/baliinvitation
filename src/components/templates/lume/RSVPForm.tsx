@@ -33,8 +33,10 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
   if (sent) {
     return (
-      <section className="px-6 py-20 max-w-md mx-auto text-center">
-        <p className="text-sm text-groove-ink/70">Terima kasih! RSVP kamu sudah kami terima.</p>
+      <section className="px-6 py-10 max-w-md mx-auto text-center">
+        <div className="groove-glass rounded-2xl p-8">
+          <p className="text-sm text-groove-ink/70">Terima kasih! RSVP kamu sudah kami terima.</p>
+        </div>
       </section>
     );
   }
@@ -43,7 +45,8 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
     "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-ink focus:outline-none focus:border-groove-moss transition-colors";
 
   return (
-    <section className="px-6 py-20 max-w-md mx-auto">
+    <section className="px-6 py-10 max-w-md mx-auto">
+      <div className="groove-glass rounded-2xl p-6 md:p-9">
       <div className="text-center mb-8">
         <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Konfirmasi Kehadiran</p>
         <h2 className="font-groove-display italic text-2xl" style={{ fontWeight: 500 }}>
@@ -110,6 +113,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
           {loading ? "Mengirim..." : "Kirim RSVP"}
         </button>
       </form>
+      </div>
     </section>
   );
 }

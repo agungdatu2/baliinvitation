@@ -3,15 +3,17 @@ import { EventItem } from "@/types/invitation";
 export default function EventDetails({ events }: { events: EventItem[] }) {
   if (!events?.length) return null;
   return (
-    <section className="px-6 py-20 max-w-2xl mx-auto text-center">
-      <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Rangkaian Acara</p>
-      <h2 className="font-groove-display italic text-2xl mb-10" style={{ fontWeight: 500 }}>
-        Kami Menantikan Kehadiranmu
-      </h2>
+    <section className="px-6 py-10 max-w-2xl mx-auto text-center">
+      <div className="groove-glass rounded-2xl p-6 md:p-8 mb-5">
+        <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Rangkaian Acara</p>
+        <h2 className="font-groove-display italic text-2xl" style={{ fontWeight: 500 }}>
+          Kami Menantikan Kehadiranmu
+        </h2>
+      </div>
 
       <div className="grid gap-5 md:grid-cols-2">
         {events.map((ev, i) => (
-          <div key={i} className="border border-groove-line rounded-sm p-6 text-left">
+          <div key={i} className="groove-glass rounded-2xl p-6 text-left">
             <h3 className="font-groove-display text-lg mb-3" style={{ fontWeight: 600 }}>
               {ev.name}
             </h3>

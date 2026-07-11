@@ -37,34 +37,36 @@ export default function CountdownCalendar({
   });
 
   return (
-    <section className="text-center py-20 px-6 bg-groove-stone text-groove-bg">
-      <p className="text-xs uppercase tracking-widest text-groove-clay-light mb-2">Menghitung Hari</p>
-      <h2 className="font-groove-display italic text-2xl mb-8" style={{ fontWeight: 500 }}>
-        Hingga Hari Bahagia
-      </h2>
-      <div className="flex justify-center gap-6 mb-8 flex-wrap">
-        {[
-          ["Hari", parts.d],
-          ["Jam", parts.h],
-          ["Menit", parts.m],
-          ["Detik", parts.s],
-        ].map(([label, value]) => (
-          <div key={label as string} className="w-16">
-            <div className="font-groove-display text-3xl tabular-nums" style={{ fontWeight: 600 }}>
-              {String(value).padStart(2, "0")}
+    <section className="text-center py-10 px-6">
+      <div className="groove-glass-dark text-groove-bg rounded-2xl py-12 px-6 max-w-md mx-auto">
+        <p className="text-xs uppercase tracking-widest text-groove-clay-light mb-2">Menghitung Hari</p>
+        <h2 className="font-groove-display italic text-2xl mb-8" style={{ fontWeight: 500 }}>
+          Hingga Hari Bahagia
+        </h2>
+        <div className="flex justify-center gap-6 mb-8 flex-wrap">
+          {[
+            ["Hari", parts.d],
+            ["Jam", parts.h],
+            ["Menit", parts.m],
+            ["Detik", parts.s],
+          ].map(([label, value]) => (
+            <div key={label as string} className="w-16">
+              <div className="font-groove-display text-3xl tabular-nums" style={{ fontWeight: 600 }}>
+                {String(value).padStart(2, "0")}
+              </div>
+              <div className="text-[0.65rem] uppercase tracking-widest text-groove-clay-light mt-1">{label}</div>
             </div>
-            <div className="text-[0.65rem] uppercase tracking-widest text-groove-clay-light mt-1">{label}</div>
-          </div>
-        ))}
+          ))}
+        </div>
+        <a
+          href={calendarUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-block px-8 py-2.5 rounded-full border border-groove-line-dark text-sm tracking-wide uppercase hover:bg-groove-bg hover:text-groove-stone transition"
+        >
+          Tambahkan ke Kalender
+        </a>
       </div>
-      <a
-        href={calendarUrl}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-block px-8 py-2.5 rounded-full border border-groove-line-dark text-sm tracking-wide uppercase hover:bg-groove-bg hover:text-groove-stone transition"
-      >
-        Tambahkan ke Kalender
-      </a>
     </section>
   );
 }

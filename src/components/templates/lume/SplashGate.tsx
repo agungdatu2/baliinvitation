@@ -1,22 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HeroVideoBackground from "./HeroVideoBackground";
 
 interface Props {
   groomNickname: string;
   brideNickname: string;
   eventDateLabel: string;
   guestName?: string;
-  heroVideoUrl?: string;
   onOpen: () => void;
 }
 
 const EXIT_DURATION_MS = 600;
 
-// Gate video-hero: nama tamu personal + tombol buka, di atas video venue (atau
-// placeholder). Menggantikan gaya cover-cream-minimalis versi sebelumnya.
-export default function SplashGate({ groomNickname, brideNickname, eventDateLabel, guestName, heroVideoUrl, onOpen }: Props) {
+// Gate transparan di atas video-hero yang fixed di belakang seluruh halaman
+// (lihat FixedVideoBackground/LumeTemplate) — nama tamu personal + tombol buka.
+export default function SplashGate({ groomNickname, brideNickname, eventDateLabel, guestName, onOpen }: Props) {
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [closing, setClosing] = useState(false);
@@ -46,7 +44,7 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
         closing ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
     >
-      <HeroVideoBackground src={heroVideoUrl} />
+      <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/20 via-groove-stone/45 to-groove-stone/80" />
 
       <span aria-hidden="true" className="absolute top-6 left-6 w-8 h-8 border-t border-l border-groove-clay-light/60 z-10" />
       <span aria-hidden="true" className="absolute top-6 right-6 w-8 h-8 border-t border-r border-groove-clay-light/60 z-10" />

@@ -38,3 +38,16 @@ html {
     top: 32px;
   }
 }
+
+/* Panel "kaca" untuk konten yang duduk di atas video background fixed —
+   supaya teks tetap terbaca sementara video tetap terlihat di sekitarnya. */
+.groove-glass {
+  background: rgba(246, 242, 232, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+.groove-glass-dark {
+  background: rgba(23, 20, 15, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}

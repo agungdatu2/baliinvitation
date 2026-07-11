@@ -1,5 +1,4 @@
 import { InvitationData } from "@/types/invitation";
-import HeroVideoBackground from "./HeroVideoBackground";
 import Reveal from "./Reveal";
 
 export default function HeroGreeting({ data }: { data: InvitationData }) {
@@ -13,7 +12,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
 
   return (
     <section className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-6 text-groove-bg">
-      <HeroVideoBackground src={data.heroVideoUrl} />
+      <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/10 via-transparent to-groove-stone/60" />
 
       <div className="relative z-10">
         <Reveal delay={0}>

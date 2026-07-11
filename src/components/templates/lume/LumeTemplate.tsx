@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { TemplateProps } from "@/types/invitation";
+import FixedVideoBackground from "./FixedVideoBackground";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
@@ -38,14 +39,15 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
   });
 
   return (
-    <main className="bg-groove-bg text-groove-ink font-groove-body">
+    <main className="text-groove-ink font-groove-body">
+      <FixedVideoBackground src={data.heroVideoUrl} />
+
       {!opened && (
         <SplashGate
           groomNickname={data.groomNickname}
           brideNickname={data.brideNickname}
           eventDateLabel={eventDateLabel}
           guestName={guestName}
-          heroVideoUrl={data.heroVideoUrl}
           onOpen={handleOpen}
         />
       )}

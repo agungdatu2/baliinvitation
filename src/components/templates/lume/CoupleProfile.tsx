@@ -32,7 +32,7 @@ function ProfileCard({
   instagram?: string;
 }) {
   return (
-    <div className="text-center">
+    <div className="text-center groove-glass rounded-2xl p-6">
       <PlaceholderPhoto label="Portrait placeholder" className="aspect-[4/5] rounded-sm mb-5" />
       <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">{label}</p>
       <h3 className="font-groove-display text-2xl mb-2" style={{ fontWeight: 600 }}>
