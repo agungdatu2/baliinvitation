@@ -46,6 +46,7 @@ export interface InvitationData {
   musicUrl?: string;
   livestreamUrl?: string;
   livestreamNote?: string;
+  heroVideoUrl?: string;
 
   eventDate: string; // ISO
 

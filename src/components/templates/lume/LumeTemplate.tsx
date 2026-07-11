@@ -38,13 +38,14 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
   });
 
   return (
-    <main className="bg-lume-bg text-lume-ink font-serif">
+    <main className="bg-groove-bg text-groove-ink font-groove-body">
       {!opened && (
         <SplashGate
           groomNickname={data.groomNickname}
           brideNickname={data.brideNickname}
           eventDateLabel={eventDateLabel}
           guestName={guestName}
+          heroVideoUrl={data.heroVideoUrl}
           onOpen={handleOpen}
         />
       )}

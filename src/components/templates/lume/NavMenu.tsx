@@ -25,17 +25,17 @@ export default function NavMenu() {
       >
         <span className="relative w-5 h-4 block">
           <span
-            className={`absolute left-0 w-5 h-px bg-lume-ink transition-all duration-300 ease-out ${
+            className={`absolute left-0 w-5 h-px bg-groove-ink transition-all duration-300 ease-out ${
               open ? "top-[7px] rotate-45" : "top-0"
             }`}
           />
           <span
-            className={`absolute left-0 top-[7px] w-5 h-px bg-lume-ink transition-opacity duration-200 ${
+            className={`absolute left-0 top-[7px] w-5 h-px bg-groove-ink transition-opacity duration-200 ${
               open ? "opacity-0" : "opacity-100"
             }`}
           />
           <span
-            className={`absolute left-0 w-5 h-px bg-lume-ink transition-all duration-300 ease-out ${
+            className={`absolute left-0 w-5 h-px bg-groove-ink transition-all duration-300 ease-out ${
               open ? "top-[7px] -rotate-45" : "top-[14px]"
             }`}
           />
@@ -60,7 +60,7 @@ export default function NavMenu() {
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="px-5 py-3 text-xs uppercase tracking-widest text-lume-ink/80 hover:bg-white/50 hover:text-lume-gold transition-colors"
+              className="px-5 py-3 text-xs uppercase tracking-widest text-groove-ink/80 hover:bg-white/50 hover:text-groove-moss transition-colors"
             >
               {l.label}
             </a>

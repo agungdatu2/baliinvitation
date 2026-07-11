@@ -32,3 +32,9 @@ html {
     scrollbar-width: none;
   }
 }
+
+@keyframes groove-scroll-cue {
+  to {
+    top: 32px;
+  }
+}

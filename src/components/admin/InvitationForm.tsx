@@ -41,6 +41,7 @@ const defaultValues: InvitationFormValues = {
   musicUrl: "",
   livestreamUrl: "",
   livestreamNote: "",
+  heroVideoUrl: "",
   eventDate: "",
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
@@ -192,6 +193,9 @@ export default function InvitationForm() {
         </Field>
         <Field label="URL Cover Image">
           <input {...register("coverImage")} className="input" placeholder="https://..." />
+        </Field>
+        <Field label="URL Video Hero (mp4, opsional — kosongkan untuk pakai placeholder)">
+          <input {...register("heroVideoUrl")} className="input" placeholder="https://..." />
         </Field>
         <Field label="URL Musik Latar (mp3)">
           <input {...register("musicUrl")} className="input" placeholder="https://..." />
