@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Libre_Baskerville, Inter } from "next/font/google";
+import { Bodoni_Moda, Libre_Baskerville, Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 // Dipakai tema "Lume" (redesign fine-art/editorial paper) — self-hosted otomatis
@@ -20,6 +20,13 @@ const inter = Inter({
   weight: ["400", "500", "600"],
   variable: "--font-groove-label",
 });
+// Dipakai khusus LoadingScreen (gate video-hero) — typeface terpisah dari display utama.
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["italic", "normal"],
+  variable: "--font-loading-display",
+});
 
 export const metadata: Metadata = {
   title: "BaliInvitation - Undangan Digital",
@@ -28,7 +35,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${bodoniModa.variable} ${libreBaskerville.variable} ${inter.variable}`}>
+    <html
+      lang="id"
+      className={`${bodoniModa.variable} ${libreBaskerville.variable} ${inter.variable} ${instrumentSerif.variable}`}
+    >
       <body>{children}</body>
     </html>
   );
