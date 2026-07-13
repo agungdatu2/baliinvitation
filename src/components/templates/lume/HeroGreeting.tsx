@@ -21,7 +21,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
   });
 
   return (
-    <section className="relative min-h-[100svh] flex flex-col items-center justify-center text-center px-4 text-groove-bg">
+    <section className="relative h-[100svh] overflow-hidden flex flex-col items-center justify-center text-center px-4 text-groove-bg">
       {/* Vignette dari video, bukan kotak warna — cuma supaya teks tetap terbaca */}
       <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/15 via-transparent to-groove-stone/50" />
 

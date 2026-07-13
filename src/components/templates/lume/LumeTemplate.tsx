@@ -26,11 +26,22 @@ import SectionDivider from "./SectionDivider";
 // bukan hardcode, sehingga template ini dipakai ulang untuk semua client.
 export default function LumeTemplate({ data, guestName, guestId }: TemplateProps) {
   const [opened, setOpened] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const handleOpen = () => {
     setOpened(true);
-    audioRef.current?.play().catch(() => {});
+    audioRef.current?.play().then(() => setMusicPlaying(true)).catch(() => {});
+  };
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      audioRef.current.play().then(() => setMusicPlaying(true)).catch(() => {});
+    } else {
+      audioRef.current.pause();
+      setMusicPlaying(false);
+    }
   };
 
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString("id-ID", {
@@ -58,7 +69,15 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
 
       {opened && (
         <div className="animate-fadeIn">
-          <NavMenu />
+          <NavMenu
+            groomNickname={data.groomNickname}
+            brideNickname={data.brideNickname}
+            eventDate={data.eventDate}
+            eventLocation={data.events?.[0]?.location}
+            hasMusic={Boolean(data.musicUrl)}
+            musicPlaying={musicPlaying}
+            onToggleMusic={toggleMusic}
+          />
 
           <div id="hero">
             <HeroGreeting data={data} />
