@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
       loveStory: d.loveStory,
       events: d.events,
       bankAccounts: d.bankAccounts,
+      dressCode: d.dressCode,
     },
   });
 

@@ -49,6 +49,7 @@ const defaultValues: InvitationFormValues = {
     { name: "Resepsi", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", location: "", mapsUrl: "" },
   ],
   bankAccounts: [{ bank: "", accountNumber: "", accountName: "" }],
+  dressCode: [],
 };
 
 export default function InvitationForm() {
@@ -80,6 +81,7 @@ export default function InvitationForm() {
   const events = useFieldArray({ control, name: "events" });
   const bankAccounts = useFieldArray({ control, name: "bankAccounts" });
   const gallery = useFieldArray({ control, name: "galleryImages" as never });
+  const dressCode = useFieldArray({ control, name: "dressCode" });
 
   const onSubmit = async (values: InvitationFormValues) => {
     setSubmitting(true);
@@ -311,6 +313,25 @@ export default function InvitationForm() {
                 Hapus
               </button>
             )}
+          </div>
+        ))}
+      </section>
+
+      {/* --- Dress Code (opsional) --- */}
+      <section className="space-y-3 border rounded-lg p-4">
+        <div className="flex justify-between items-center">
+          <h2 className="font-medium">9. Dress Code (opsional)</h2>
+          <button type="button" onClick={() => dressCode.append({ label: "", hex: "#fbf9f5" })} className="btn-add">
+            + Tambah Warna
+          </button>
+        </div>
+        {dressCode.fields.map((f, i) => (
+          <div key={f.id} className="flex items-center gap-2">
+            <input type="color" {...register(`dressCode.${i}.hex`)} className="h-10 w-14 rounded border" />
+            <input {...register(`dressCode.${i}.label`)} className="input flex-1" placeholder="Nama warna (mis. Cream)" />
+            <button type="button" onClick={() => dressCode.remove(i)} className="btn-remove">
+              X
+            </button>
           </div>
         ))}
       </section>

@@ -19,6 +19,11 @@ export interface BankAccountItem {
   accountName: string;
 }
 
+export interface DressCodeItem {
+  label: string; // "Cream", "Taupe", dst
+  hex: string; // "#fbf9f5"
+}
+
 // Bentuk data lengkap 1 undangan — dipakai form admin & semua komponen template
 export interface InvitationData {
   id?: string;
@@ -54,6 +59,7 @@ export interface InvitationData {
   loveStory: LoveStoryItem[];
   events: EventItem[];
   bankAccounts: BankAccountItem[];
+  dressCode: DressCodeItem[];
 }
 
 // Props standar yang wajib diterima SETIAP komponen template

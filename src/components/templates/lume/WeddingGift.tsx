@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Copy, Landmark } from "lucide-react";
 import { BankAccountItem } from "@/types/invitation";
 
 export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] }) {
@@ -16,30 +17,33 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
   return (
     <section className="px-6 py-10 max-w-md mx-auto text-center">
       <div className="groove-glass rounded-2xl p-6 md:p-8">
-        <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Tanda Kasih</p>
-        <h2 className="font-groove-display italic text-2xl mb-6" style={{ fontWeight: 500 }}>
+        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Tanda Kasih</p>
+        <h2 className="font-groove-display italic text-2xl mb-6" style={{ fontWeight: 400 }}>
           Wedding Gift
         </h2>
-        <p className="text-sm text-groove-ink/70 mb-8">
+        <p className="font-groove-body text-sm text-groove-ink/70 mb-8">
           Ucapan dan doa sudah sangat berarti, namun jika ingin memberi hadiah, dapat melalui rekening berikut.
         </p>
         <div className="space-y-3">
           {accounts.map((acc, i) => (
-            <div key={i} className="border border-groove-line rounded-sm p-4 flex items-center justify-between bg-groove-bg/40">
-              <div className="text-left">
-                <p className="text-xs uppercase tracking-widest text-groove-moss">{acc.bank}</p>
-                <p className="font-groove-display text-lg mt-0.5" style={{ fontWeight: 600 }}>
-                  {acc.accountNumber}
-                </p>
-                <p className="text-xs text-groove-ink/60">a.n. {acc.accountName}</p>
+            <div key={i} className="border border-groove-line rounded-lg p-4 flex items-center justify-between bg-groove-bg/40 text-left">
+              <div className="flex items-start gap-3">
+                <Landmark className="h-6 w-6 text-groove-primary shrink-0 mt-0.5" strokeWidth={1.5} />
+                <div>
+                  <p className="font-groove-label text-xs uppercase tracking-widest text-groove-primary">{acc.bank}</p>
+                  <p className="font-groove-display text-lg mt-0.5" style={{ fontWeight: 600 }}>
+                    {acc.accountNumber}
+                  </p>
+                  <p className="font-groove-body text-xs text-groove-ink/60">a.n. {acc.accountName}</p>
+                </div>
               </div>
               <button
                 onClick={() => copy(acc.accountNumber, i)}
-                className={`text-xs uppercase tracking-wide border-b ${
-                  copiedIndex === i ? "text-groove-moss border-groove-moss" : "text-groove-clay border-groove-clay"
+                className={`font-groove-label shrink-0 flex items-center gap-1 text-xs uppercase tracking-wide ${
+                  copiedIndex === i ? "text-groove-primary" : "text-groove-secondary"
                 }`}
               >
-                {copiedIndex === i ? "Tersalin!" : "Salin"}
+                <Copy className="h-3.5 w-3.5" /> {copiedIndex === i ? "Tersalin!" : "Salin"}
               </button>
             </div>
           ))}

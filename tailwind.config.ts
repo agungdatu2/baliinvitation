@@ -8,7 +8,8 @@ const config: Config = {
         serif: ["var(--font-serif)", "serif"],
         script: ["var(--font-script)", "cursive"],
         "groove-display": ["var(--font-groove-display)", "Georgia", "serif"],
-        "groove-body": ["var(--font-groove-body)", "system-ui", "sans-serif"],
+        "groove-body": ["var(--font-groove-body)", "Georgia", "serif"],
+        "groove-label": ["var(--font-groove-label)", "system-ui", "sans-serif"],
       },
       colors: {
         // Dipakai admin dashboard (jangan ganti nilainya untuk redesign tema publik)
@@ -18,18 +19,18 @@ const config: Config = {
           gold: "#b08d57",
           line: "#e4dcc9",
         },
-        // Palet tema "Lume" versi redesign editorial/cliffside — dipakai
-        // src/components/templates/lume/* saja, terpisah dari token admin di atas.
+        // Palet tema "Lume" versi redesign fine-art/editorial (kertas hangat + emas
+        // pudar) — dipakai src/components/templates/lume/* saja, terpisah dari
+        // token admin di atas.
         groove: {
-          bg: "#f6f2e8",
-          ink: "#211f1a",
-          stone: "#17140f",
-          moss: "#4b5842",
-          "moss-dark": "#3a4433",
-          clay: "#8f6b52",
-          "clay-light": "#b9967c",
+          bg: "#faf7ef",
+          ink: "#211e1a",
+          stone: "#2a2722",
+          primary: "#8a6d2f",
+          "primary-light": "#c9a45c",
+          secondary: "#6b5d4f",
           line: "#ded4bd",
-          "line-dark": "rgba(237,231,216,0.22)",
+          "line-dark": "rgba(250,247,240,0.22)",
         },
       },
       keyframes: {

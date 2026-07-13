@@ -3,26 +3,36 @@ import { InvitationData } from "@/types/invitation";
 export default function LoveStory({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
   return (
-    <section className="px-6 py-10 max-w-2xl mx-auto text-center">
-      <div className="groove-glass rounded-2xl p-8 md:p-10">
-        <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Perjalanan Kami</p>
-        <h2 className="font-groove-display italic text-3xl mb-10" style={{ fontWeight: 500 }}>
-          {data.groomNickname} &amp; {data.brideNickname}
-        </h2>
-        <div>
-          {data.loveStory.map((item, i) => (
-            <div key={i} className={`text-left py-6 ${i > 0 ? "border-t border-groove-line" : ""}`}>
-              <div className="flex items-start gap-4">
-                <span className="mt-1.5 w-1.5 h-1.5 rotate-45 bg-groove-clay shrink-0" aria-hidden="true" />
-                <div>
-                  <h4 className="font-groove-display text-lg mb-1" style={{ fontWeight: 600 }}>
-                    {item.title}
-                  </h4>
-                  <p className="text-sm text-groove-ink/75 leading-relaxed whitespace-pre-line">{item.story}</p>
+    <section className="px-6 py-10 max-w-4xl mx-auto">
+      <div className="groove-glass rounded-2xl p-8 md:p-12">
+        <div className="text-center mb-10">
+          <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Perjalanan Kami</p>
+          <h2 className="font-groove-display italic text-3xl" style={{ fontWeight: 400 }}>
+            {data.groomNickname} &amp; {data.brideNickname}
+          </h2>
+        </div>
+
+        <div className="relative">
+          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-groove-line hidden md:block" aria-hidden="true" />
+          <div className="space-y-10 md:space-y-14">
+            {data.loveStory.map((item, i) => {
+              const onRight = i % 2 === 1;
+              return (
+                <div key={i} className="flex flex-col md:flex-row gap-4 md:gap-8">
+                  <div className={`md:w-1/2 ${onRight ? "md:order-2 md:text-left" : "md:text-right"}`}>
+                    <h4 className="font-groove-display text-xl mb-2" style={{ fontWeight: 600 }}>
+                      {item.title}
+                    </h4>
+                    <p className="font-groove-body text-sm text-groove-ink/75 leading-relaxed whitespace-pre-line">{item.story}</p>
+                  </div>
+                  <div className="hidden md:flex w-8 justify-center relative shrink-0">
+                    <div className="w-3 h-3 bg-groove-primary rounded-full mt-1.5 ring-8 ring-groove-bg" />
+                  </div>
+                  <div className={`md:w-1/2 ${onRight ? "md:order-1" : ""}`} />
                 </div>
-              </div>
-            </div>
-          ))}
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

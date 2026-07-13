@@ -94,6 +94,7 @@ export default async function InvitationPage({
     loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],
     events: (inv.events as unknown as InvitationData["events"]) ?? [],
     bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],
+    dressCode: (inv.dressCode as unknown as InvitationData["dressCode"]) ?? [],
   };
 
   return <Template data={data} guestName={guestName} guestId={guest?.id} />;

@@ -42,20 +42,20 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
   }
 
   const fieldClass =
-    "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-ink focus:outline-none focus:border-groove-moss transition-colors";
+    "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-ink focus:outline-none focus:border-groove-primary transition-colors";
 
   return (
     <section className="px-6 py-10 max-w-md mx-auto">
       <div className="groove-glass rounded-2xl p-6 md:p-9">
       <div className="text-center mb-8">
-        <p className="text-xs uppercase tracking-widest text-groove-moss mb-2">Konfirmasi Kehadiran</p>
+        <p className="text-xs uppercase tracking-widest text-groove-primary mb-2">Konfirmasi Kehadiran</p>
         <h2 className="font-groove-display italic text-2xl" style={{ fontWeight: 500 }}>
           Kirimkan Doa Restu
         </h2>
       </div>
       <form onSubmit={submit} className="space-y-5 text-left">
         <div>
-          <label className="block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Nama Lengkap</label>
+          <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Nama Lengkap</label>
           <input
             required
             className={fieldClass}
@@ -65,7 +65,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
         </div>
 
         <div>
-          <label className="block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-2">Konfirmasi Kehadiran</label>
+          <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-2">Konfirmasi Kehadiran</label>
           <div className="flex gap-2">
             {ATTEND_OPTIONS.map((opt) => (
               <button
@@ -74,7 +74,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
                 onClick={() => setForm({ ...form, attendance: opt.value })}
                 className={`flex-1 py-2 rounded-full border text-xs tracking-wide transition ${
                   form.attendance === opt.value
-                    ? "bg-groove-moss border-groove-moss text-groove-bg"
+                    ? "bg-groove-primary border-groove-primary text-groove-bg"
                     : "border-groove-line text-groove-ink/70"
                 }`}
               >
@@ -85,7 +85,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
         </div>
 
         <div>
-          <label className="block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Jumlah Tamu</label>
+          <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Jumlah Tamu</label>
           <input
             type="number"
             min={1}
@@ -96,7 +96,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
         </div>
 
         <div>
-          <label className="block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Ucapan &amp; Doa</label>
+          <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">Ucapan &amp; Doa</label>
           <textarea
             className={fieldClass}
             rows={3}

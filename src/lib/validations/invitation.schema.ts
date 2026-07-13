@@ -21,6 +21,13 @@ export const bankAccountItemSchema = z.object({
   accountName: z.string().min(1),
 });
 
+export const dressCodeItemSchema = z.object({
+  label: z.string().min(1),
+  hex: z
+    .string()
+    .regex(/^#[0-9a-fA-F]{6}$/, "Format warna harus #RRGGBB"),
+});
+
 export const invitationSchema = z.object({
   slug: z
     .string()
@@ -58,6 +65,7 @@ export const invitationSchema = z.object({
   loveStory: z.array(loveStoryItemSchema).default([]),
   events: z.array(eventItemSchema).default([]),
   bankAccounts: z.array(bankAccountItemSchema).default([]),
+  dressCode: z.array(dressCodeItemSchema).default([]),
 });
 
 export type InvitationFormValues = z.infer<typeof invitationSchema>;

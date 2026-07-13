@@ -1,72 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, CalendarDays, CircleCheck, Sparkles } from "lucide-react";
 
-const LINKS = [
-  { href: "#hero", label: "Home" },
-  { href: "#couple", label: "Couple" },
-  { href: "#love-story", label: "Love Story" },
+const DESKTOP_LINKS = [
+  { href: "#hero", label: "Our Story" },
   { href: "#events", label: "Events" },
   { href: "#rsvp", label: "RSVP" },
-  { href: "#gallery", label: "Gallery" },
   { href: "#gift", label: "Gift" },
 ];
 
-export default function NavMenu() {
-  const [open, setOpen] = useState(false);
+const MOBILE_LINKS = [
+  { href: "#hero", label: "Story", icon: Heart },
+  { href: "#events", label: "Schedule", icon: CalendarDays },
+  { href: "#rsvp", label: "RSVP", icon: CircleCheck },
+  { href: "#gallery", label: "Wishes", icon: Sparkles },
+];
+
+// Desktop: navbar atas yang shrink+sembunyi saat scroll ke bawah, muncul lagi saat
+// scroll ke atas. Mobile: bottom-nav dengan ikon, pola umum aplikasi native.
+export default function NavMenu({ groomNickname, brideNickname }: { groomNickname: string; brideNickname: string }) {
+  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [activeMobile, setActiveMobile] = useState("#hero");
+  const lastScroll = useRef(0);
+
+  const initials = `${groomNickname.charAt(0)}${brideNickname.charAt(0)}`.toUpperCase();
+
+  useEffect(() => {
+    const onScroll = () => {
+      const current = window.scrollY;
+      setScrolled(current > 10);
+      setHidden(current > lastScroll.current && current > 100);
+      lastScroll.current = current;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Tutup menu" : "Buka menu"}
-        aria-expanded={open}
-        className="fixed top-4 right-4 z-40 w-11 h-11 rounded-full bg-white/60 backdrop-blur-md border border-white/50 shadow-sm flex items-center justify-center transition-colors"
+      <header
+        className={`hidden md:flex fixed top-0 left-0 w-full z-40 justify-between items-center px-8 lg:px-16 py-4 groove-glass transition-all duration-500 ${
+          hidden ? "-translate-y-full" : "translate-y-0"
+        } ${scrolled ? "shadow-md" : ""}`}
       >
-        <span className="relative w-5 h-4 block">
-          <span
-            className={`absolute left-0 w-5 h-px bg-groove-ink transition-all duration-300 ease-out ${
-              open ? "top-[7px] rotate-45" : "top-0"
-            }`}
-          />
-          <span
-            className={`absolute left-0 top-[7px] w-5 h-px bg-groove-ink transition-opacity duration-200 ${
-              open ? "opacity-0" : "opacity-100"
-            }`}
-          />
-          <span
-            className={`absolute left-0 w-5 h-px bg-groove-ink transition-all duration-300 ease-out ${
-              open ? "top-[7px] -rotate-45" : "top-[14px]"
-            }`}
-          />
-        </span>
-      </button>
-
-      <div
-        onClick={() => setOpen(false)}
-        className={`fixed inset-0 z-30 transition-opacity duration-300 ${
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
-        }`}
-      />
-
-      <div
-        className={`fixed top-20 right-4 z-40 w-52 rounded-2xl bg-white/50 backdrop-blur-xl border border-white/40 shadow-xl origin-top-right transition-all duration-300 ease-out ${
-          open ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
-        }`}
-      >
-        <nav className="flex flex-col py-2">
-          {LINKS.map((l) => (
+        <span className="font-groove-display italic text-2xl text-groove-primary">{initials}</span>
+        <nav className="flex gap-8">
+          {DESKTOP_LINKS.map((l) => (
             <a
               key={l.href}
               href={l.href}
-              onClick={() => setOpen(false)}
-              className="px-5 py-3 text-xs uppercase tracking-widest text-groove-ink/80 hover:bg-white/50 hover:text-groove-moss transition-colors"
+              className="font-groove-label text-xs uppercase tracking-widest text-groove-ink/70 hover:text-groove-primary transition-colors"
             >
               {l.label}
             </a>
           ))}
         </nav>
-      </div>
+      </header>
+
+      <nav className="md:hidden fixed bottom-0 left-0 w-full z-40 flex justify-around items-center px-4 py-3 groove-glass rounded-t-3xl">
+        {MOBILE_LINKS.map((l) => {
+          const Icon = l.icon;
+          const active = activeMobile === l.href;
+          return (
+            <a
+              key={l.href}
+              href={l.href}
+              onClick={() => setActiveMobile(l.href)}
+              className={`flex flex-col items-center gap-1 px-3 py-1.5 rounded-full transition-colors ${
+                active ? "text-groove-primary bg-groove-primary/10" : "text-groove-ink/60"
+              }`}
+            >
+              <Icon className="h-5 w-5" strokeWidth={1.75} />
+              <span className="font-groove-label text-[10px] uppercase tracking-tighter">{l.label}</span>
+            </a>
+          );
+        })}
+      </nav>
     </>
   );
 }

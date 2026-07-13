@@ -28,10 +28,10 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         transition={{ duration: 0.6 }}
         className="relative z-10 groove-glass rounded-full p-1 flex items-center gap-3"
       >
-        <span className="bg-groove-bg text-groove-stone rounded-full px-3 py-1 text-xs font-semibold font-groove-body">
+        <span className="bg-groove-bg text-groove-stone rounded-full px-3 py-1 text-xs font-semibold font-groove-label uppercase tracking-wider">
           Undangan
         </span>
-        <span className="text-sm text-groove-bg/90 pr-3 font-groove-body">{eventDateLabel}</span>
+        <span className="text-sm text-groove-bg/90 pr-3 font-groove-label">{eventDateLabel}</span>
       </motion.div>
 
       <div className="relative z-10">
@@ -52,11 +52,11 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 1.1 }} className="flex items-center justify-center gap-6 mt-8">
           <a
             href="#events"
-            className="groove-glass-strong rounded-full px-5 py-2.5 text-sm font-medium text-groove-bg font-groove-body flex items-center gap-1.5"
+            className="groove-glass-strong rounded-full px-5 py-2.5 text-sm font-medium text-groove-bg font-groove-label flex items-center gap-1.5"
           >
             Lihat Acara <ArrowUpRight className="h-5 w-5" />
           </a>
-          <a href="#gallery" className="text-groove-bg/90 text-sm font-medium font-groove-body flex items-center gap-1.5">
+          <a href="#gallery" className="text-groove-bg/90 text-sm font-medium font-groove-label flex items-center gap-1.5">
             Lihat Galeri <Play className="h-4 w-4 fill-current" />
           </a>
         </motion.div>
@@ -69,7 +69,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
           transition={{ duration: 0.6, delay: 1.4 }}
           className="relative z-10 flex flex-col items-center gap-4"
         >
-          <span className="groove-glass rounded-full px-3.5 py-1 text-xs font-medium text-groove-bg font-groove-body">
+          <span className="groove-glass rounded-full px-3.5 py-1 text-xs font-medium text-groove-bg font-groove-label uppercase tracking-wider">
             Rangkaian Acara
           </span>
           <div className="flex flex-wrap justify-center gap-8 md:gap-12">

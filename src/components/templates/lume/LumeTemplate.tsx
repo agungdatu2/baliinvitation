@@ -6,12 +6,14 @@ import FixedVideoBackground from "./FixedVideoBackground";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
+import Verse from "./Verse";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
 import CountdownCalendar from "./CountdownCalendar";
 import EventDetails from "./EventDetails";
 import LiveStreaming from "./LiveStreaming";
+import DressCode from "./DressCode";
 import RSVPForm from "./RSVPForm";
 import WeddingGift from "./WeddingGift";
 import ClosingFooter from "./ClosingFooter";
@@ -55,13 +57,16 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
       {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
 
       {opened && (
-        <div className="animate-fadeIn">
-          <NavMenu />
+        <div className="animate-fadeIn pb-20 md:pb-0">
+          <NavMenu groomNickname={data.groomNickname} brideNickname={data.brideNickname} />
 
           <div id="hero">
             <HeroGreeting data={data} />
           </div>
-          <Gallery images={data.galleryImages.slice(0, 2)} variant="grid" />
+
+          <Reveal>
+            <Verse quote={data.quote} />
+          </Reveal>
 
           <SectionDivider />
           <Reveal id="couple">
@@ -86,6 +91,9 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           </Reveal>
           <Reveal>
             <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />
+          </Reveal>
+          <Reveal>
+            <DressCode items={data.dressCode} />
           </Reveal>
 
           <SectionDivider />

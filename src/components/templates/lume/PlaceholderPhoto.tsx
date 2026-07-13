@@ -9,7 +9,7 @@ export default function PlaceholderPhoto({ label, className = "" }: { label?: st
           "repeating-linear-gradient(135deg, #ded4bd 0, #ded4bd 2px, #e9e1cd 2px, #e9e1cd 22px)",
       }}
     >
-      {label && <span className="pb-2 text-[0.6rem] uppercase tracking-widest text-groove-clay">{label}</span>}
+      {label && <span className="pb-2 text-[0.6rem] uppercase tracking-widest text-groove-secondary">{label}</span>}
     </div>
   );
 }
