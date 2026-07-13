@@ -26,7 +26,7 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
         </p>
         <div className="space-y-3">
           {accounts.map((acc, i) => (
-            <div key={i} className="border border-groove-line rounded-lg p-4 flex items-center justify-between bg-groove-bg/40 text-left">
+            <div key={i} className="border border-groove-line rounded-lg p-4 flex items-center justify-between text-left">
               <div className="flex items-start gap-3">
                 <Landmark className="h-6 w-6 text-groove-primary shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
