@@ -21,15 +21,11 @@ export default function Reveal({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
+    // Re-arms every time the section crosses the viewport edge (both scrolling down
+    // and back up), instead of firing once and staying revealed forever.
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      threshold: 0.15,
+    });
     observer.observe(el);
     return () => observer.disconnect();
   }, []);

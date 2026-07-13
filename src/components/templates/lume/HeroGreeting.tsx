@@ -5,9 +5,12 @@ import { ArrowUpRight, Play } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import BlurText from "./BlurText";
 
+// whileInView (bukan initial+animate sekali di mount) supaya animasi terpicu lagi
+// tiap kali elemen ini masuk/keluar viewport — konsisten dengan Reveal & BlurText.
 const fadeUp = {
   initial: { filter: "blur(10px)", opacity: 0, y: 20 },
-  animate: { filter: "blur(0px)", opacity: 1, y: 0 },
+  whileInView: { filter: "blur(0px)", opacity: 1, y: 0 },
+  viewport: { once: false, amount: 0.4 },
 };
 
 export default function HeroGreeting({ data }: { data: InvitationData }) {
@@ -65,7 +68,8 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
       {eventNames.length > 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: false, amount: 0.4 }}
           transition={{ duration: 0.6, delay: 1.4 }}
           className="relative z-10 flex flex-col items-center gap-4"
         >
