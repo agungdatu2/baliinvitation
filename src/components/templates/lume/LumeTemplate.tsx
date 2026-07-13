@@ -57,8 +57,8 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
       {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
 
       {opened && (
-        <div className="animate-fadeIn pb-20 md:pb-0">
-          <NavMenu groomNickname={data.groomNickname} brideNickname={data.brideNickname} />
+        <div className="animate-fadeIn">
+          <NavMenu />
 
           <div id="hero">
             <HeroGreeting data={data} />
