@@ -2,8 +2,8 @@ import { InvitationData } from "@/types/invitation";
 
 export default function ClosingFooter({ data }: { data: InvitationData }) {
   return (
-    <footer className="text-center py-10 px-6">
-      <div className="groove-glass-dark text-groove-bg rounded-2xl py-16 px-6 max-w-md mx-auto">
+    <footer className="groove-overlay-dark text-groove-bg text-center py-20 px-6">
+      <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary-light mb-4">Terima Kasih</p>
         <p className="font-groove-body italic text-base max-w-md mx-auto mb-9 leading-relaxed text-groove-bg/85">
           Merupakan suatu kehormatan bagi kami apabila Anda berkenan hadir dan memberikan doa restu.

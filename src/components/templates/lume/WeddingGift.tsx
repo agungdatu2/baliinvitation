@@ -15,8 +15,8 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
   };
 
   return (
-    <section className="px-6 py-10 max-w-md mx-auto text-center">
-      <div className="groove-glass rounded-2xl p-6 md:p-8">
+    <section className="groove-overlay py-16 px-6 text-center">
+      <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Tanda Kasih</p>
         <h2 className="font-groove-display italic text-2xl mb-6" style={{ fontWeight: 400 }}>
           Wedding Gift

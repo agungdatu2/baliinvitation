@@ -4,19 +4,21 @@ import PlaceholderPhoto from "./PlaceholderPhoto";
 
 export default function CoupleProfile({ data }: { data: InvitationData }) {
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 gap-10 px-6 py-20 max-w-3xl mx-auto">
-      <ProfileCard
-        label="Mempelai Pria"
-        fullName={data.groomFullName}
-        parents={data.groomParents}
-        instagram={data.groomInstagram}
-      />
-      <ProfileCard
-        label="Mempelai Wanita"
-        fullName={data.brideFullName}
-        parents={data.brideParents}
-        instagram={data.brideInstagram}
-      />
+    <section className="groove-overlay py-20 px-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-3xl mx-auto">
+        <ProfileCard
+          label="Mempelai Pria"
+          fullName={data.groomFullName}
+          parents={data.groomParents}
+          instagram={data.groomInstagram}
+        />
+        <ProfileCard
+          label="Mempelai Wanita"
+          fullName={data.brideFullName}
+          parents={data.brideParents}
+          instagram={data.brideInstagram}
+        />
+      </div>
     </section>
   );
 }
@@ -33,7 +35,7 @@ function ProfileCard({
   instagram?: string;
 }) {
   return (
-    <div className="text-center groove-glass rounded-2xl p-6 group">
+    <div className="text-center group">
       <PlaceholderPhoto
         label="Portrait placeholder"
         className="aspect-[3/4] rounded-sm mb-5 grayscale group-hover:grayscale-0 transition-all duration-700"

@@ -41,28 +41,26 @@ export default function Gallery({ images, variant = "grid" }: { images: string[]
 
   // Masonry (CSS columns, break-inside-avoid) — tinggi tiap foto natural, bukan seragam.
   return (
-    <section className="px-6 py-10 max-w-3xl mx-auto">
-      <div className="groove-glass rounded-2xl p-4 md:p-6">
-        <div className="columns-2 md:columns-3 gap-2">
-          {items.map((src, i) =>
-            src ? (
-              <button
-                key={i}
-                onClick={() => setLightboxIndex(i)}
-                className="block w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
-              </button>
-            ) : (
-              <PlaceholderPhoto
-                key={i}
-                label={`Photo ${i + 1}`}
-                className={`w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
-              />
-            )
-          )}
-        </div>
+    <section className="groove-overlay py-10 px-6">
+      <div className="max-w-3xl mx-auto columns-2 md:columns-3 gap-2">
+        {items.map((src, i) =>
+          src ? (
+            <button
+              key={i}
+              onClick={() => setLightboxIndex(i)}
+              className="block w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
+            </button>
+          ) : (
+            <PlaceholderPhoto
+              key={i}
+              label={`Photo ${i + 1}`}
+              className={`w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
+            />
+          )
+        )}
       </div>
       {lightboxIndex !== null && (
         <Lightbox

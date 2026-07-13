@@ -22,8 +22,8 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
 
   return (
     <section className="relative h-[100svh] overflow-hidden flex flex-col items-center justify-center text-center px-4 text-groove-bg">
-      {/* Vignette dari video, bukan kotak warna — cuma supaya teks tetap terbaca */}
-      <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/15 via-transparent to-groove-stone/50" />
+      {/* Overlay flat (bukan gradient), sama seperti section lain — cuma supaya teks tetap terbaca */}
+      <div className="absolute inset-0 bg-groove-stone/35" />
 
       <div className="relative z-10">
         <motion.p {...fadeUp} transition={{ duration: 0.6 }} className="font-groove-display text-sm md:text-base text-groove-bg/80 mb-3">

@@ -3,8 +3,8 @@ import { DressCodeItem } from "@/types/invitation";
 export default function DressCode({ items }: { items: DressCodeItem[] }) {
   if (!items?.length) return null;
   return (
-    <section className="px-6 py-10 max-w-2xl mx-auto text-center">
-      <div className="groove-glass rounded-2xl p-8 md:p-10">
+    <section className="groove-overlay py-16 px-6 text-center">
+      <div className="max-w-2xl mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-3">Dress Code</p>
         <h3 className="font-groove-body italic text-base md:text-lg text-groove-ink mb-8">
           Kami mengharapkan tamu undangan mengenakan warna-warna berikut untuk hari spesial kami

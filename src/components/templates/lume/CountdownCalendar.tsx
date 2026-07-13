@@ -37,8 +37,8 @@ export default function CountdownCalendar({
   });
 
   return (
-    <section className="text-center py-10 px-6">
-      <div className="groove-glass-dark text-groove-bg rounded-2xl py-12 px-6 max-w-md mx-auto">
+    <section className="groove-overlay-dark text-groove-bg text-center py-16 px-6">
+      <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary-light mb-2">
           Almost Time For Our Celebration
         </p>

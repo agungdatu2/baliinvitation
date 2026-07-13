@@ -98,6 +98,21 @@ html {
   );
 }
 
+/* Overlay flat (BUKAN gradient) yang dipasang di seluruh lebar section, dipakai
+   supaya video tetap terlihat konsisten di setiap section tanpa perlu "kartu"
+   kaca yang melayang di tengah — beda dari .groove-glass yang untuk elemen kecil
+   (tombol, panel nav) dan boleh punya border gradient dekoratif. */
+.groove-overlay {
+  background-color: rgba(250, 247, 239, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+.groove-overlay-dark {
+  background-color: rgba(42, 39, 34, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
 /* Versi "kuat" — dipakai tombol CTA utama: blur lebih berat + bayangan lebih tegas. */
 .groove-glass-strong {
   background: rgba(23, 20, 15, 0.22);

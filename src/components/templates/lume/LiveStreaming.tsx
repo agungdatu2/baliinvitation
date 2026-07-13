@@ -1,8 +1,8 @@
 export default function LiveStreaming({ url, note }: { url?: string; note?: string }) {
   if (!url) return null;
   return (
-    <section className="px-6 py-10 max-w-md mx-auto text-center">
-      <div className="groove-glass rounded-2xl p-8">
+    <section className="groove-overlay py-12 px-6 text-center">
+      <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Live Streaming</p>
         <h2 className="font-groove-display italic text-2xl mb-4" style={{ fontWeight: 400 }}>
           Tak Bisa Hadir? Saksikan dari Rumah
