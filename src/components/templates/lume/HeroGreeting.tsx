@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ArrowUpRight, Play } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import BlurText from "./BlurText";
 
@@ -31,7 +30,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         </motion.p>
 
         <BlurText
-          text={`${data.groomNickname} ${data.brideNickname}`}
+          text={`${data.groomNickname} & ${data.brideNickname}`}
           className="font-groove-display text-groove-bg leading-[0.95] text-5xl md:text-7xl lg:text-[5.5rem] max-w-3xl mx-auto justify-center tracking-tight"
           delay={100}
         />
@@ -39,7 +38,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="font-groove-display text-xs md:text-sm text-groove-bg/70 tracking-widest mt-3"
+          className="font-groove-display text-xs md:text-sm text-groove-bg/70 tracking-widest mt-8"
         >
           {eventDateLabel}
         </motion.p>
@@ -53,22 +52,21 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
             data.quote ||
             "Dengan penuh syukur, kami mengundang Anda untuk merayakan hari bahagia kami."}
         </motion.p>
-
-        <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 1.2 }} className="flex items-center justify-center gap-6 mt-10">
-          <a
-            href="#events"
-            className="text-sm font-medium font-groove-label text-groove-bg/90 flex items-center gap-1.5 hover:text-groove-primary-light transition-colors"
-          >
-            Lihat Acara <ArrowUpRight className="h-4 w-4" />
-          </a>
-          <a
-            href="#gallery"
-            className="text-sm font-medium font-groove-label text-groove-bg/90 flex items-center gap-1.5 hover:text-groove-primary-light transition-colors"
-          >
-            Lihat Galeri <Play className="h-3.5 w-3.5 fill-current" />
-          </a>
-        </motion.div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 1.3 }}
+        className="absolute bottom-9 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-groove-bg/70"
+      >
+        <span className="font-groove-label text-[10px] uppercase tracking-[0.35em]">Scroll</span>
+        <motion.div
+          className="w-px h-9 bg-groove-bg/60 origin-top"
+          animate={{ scaleY: [0, 1, 0], opacity: [0, 1, 0] }}
+          transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      </motion.div>
     </section>
   );
 }
