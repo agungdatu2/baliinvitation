@@ -15,8 +15,16 @@ const WORD_INTERVAL_MS = 900;
 const COMPLETE_DELAY_MS = 400;
 const RING_COUNT = 6;
 
+// Foto placeholder (Lorem Picsum, seed tetap) — dipakai selama client belum upload galeri asli.
+const DEFAULT_RING_PHOTOS = Array.from(
+  { length: RING_COUNT },
+  (_, i) => `https://picsum.photos/seed/lume-ring-${i}/160/160`
+);
+
 export default function LoadingScreen({ onComplete, label, words, images }: LoadingScreenProps) {
-  const ringPhotos = Array.from({ length: RING_COUNT }, (_, i) => (images?.length ? images[i % images.length] : null));
+  const ringPhotos = images?.length
+    ? Array.from({ length: RING_COUNT }, (_, i) => images[i % images.length])
+    : DEFAULT_RING_PHOTOS;
   const [progress, setProgress] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const onCompleteRef = useRef(onComplete);
@@ -91,15 +99,11 @@ export default function LoadingScreen({ onComplete, label, words, images }: Load
                 className="w-full h-full rounded-full overflow-hidden border"
                 style={{ borderColor: "rgba(245,245,245,0.25)" }}
                 initial={{ opacity: 0, scale: 0.3, filter: "blur(8px)" }}
-                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                transition={{ duration: 0.8, delay: 0.4 + i * 0.12, ease: [0.4, 0, 0.2, 1] }}
+                animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.85], filter: ["blur(8px)", "blur(0px)", "blur(0px)", "blur(6px)"] }}
+                transition={{ duration: 1.9, delay: 0.35 + i * 0.12, times: [0, 0.3, 0.7, 1], ease: [0.4, 0, 0.2, 1] }}
               >
-                {src ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={src} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full" style={{ backgroundColor: "rgba(245,245,245,0.06)" }} />
-                )}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="w-full h-full object-cover" />
               </motion.div>
             </div>
           );
