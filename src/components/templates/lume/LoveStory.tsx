@@ -3,7 +3,7 @@ import { InvitationData } from "@/types/invitation";
 export default function LoveStory({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
   return (
-    <section className="groove-overlay py-16 px-6">
+    <section className="groove-overlay text-groove-bg py-16 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Perjalanan Kami</p>
@@ -23,7 +23,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
                     <h4 className="font-groove-display text-xl mb-2" style={{ fontWeight: 600 }}>
                       {item.title}
                     </h4>
-                    <p className="font-groove-body text-sm text-groove-ink/75 leading-relaxed whitespace-pre-line">{item.story}</p>
+                    <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed whitespace-pre-line">{item.story}</p>
                   </div>
                   <div className="hidden md:flex w-8 justify-center relative shrink-0">
                     <div className="w-3 h-3 bg-groove-primary rounded-full mt-1.5 ring-8 ring-groove-bg/75" />

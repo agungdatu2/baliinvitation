@@ -3,7 +3,7 @@
 export default function PlaceholderPhoto({ label, className = "" }: { label?: string; className?: string }) {
   return (
     <div className={`relative flex items-end justify-center overflow-hidden border border-groove-line ${className}`}>
-      {label && <span className="pb-2 text-[0.6rem] uppercase tracking-widest text-groove-secondary">{label}</span>}
+      {label && <span className="pb-2 text-[0.6rem] uppercase tracking-widest text-groove-bg/70">{label}</span>}
     </div>
   );
 }

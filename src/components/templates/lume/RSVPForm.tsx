@@ -33,17 +33,17 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
   if (sent) {
     return (
-      <section className="groove-overlay py-16 px-6 text-center">
-        <p className="text-sm text-groove-ink/70">Terima kasih! RSVP kamu sudah kami terima.</p>
+      <section className="groove-overlay text-groove-bg py-16 px-6 text-center">
+        <p className="text-sm text-groove-bg/80">Terima kasih! RSVP kamu sudah kami terima.</p>
       </section>
     );
   }
 
   const fieldClass =
-    "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-ink focus:outline-none focus:border-groove-primary transition-colors";
+    "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-bg focus:outline-none focus:border-groove-primary transition-colors";
 
   return (
-    <section className="groove-overlay py-16 px-6">
+    <section className="groove-overlay text-groove-bg py-16 px-6">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
           <p className="text-xs uppercase tracking-widest text-groove-primary mb-2">Konfirmasi Kehadiran</p>
@@ -53,7 +53,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
         </div>
         <form onSubmit={submit} className="space-y-5 text-left">
           <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">
+            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
               Nama Lengkap
             </label>
             <input
@@ -65,7 +65,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
           </div>
 
           <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-2">
+            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-2">
               Konfirmasi Kehadiran
             </label>
             <div className="flex gap-2">
@@ -77,7 +77,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
                   className={`flex-1 py-2 rounded-full border text-xs tracking-wide transition ${
                     form.attendance === opt.value
                       ? "bg-groove-primary border-groove-primary text-groove-bg"
-                      : "border-groove-line text-groove-ink/70"
+                      : "border-groove-line text-groove-bg/75"
                   }`}
                 >
                   {opt.label}
@@ -87,7 +87,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
           </div>
 
           <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">
+            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
               Jumlah Tamu
             </label>
             <input
@@ -100,7 +100,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
           </div>
 
           <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-ink/60 mb-1.5">
+            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
               Ucapan &amp; Doa
             </label>
             <textarea
