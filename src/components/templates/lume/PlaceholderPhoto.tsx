@@ -2,13 +2,7 @@
 // sungguhan, supaya layout tetap terlihat lengkap sebelum aset final tersedia.
 export default function PlaceholderPhoto({ label, className = "" }: { label?: string; className?: string }) {
   return (
-    <div
-      className={`relative flex items-end justify-center overflow-hidden ${className}`}
-      style={{
-        backgroundImage:
-          "repeating-linear-gradient(135deg, #ded4bd 0, #ded4bd 2px, #e9e1cd 2px, #e9e1cd 22px)",
-      }}
-    >
+    <div className={`relative flex items-end justify-center overflow-hidden border border-groove-line ${className}`}>
       {label && <span className="pb-2 text-[0.6rem] uppercase tracking-widest text-groove-secondary">{label}</span>}
     </div>
   );
