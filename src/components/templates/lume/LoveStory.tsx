@@ -6,7 +6,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
     <section className="groove-overlay text-groove-bg py-16 px-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Perjalanan Kami</p>
+          <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-2">Perjalanan Kami</p>
           <h2 className="font-groove-display italic text-3xl" style={{ fontWeight: 400 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h2>

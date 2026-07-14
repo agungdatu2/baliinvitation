@@ -5,7 +5,7 @@ export default function Verse({ quote }: { quote?: string }) {
   return (
     <section className="groove-overlay py-16 px-6 text-center">
       <div className="max-w-2xl mx-auto">
-        <Heart className="h-8 w-8 text-groove-primary mx-auto mb-4" strokeWidth={1.5} />
+        <Heart className="h-8 w-8 text-groove-bg/70 mx-auto mb-4" strokeWidth={1.5} />
         <p className="font-groove-body italic text-lg text-groove-bg/85 leading-relaxed whitespace-pre-line">
           &ldquo;{quote}&rdquo;
         </p>

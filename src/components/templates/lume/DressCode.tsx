@@ -5,7 +5,7 @@ export default function DressCode({ items }: { items: DressCodeItem[] }) {
   return (
     <section className="groove-overlay text-groove-bg py-16 px-6 text-center">
       <div className="max-w-2xl mx-auto">
-        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-3">Dress Code</p>
+        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-3">Dress Code</p>
         <h3 className="font-groove-body italic text-base md:text-lg text-groove-bg mb-8">
           Kami mengharapkan tamu undangan mengenakan warna-warna berikut untuk hari spesial kami
         </h3>

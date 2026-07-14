@@ -17,7 +17,7 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
   return (
     <section className="groove-overlay text-groove-bg py-16 px-6 text-center">
       <div className="max-w-md mx-auto">
-        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary mb-2">Tanda Kasih</p>
+        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-2">Tanda Kasih</p>
         <h2 className="font-groove-display italic text-2xl mb-6" style={{ fontWeight: 400 }}>
           Wedding Gift
         </h2>
@@ -28,9 +28,9 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
           {accounts.map((acc, i) => (
             <div key={i} className="border border-groove-line rounded-lg p-4 flex items-center justify-between text-left">
               <div className="flex items-start gap-3">
-                <Landmark className="h-6 w-6 text-groove-primary shrink-0 mt-0.5" strokeWidth={1.5} />
+                <Landmark className="h-6 w-6 text-groove-bg/70 shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div>
-                  <p className="font-groove-label text-xs uppercase tracking-widest text-groove-primary">{acc.bank}</p>
+                  <p className="font-groove-label text-xs uppercase tracking-widest text-groove-bg/80">{acc.bank}</p>
                   <p className="font-groove-display text-lg mt-0.5 text-groove-bg" style={{ fontWeight: 600 }}>
                     {acc.accountNumber}
                   </p>
@@ -40,7 +40,7 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
               <button
                 onClick={() => copy(acc.accountNumber, i)}
                 className={`font-groove-label shrink-0 flex items-center gap-1 text-xs uppercase tracking-wide ${
-                  copiedIndex === i ? "text-groove-primary" : "text-groove-bg/75"
+                  copiedIndex === i ? "text-groove-bg" : "text-groove-bg/75"
                 }`}
               >
                 <Copy className="h-3.5 w-3.5" /> {copiedIndex === i ? "Tersalin!" : "Salin"}

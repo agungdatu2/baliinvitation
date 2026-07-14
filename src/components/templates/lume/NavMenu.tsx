@@ -96,7 +96,7 @@ export default function NavMenu({
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-groove-display text-2xl md:text-3xl text-groove-ink hover:text-groove-primary transition-colors"
+              className="font-groove-display text-2xl md:text-3xl text-groove-ink hover:text-groove-secondary transition-colors"
             >
               {l.label}
             </a>
@@ -111,7 +111,7 @@ export default function NavMenu({
             href={calendarUrl}
             target="_blank"
             rel="noreferrer"
-            className="flex-1 flex items-center justify-center text-center font-groove-label text-[10px] uppercase tracking-wider text-groove-ink/80 hover:text-groove-primary transition-colors px-2 py-3"
+            className="flex-1 flex items-center justify-center text-center font-groove-label text-[10px] uppercase tracking-wider text-groove-ink/80 hover:text-groove-secondary transition-colors px-2 py-3"
           >
             Simpan
             <br />

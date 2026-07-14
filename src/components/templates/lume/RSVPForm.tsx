@@ -46,7 +46,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
     <section className="groove-overlay text-groove-bg py-16 px-6">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-widest text-groove-primary mb-2">Konfirmasi Kehadiran</p>
+          <p className="text-xs uppercase tracking-widest text-groove-bg/70 mb-2">Konfirmasi Kehadiran</p>
           <h2 className="font-groove-display italic text-2xl" style={{ fontWeight: 500 }}>
             Kirimkan Doa Restu
           </h2>

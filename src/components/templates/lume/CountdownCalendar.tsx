@@ -39,7 +39,7 @@ export default function CountdownCalendar({
   return (
     <section className="groove-overlay-dark text-groove-bg text-center py-16 px-6">
       <div className="max-w-md mx-auto">
-        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-primary-light mb-2">
+        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/60 mb-2">
           Almost Time For Our Celebration
         </p>
         <h2 className="font-groove-display italic text-2xl mb-8" style={{ fontWeight: 400 }}>
@@ -56,7 +56,7 @@ export default function CountdownCalendar({
               <div className="font-groove-display text-3xl tabular-nums" style={{ fontWeight: 600 }}>
                 {String(value).padStart(2, "0")}
               </div>
-              <div className="font-groove-label text-[0.65rem] uppercase tracking-widest text-groove-primary-light mt-1">{label}</div>
+              <div className="font-groove-label text-[0.65rem] uppercase tracking-widest text-groove-bg/60 mt-1">{label}</div>
             </div>
           ))}
         </div>

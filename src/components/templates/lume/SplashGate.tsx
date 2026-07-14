@@ -55,11 +55,11 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
           <span aria-hidden="true" className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-groove-primary-light/60 z-10" />
 
           <div className="relative z-10 px-8 md:px-14 max-w-sm w-full">
-            <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-primary-light mb-4">
+            <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-bg/60 mb-4">
               We Invite You To Celebrate
             </p>
             <h1 className="font-groove-display italic text-5xl mb-2" style={{ fontWeight: 400 }}>
-              {groomNickname} <span className="not-italic text-groove-primary-light">&amp;</span> {brideNickname}
+              {groomNickname} <span className="not-italic text-groove-bg/60">&amp;</span> {brideNickname}
             </h1>
 
             <div className="mt-8 space-y-3">

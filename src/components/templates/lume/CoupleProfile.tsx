@@ -68,7 +68,7 @@ function ProfileCard({
       </div>
 
       <div className={`text-center md:text-left ${reverse ? "md:text-right" : ""}`}>
-        <p className="font-groove-label text-xs uppercase tracking-[0.3em] text-groove-primary-light mb-3">{label}</p>
+        <p className="font-groove-label text-xs uppercase tracking-[0.3em] text-groove-bg/60 mb-3">{label}</p>
         <h3 className="font-groove-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 500 }}>
           {fullName}
         </h3>
