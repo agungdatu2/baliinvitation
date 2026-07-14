@@ -7,13 +7,16 @@ interface LoadingScreenProps {
   onComplete: () => void;
   label: string; // eyebrow kiri-atas, mis. "Undangan Pernikahan"
   words: string[]; // kata yang bergantian di tengah, mis. [groomNickname, "&", brideNickname]
+  images?: string[]; // foto galeri — dipakai untuk cincin foto yang reveal mengelilingi nama
 }
 
 const DURATION_MS = 2700;
 const WORD_INTERVAL_MS = 900;
 const COMPLETE_DELAY_MS = 400;
+const RING_COUNT = 6;
 
-export default function LoadingScreen({ onComplete, label, words }: LoadingScreenProps) {
+export default function LoadingScreen({ onComplete, label, words, images }: LoadingScreenProps) {
+  const ringPhotos = Array.from({ length: RING_COUNT }, (_, i) => (images?.length ? images[i % images.length] : null));
   const [progress, setProgress] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const onCompleteRef = useRef(onComplete);
@@ -70,7 +73,38 @@ export default function LoadingScreen({ onComplete, label, words }: LoadingScree
         {label}
       </motion.div>
 
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ ["--ring-radius" as string]: "clamp(96px, 20vw, 190px)" }}
+      >
+        {ringPhotos.map((src, i) => {
+          const angle = (360 / RING_COUNT) * i;
+          return (
+            <div
+              key={i}
+              className="absolute left-1/2 top-1/2 w-11 h-11 md:w-16 md:h-16"
+              style={{
+                transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(calc(-1 * var(--ring-radius))) rotate(${-angle}deg)`,
+              }}
+            >
+              <motion.div
+                className="w-full h-full rounded-full overflow-hidden border"
+                style={{ borderColor: "rgba(245,245,245,0.25)" }}
+                initial={{ opacity: 0, scale: 0.3, filter: "blur(8px)" }}
+                animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+                transition={{ duration: 0.8, delay: 0.4 + i * 0.12, ease: [0.4, 0, 0.2, 1] }}
+              >
+                {src ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full" style={{ backgroundColor: "rgba(245,245,245,0.06)" }} />
+                )}
+              </motion.div>
+            </div>
+          );
+        })}
+
         <AnimatePresence mode="wait">
           <motion.span
             key={wordIndex}

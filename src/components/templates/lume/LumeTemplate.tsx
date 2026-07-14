@@ -61,6 +61,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           brideNickname={data.brideNickname}
           eventDateLabel={eventDateLabel}
           guestName={guestName}
+          images={data.galleryImages}
           onOpen={handleOpen}
         />
       )}

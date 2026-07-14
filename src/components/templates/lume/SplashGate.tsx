@@ -9,6 +9,7 @@ interface Props {
   brideNickname: string;
   eventDateLabel: string;
   guestName?: string;
+  images?: string[];
   onOpen: () => void;
 }
 
@@ -18,7 +19,7 @@ const EXIT_DURATION_MS = 600;
 // Tahap 2 (setelah loading selesai): gate video-hero dengan nama tamu personal +
 // tombol buka, di atas video yang fixed di belakang seluruh halaman
 // (lihat FixedVideoBackground/LumeTemplate).
-export default function SplashGate({ groomNickname, brideNickname, eventDateLabel, guestName, onOpen }: Props) {
+export default function SplashGate({ groomNickname, brideNickname, eventDateLabel, guestName, images, onOpen }: Props) {
   const [showLoading, setShowLoading] = useState(true);
   const [closing, setClosing] = useState(false);
 
@@ -34,6 +35,7 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
           <LoadingScreen
             label="Undangan Pernikahan"
             words={[groomNickname, "&", brideNickname]}
+            images={images}
             onComplete={() => setShowLoading(false)}
           />
         )}
