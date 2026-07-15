@@ -17,7 +17,6 @@ import RSVPForm from "./RSVPForm";
 import WeddingGift from "./WeddingGift";
 import ClosingFooter from "./ClosingFooter";
 import Reveal from "./Reveal";
-import SectionDivider from "./SectionDivider";
 
 // Orchestrator utama tema "Lume" — struktur & fitur mengikuti alur
 // tamubali.com/lume: splash % -> gate nama tamu -> buka -> konten lengkap.
@@ -83,17 +82,14 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             <HeroGreeting data={data} />
           </div>
 
-          <SectionDivider />
           <Reveal id="couple">
             <CoupleProfile data={data} />
           </Reveal>
 
-          <SectionDivider />
           <Reveal id="love-story">
             <LoveStory data={data} />
           </Reveal>
 
-          <SectionDivider />
           <Reveal>
             <CountdownCalendar
               eventDate={data.eventDate}
@@ -111,12 +107,10 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             <DressCode items={data.dressCode} />
           </Reveal>
 
-          <SectionDivider />
           <Reveal id="rsvp">
             <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
           </Reveal>
 
-          <SectionDivider />
           <div id="gallery">
             <Reveal>
               <Gallery images={data.galleryImages} variant="grid" />
@@ -124,7 +118,6 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           </div>
           <Gallery images={data.galleryImages} variant="strip" />
 
-          <SectionDivider />
           <Reveal id="gift">
             <WeddingGift accounts={data.bankAccounts} />
           </Reveal>
