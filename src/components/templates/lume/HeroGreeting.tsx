@@ -49,7 +49,6 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
           className="mt-8 text-sm md:text-base text-groove-bg/85 max-w-md mx-auto font-groove-body font-light leading-relaxed whitespace-pre-line"
         >
           {data.greeting ||
-            data.quote ||
             "Dengan penuh syukur, kami mengundang Anda untuk merayakan hari bahagia kami."}
         </motion.p>
       </div>

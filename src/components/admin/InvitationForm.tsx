@@ -36,7 +36,6 @@ const defaultValues: InvitationFormValues = {
   brideParents: "",
   brideInstagram: "",
   coverImage: "",
-  quote: "",
   greeting: "",
   musicUrl: "",
   livestreamUrl: "",
@@ -210,9 +209,6 @@ export default function InvitationForm() {
         </Field>
         <Field label="Kalimat Pembuka / Greeting (Om Swastiastu, dst.)">
           <textarea {...register("greeting")} className="input" rows={3} />
-        </Field>
-        <Field label="Quote penutup">
-          <textarea {...register("quote")} className="input" rows={2} />
         </Field>
       </section>
 

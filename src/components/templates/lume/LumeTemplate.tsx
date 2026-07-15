@@ -6,7 +6,6 @@ import FixedVideoBackground from "./FixedVideoBackground";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
-import Verse from "./Verse";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
@@ -83,10 +82,6 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           <div id="hero">
             <HeroGreeting data={data} />
           </div>
-
-          <Reveal>
-            <Verse quote={data.quote} />
-          </Reveal>
 
           <SectionDivider />
           <Reveal id="couple">
