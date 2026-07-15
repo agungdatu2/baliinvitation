@@ -31,10 +31,12 @@ const defaultValues: InvitationFormValues = {
   groomFullName: "",
   groomParents: "",
   groomInstagram: "",
+  groomPhoto: "",
   brideNickname: "",
   brideFullName: "",
   brideParents: "",
   brideInstagram: "",
+  bridePhoto: "",
   coverImage: "",
   greeting: "",
   musicUrl: "",
@@ -180,6 +182,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <Field label="Instagram (opsional)">
             <input {...register("groomInstagram")} className="input" />
           </Field>
+          <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
+            <input {...register("groomPhoto")} className="input" placeholder="https://..." />
+          </Field>
         </div>
 
         <div className="space-y-3 border rounded-lg p-4">
@@ -196,6 +201,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <Field label="Instagram (opsional)">
             <input {...register("brideInstagram")} className="input" />
           </Field>
+          <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
+            <input {...register("bridePhoto")} className="input" placeholder="https://..." />
+          </Field>
         </div>
       </section>
 
@@ -208,8 +216,8 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Cover Image">
           <input {...register("coverImage")} className="input" placeholder="https://..." />
         </Field>
-        <Field label="URL Video Hero (mp4, opsional — kosongkan untuk pakai placeholder)">
-          <input {...register("heroVideoUrl")} className="input" placeholder="https://..." />
+        <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
+          <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
         <Field label="URL Musik Latar (mp3)">
           <input {...register("musicUrl")} className="input" placeholder="https://..." />

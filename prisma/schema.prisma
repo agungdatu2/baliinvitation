@@ -67,10 +67,12 @@ model Invitation {
   groomFullName   String
   groomParents    String
   groomInstagram  String?
+  groomPhoto      String? // URL foto mempelai pria, ditampilkan di CoupleProfile (fallback ke placeholder kalau kosong)
   brideNickname   String
   brideFullName   String
   brideParents    String
   brideInstagram  String?
+  bridePhoto      String? // URL foto mempelai wanita, ditampilkan di CoupleProfile (fallback ke placeholder kalau kosong)
 
   // Konten undangan
   coverImage    String?

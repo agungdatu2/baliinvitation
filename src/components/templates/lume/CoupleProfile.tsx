@@ -11,6 +11,7 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
           fullName={data.groomFullName}
           parents={data.groomParents}
           instagram={data.groomInstagram}
+          photo={data.groomPhoto}
           imageSeed="lume-groom"
         />
         <ProfileCard
@@ -19,6 +20,7 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
           fullName={data.brideFullName}
           parents={data.brideParents}
           instagram={data.brideInstagram}
+          photo={data.bridePhoto}
           imageSeed="lume-bride"
           reverse
         />
@@ -33,6 +35,7 @@ function ProfileCard({
   fullName,
   parents,
   instagram,
+  photo,
   imageSeed,
   reverse = false,
 }: {
@@ -41,6 +44,7 @@ function ProfileCard({
   fullName: string;
   parents: string;
   instagram?: string;
+  photo?: string;
   imageSeed: string;
   reverse?: boolean;
 }) {
@@ -61,7 +65,7 @@ function ProfileCard({
         />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src={`https://picsum.photos/seed/${imageSeed}/480/600`}
+          src={photo || `https://picsum.photos/seed/${imageSeed}/480/600`}
           alt={fullName}
           className="w-full aspect-[4/5] object-cover rounded-sm grayscale group-hover:grayscale-0 transition-all duration-700"
         />

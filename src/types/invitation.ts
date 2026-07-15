@@ -39,11 +39,13 @@ export interface InvitationData {
   groomFullName: string;
   groomParents: string;
   groomInstagram?: string;
+  groomPhoto?: string;
 
   brideNickname: string;
   brideFullName: string;
   brideParents: string;
   brideInstagram?: string;
+  bridePhoto?: string;
 
   coverImage?: string;
   quote?: string;

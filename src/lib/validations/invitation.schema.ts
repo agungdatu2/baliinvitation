@@ -45,11 +45,13 @@ export const invitationSchema = z.object({
   groomFullName: z.string().min(1),
   groomParents: z.string().min(1),
   groomInstagram: z.string().optional(),
+  groomPhoto: z.string().optional(),
 
   brideNickname: z.string().min(1),
   brideFullName: z.string().min(1),
   brideParents: z.string().min(1),
   brideInstagram: z.string().optional(),
+  bridePhoto: z.string().optional(),
 
   coverImage: z.string().optional(),
   quote: z.string().optional(),
