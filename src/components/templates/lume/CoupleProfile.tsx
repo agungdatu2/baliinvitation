@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { AtSign } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 
@@ -48,26 +51,32 @@ function ProfileCard({
   imageSeed: string;
   reverse?: boolean;
 }) {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = imgRef.current;
+    if (!el) return;
+    // Foto masuk warna tiap kali section-nya masuk viewport (scroll turun ATAU naik
+    // balik lagi), bukan cuma sekali atau lewat hover.
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), {
+      threshold: 0.35,
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className={`group flex flex-col md:flex-row items-center gap-8 md:gap-14 ${reverse ? "md:flex-row-reverse" : ""}`}>
-      <div className="relative w-56 md:w-64 shrink-0">
-        <span
-          aria-hidden="true"
-          className={`absolute -top-3 w-10 h-10 border-t border-groove-primary-light/70 ${
-            reverse ? "-right-3 border-r" : "-left-3 border-l"
-          }`}
-        />
-        <span
-          aria-hidden="true"
-          className={`absolute -bottom-3 w-10 h-10 border-b border-groove-primary-light/70 ${
-            reverse ? "-left-3 border-l" : "-right-3 border-r"
-          }`}
-        />
+    <div className={`flex flex-col md:flex-row items-center gap-8 md:gap-14 ${reverse ? "md:flex-row-reverse" : ""}`}>
+      <div className="relative w-72 md:w-[26rem] shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={imgRef}
           src={photo || `https://picsum.photos/seed/${imageSeed}/480/600`}
           alt={fullName}
-          className="w-full aspect-[4/5] object-cover rounded-sm grayscale group-hover:grayscale-0 transition-all duration-700"
+          className={`w-full aspect-[4/5] object-cover rounded-sm transition-all duration-1000 ${
+            inView ? "grayscale-0" : "grayscale"
+          }`}
         />
       </div>
 
