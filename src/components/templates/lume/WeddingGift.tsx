@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Copy, Check, X } from "lucide-react";
 import { BankAccountItem } from "@/types/invitation";
@@ -36,9 +37,13 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
-      </AnimatePresence>
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
+          </AnimatePresence>,
+          document.body
+        )}
     </section>
   );
 }
