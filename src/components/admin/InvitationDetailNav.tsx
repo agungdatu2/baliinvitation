@@ -8,6 +8,7 @@ export default function InvitationDetailNav({ id, pendingChangeRequests }: { id:
   const base = `/admin/invitations/${id}`;
   const tabs = [
     { href: base, label: "Ringkasan" },
+    { href: `${base}/edit`, label: "Edit" },
     { href: `${base}/guests`, label: "Tamu" },
     { href: `${base}/rsvp`, label: "RSVP & Ucapan" },
     { href: `${base}/change-requests`, label: "Perubahan Acara", badge: pendingChangeRequests },

@@ -51,9 +51,16 @@ const defaultValues: InvitationFormValues = {
   dressCode: [],
 };
 
-export default function InvitationForm() {
+interface InvitationFormProps {
+  invitationId?: string;
+  initialValues?: Partial<InvitationFormValues>;
+}
+
+export default function InvitationForm({ invitationId, initialValues }: InvitationFormProps) {
+  const isEdit = Boolean(invitationId);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
   const [templates, setTemplates] = useState<TemplateOption[]>([]);
   const [packages, setPackages] = useState<PackageOption[]>([]);
 
@@ -73,7 +80,7 @@ export default function InvitationForm() {
     formState: { errors },
   } = useForm<InvitationFormValues>({
     resolver: zodResolver(invitationSchema),
-    defaultValues,
+    defaultValues: { ...defaultValues, ...initialValues },
   });
 
   const loveStory = useFieldArray({ control, name: "loveStory" });
@@ -85,9 +92,10 @@ export default function InvitationForm() {
   const onSubmit = async (values: InvitationFormValues) => {
     setSubmitting(true);
     setServerError(null);
+    setSaved(false);
     try {
-      const res = await fetch("/api/invitations", {
-        method: "POST",
+      const res = await fetch(isEdit ? `/api/invitations/${invitationId}` : "/api/invitations", {
+        method: isEdit ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
@@ -95,8 +103,12 @@ export default function InvitationForm() {
         const err = await res.json();
         throw new Error(err.error?.formErrors?.[0] || err.error || "Gagal menyimpan");
       }
-      const created = await res.json();
-      window.location.href = `/admin/invitations/${created.id}/edit?created=1`;
+      if (isEdit) {
+        setSaved(true);
+      } else {
+        const created = await res.json();
+        window.location.href = `/admin/invitations/${created.id}/edit?created=1`;
+      }
     } catch (e: any) {
       setServerError(e.message);
     } finally {
@@ -106,8 +118,9 @@ export default function InvitationForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="max-w-3xl mx-auto space-y-8 p-6">
-      <h1 className="text-2xl font-semibold">Buat Undangan Baru</h1>
+      <h1 className="text-2xl font-semibold">{isEdit ? "Edit Undangan" : "Buat Undangan Baru"}</h1>
       {serverError && <p className="text-red-600 text-sm">{serverError}</p>}
+      {saved && <p className="text-green-600 text-sm">Tersimpan.</p>}
 
       {/* --- Data Client & Template --- */}
       <section className="space-y-3 border rounded-lg p-4">
@@ -351,7 +364,7 @@ export default function InvitationForm() {
       </section>
 
       <button type="submit" disabled={submitting} className="w-full py-3 rounded-lg bg-lume-ink text-white font-medium disabled:opacity-50">
-        {submitting ? "Menyimpan..." : "Simpan & Buat Undangan"}
+        {submitting ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Simpan & Buat Undangan"}
       </button>
     </form>
   );
