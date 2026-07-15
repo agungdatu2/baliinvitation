@@ -1,29 +1,32 @@
 import type { Metadata } from "next";
-import { Bodoni_Moda, Libre_Baskerville, Inter, Instrument_Serif } from "next/font/google";
+import { Cormorant, Hanken_Grotesk } from "next/font/google";
 import "./globals.css";
 
 // Dipakai tema "Lume" (redesign fine-art/editorial paper) — self-hosted otomatis
 // oleh next/font, jadi tidak butuh <link> Google Fonts dan tidak ada risiko CDN gagal.
-const bodoniModa = Bodoni_Moda({
+// Heading: Cormorant. Body/label: Hanken Grotesk sebagai placeholder sementara
+// pengganti "Lausanne" (font berbayar, bukan di Google Fonts) — ganti ke Lausanne
+// via next/font/local begitu file .woff2 lisensinya tersedia.
+const cormorant = Cormorant({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "600", "700"],
   style: ["italic", "normal"],
   variable: "--font-groove-display",
 });
-const libreBaskerville = Libre_Baskerville({
+const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "700"],
+  weight: ["400", "500", "600"],
   variable: "--font-groove-body",
 });
-const inter = Inter({
+const hankenGroteskLabel = Hanken_Grotesk({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-groove-label",
 });
 // Dipakai khusus LoadingScreen (gate video-hero) — typeface terpisah dari display utama.
-const instrumentSerif = Instrument_Serif({
+const cormorantLoading = Cormorant({
   subsets: ["latin"],
-  weight: "400",
+  weight: ["400", "500"],
   style: ["italic", "normal"],
   variable: "--font-loading-display",
 });
@@ -37,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${bodoniModa.variable} ${libreBaskerville.variable} ${inter.variable} ${instrumentSerif.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable}`}
     >
       <body>{children}</body>
     </html>
