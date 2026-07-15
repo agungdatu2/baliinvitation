@@ -8,63 +8,85 @@ const PLACEHOLDER_COUNT = 6;
 // Variasi tinggi supaya placeholder terlihat seperti masonry sungguhan sebelum ada foto asli.
 const PLACEHOLDER_HEIGHTS = ["h-56", "h-72", "h-64", "h-80", "h-60", "h-72"];
 
-export default function Gallery({ images, variant = "grid" }: { images: string[]; variant?: "grid" | "strip" }) {
+const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
+function isVideoUrl(url: string) {
+  return VIDEO_EXT_RE.test(url);
+}
+
+export default function Gallery({ images }: { images: string[] }) {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
-  // Belum ada foto asli — tampilkan placeholder supaya layout tetap terasa lengkap.
   const usingPlaceholders = !images?.length;
-  const items = usingPlaceholders ? Array.from({ length: PLACEHOLDER_COUNT }, () => null) : images;
 
-  if (variant === "strip") {
-    return (
-      <div className="flex gap-3 overflow-x-auto px-6 py-6 no-scrollbar">
-        {items.map((src, i) =>
-          src ? (
-            <button key={i} onClick={() => setLightboxIndex(i)} className="relative w-40 h-56 shrink-0 rounded-sm overflow-hidden">
-              <Image src={src} alt={`gallery-${i}`} fill className="object-cover" />
-            </button>
-          ) : (
-            <PlaceholderPhoto key={i} label={`Photo ${i + 1}`} className="w-40 h-56 shrink-0 rounded-sm" />
-          )
-        )}
-        {lightboxIndex !== null && (
-          <Lightbox
-            images={usingPlaceholders ? [] : images}
-            index={lightboxIndex}
-            onClose={() => setLightboxIndex(null)}
-            onIndexChange={setLightboxIndex}
-          />
-        )}
-      </div>
-    );
-  }
+  // Video (kalau ada) selalu jadi featured item pertama dengan thumbnail besar +
+  // tombol play; kalau tidak ada video, foto pertama yang jadi featured item.
+  const videoIndex = usingPlaceholders ? -1 : images.findIndex(isVideoUrl);
+  const featuredSrc = usingPlaceholders ? null : videoIndex >= 0 ? images[videoIndex] : images[0];
+  const featuredIsVideo = videoIndex >= 0;
+  const restImages = usingPlaceholders
+    ? Array.from({ length: PLACEHOLDER_COUNT }, () => null)
+    : images.filter((_, i) => i !== (videoIndex >= 0 ? videoIndex : 0));
 
-  // Masonry (CSS columns, break-inside-avoid) — tinggi tiap foto natural, bukan seragam.
   return (
     <section className="groove-overlay py-10 px-6">
-      <div className="max-w-5xl mx-auto columns-2 md:columns-3 gap-2">
-        {items.map((src, i) =>
-          src ? (
-            <button
-              key={i}
-              onClick={() => setLightboxIndex(i)}
-              className="block w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
-            </button>
-          ) : (
-            <PlaceholderPhoto
-              key={i}
-              label={`Photo ${i + 1}`}
-              className={`w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
-            />
-          )
+      <div className="max-w-5xl mx-auto">
+        <h2 className="font-groove-display uppercase text-3xl md:text-4xl leading-tight mb-6" style={{ fontWeight: 500 }}>
+          Our Pre-Wedding Celebration.
+        </h2>
+
+        {/* Featured item — video (kalau ada) atau foto pertama */}
+        {featuredSrc && (
+          <div className="relative w-full aspect-video mb-3 border-4 border-groove-bg shadow-sm overflow-hidden bg-groove-stone">
+            {featuredIsVideo ? (
+              videoPlaying ? (
+                <video src={featuredSrc} controls autoPlay className="w-full h-full object-cover" />
+              ) : (
+                <button
+                  onClick={() => setVideoPlaying(true)}
+                  className="absolute inset-0 w-full h-full flex items-center justify-center bg-groove-stone/30"
+                  aria-label="Putar video"
+                >
+                  <span className="w-16 h-16 rounded-full border-2 border-groove-bg/90 flex items-center justify-center">
+                    <span
+                      className="w-0 h-0 border-y-[10px] border-y-transparent border-l-[16px] border-l-groove-bg ml-1"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </button>
+              )
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={featuredSrc} alt="featured" className="w-full h-full object-cover" />
+            )}
+          </div>
         )}
+
+        {/* Masonry (CSS columns, break-inside-avoid) untuk sisa foto */}
+        <div className="columns-2 md:columns-3 gap-2">
+          {restImages.map((src, i) =>
+            src ? (
+              <button
+                key={i}
+                onClick={() => setLightboxIndex(i)}
+                className="block w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
+              </button>
+            ) : (
+              <PlaceholderPhoto
+                key={i}
+                label={`Photo ${i + 1}`}
+                className={`w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
+              />
+            )
+          )}
+        </div>
       </div>
       {lightboxIndex !== null && (
         <Lightbox
-          images={usingPlaceholders ? [] : images}
+          images={usingPlaceholders ? [] : (restImages as string[])}
           index={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
           onIndexChange={setLightboxIndex}

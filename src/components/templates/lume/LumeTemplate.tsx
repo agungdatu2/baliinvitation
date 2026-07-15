@@ -109,10 +109,9 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
 
             <div id="gallery">
               <Reveal>
-                <Gallery images={data.galleryImages} variant="grid" />
+                <Gallery images={data.galleryImages} />
               </Reveal>
             </div>
-            <Gallery images={data.galleryImages} variant="strip" />
 
             <Reveal id="gift">
               <WeddingGift accounts={data.bankAccounts} />
