@@ -29,7 +29,7 @@ export default function Gallery({ images }: { images: string[] }) {
     : images.filter((_, i) => i !== (videoIndex >= 0 ? videoIndex : 0));
 
   return (
-    <section className="groove-overlay py-10 px-6">
+    <section className="groove-overlay text-groove-bg py-10 px-6">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-groove-display uppercase text-3xl md:text-4xl leading-tight mb-6" style={{ fontWeight: 500 }}>
           Our Pre-Wedding Celebration.
