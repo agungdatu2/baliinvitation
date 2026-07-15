@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TemplateProps } from "@/types/invitation";
 import FixedVideoBackground from "./FixedVideoBackground";
 import SplashGate from "./SplashGate";
@@ -40,6 +40,23 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
       setMusicPlaying(false);
     }
   };
+
+  // Pause musik saat tab disembunyikan (pindah tab / minimize), lanjut lagi begitu
+  // tab dibuka lagi — hanya kalau musik memang lagi dinyalakan user (musicPlaying),
+  // bukan resume paksa kalau user sendiri yang pause.
+  useEffect(() => {
+    const handleVisibility = () => {
+      const audio = audioRef.current;
+      if (!audio) return;
+      if (document.hidden) {
+        if (!audio.paused) audio.pause();
+      } else if (musicPlaying && audio.paused) {
+        audio.play().catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [musicPlaying]);
 
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString("id-ID", {
     weekday: "long",

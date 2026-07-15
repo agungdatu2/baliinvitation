@@ -37,7 +37,7 @@ export default function Gallery({ images }: { images: string[] }) {
 
         {/* Featured item — video (kalau ada) atau foto pertama */}
         {featuredSrc && (
-          <div className="relative w-full aspect-video mb-3 border-4 border-groove-bg shadow-sm overflow-hidden bg-groove-stone">
+          <div className="relative w-full aspect-video mb-3 overflow-hidden bg-groove-stone">
             {featuredIsVideo ? (
               videoPlaying ? (
                 <video src={featuredSrc} controls autoPlay className="w-full h-full object-cover" />
@@ -69,7 +69,7 @@ export default function Gallery({ images }: { images: string[] }) {
               <button
                 key={i}
                 onClick={() => setLightboxIndex(i)}
-                className="block w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid"
+                className="block w-full mb-2 break-inside-avoid"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
@@ -78,7 +78,7 @@ export default function Gallery({ images }: { images: string[] }) {
               <PlaceholderPhoto
                 key={i}
                 label={`Photo ${i + 1}`}
-                className={`w-full mb-2 border-4 border-groove-bg shadow-sm break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
+                className={`w-full mb-2 break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
               />
             )
           )}
