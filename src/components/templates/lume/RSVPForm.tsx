@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface RSVPFormProps {
   invitationId: string;
@@ -8,16 +8,35 @@ interface RSVPFormProps {
   guestId?: string;
 }
 
+interface WishItem {
+  id: string;
+  guestName: string;
+  message?: string | null;
+  createdAt: string;
+}
+
 const ATTEND_OPTIONS = [
-  { value: "hadir", label: "Hadir" },
-  { value: "tidak_hadir", label: "Tidak Hadir" },
-  { value: "belum_tahu", label: "Belum Tahu" },
+  { value: "hadir", label: "Excited To Attend" },
+  { value: "tidak_hadir", label: "Unable Attend" },
 ];
 
 export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormProps) {
   const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [wishes, setWishes] = useState<WishItem[]>([]);
+
+  const loadWishes = () => {
+    fetch(`/api/rsvp?invitationId=${invitationId}`)
+      .then((r) => r.json())
+      .then((data: WishItem[]) => setWishes(Array.isArray(data) ? data.filter((w) => w.message?.trim()) : []))
+      .catch(() => {});
+  };
+
+  useEffect(() => {
+    loadWishes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invitationId]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,98 +48,116 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
     });
     setLoading(false);
     setSent(true);
+    loadWishes();
   };
 
-  if (sent) {
-    return (
-      <section className="groove-overlay text-groove-bg py-16 px-6 text-center">
-        <p className="text-sm text-groove-bg/80">Terima kasih! RSVP kamu sudah kami terima.</p>
-      </section>
-    );
-  }
-
   const fieldClass =
-    "w-full border-0 border-b border-groove-line bg-transparent py-2.5 text-sm text-groove-bg focus:outline-none focus:border-groove-primary transition-colors";
+    "w-full border border-groove-line-dark bg-transparent px-4 py-2.5 text-sm text-groove-bg placeholder:text-groove-bg/40 focus:outline-none focus:border-groove-primary-light transition-colors";
 
   return (
-    <section className="groove-overlay text-groove-bg py-16 px-6">
+    <section className="groove-overlay-dark text-groove-bg py-16 px-6">
       <div className="max-w-5xl mx-auto">
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <p className="text-xs uppercase tracking-widest text-groove-bg/70 mb-2">Konfirmasi Kehadiran</p>
-          <h2 className="font-groove-display italic text-2xl" style={{ fontWeight: 500 }}>
-            Kirimkan Doa Restu
-          </h2>
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-14">
+          <div>
+            <h2 className="font-groove-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 500 }}>
+              Kindly Confirm Your Presence and Share Your Blessings
+            </h2>
+            <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed max-w-sm">
+              We kindly request your prompt response to confirm your attendance at our upcoming event. Alongside your
+              RSVP, please take a moment to extend your warm regards and best wishes.
+            </p>
+          </div>
+
+          {sent ? (
+            <p className="font-groove-body text-sm text-groove-bg/80">Terima kasih! RSVP kamu sudah kami terima.</p>
+          ) : (
+            <form onSubmit={submit} className="space-y-5 text-left">
+              <div>
+                <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
+                  Name
+                </label>
+                <input
+                  required
+                  placeholder="Guest Name"
+                  className={fieldClass}
+                  value={form.guestName}
+                  onChange={(e) => setForm({ ...form, guestName: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-2">
+                  Attendance
+                </label>
+                <div className="flex gap-3">
+                  {ATTEND_OPTIONS.map((opt) => (
+                    <button
+                      type="button"
+                      key={opt.value}
+                      onClick={() => setForm({ ...form, attendance: opt.value })}
+                      className={`flex-1 py-2.5 border text-xs tracking-wide uppercase transition ${
+                        form.attendance === opt.value
+                          ? "border-groove-bg text-groove-bg"
+                          : "border-groove-line-dark text-groove-bg/60"
+                      }`}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
+                  No of Guest (max 5)
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={5}
+                  className={fieldClass}
+                  value={form.guestCount}
+                  onChange={(e) => setForm({ ...form, guestCount: Number(e.target.value) })}
+                />
+              </div>
+
+              <div>
+                <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
+                  Wishes
+                </label>
+                <textarea
+                  className={fieldClass}
+                  rows={4}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                />
+              </div>
+
+              <button
+                disabled={loading}
+                className="px-8 py-2.5 bg-groove-bg text-groove-stone text-xs tracking-widest uppercase disabled:opacity-50"
+              >
+                {loading ? "Sending..." : "Send"}
+              </button>
+            </form>
+          )}
         </div>
-        <form onSubmit={submit} className="space-y-5 text-left">
-          <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-              Nama Lengkap
-            </label>
-            <input
-              required
-              className={fieldClass}
-              value={form.guestName}
-              onChange={(e) => setForm({ ...form, guestName: e.target.value })}
-            />
-          </div>
 
-          <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-2">
-              Konfirmasi Kehadiran
-            </label>
-            <div className="flex gap-2">
-              {ATTEND_OPTIONS.map((opt) => (
-                <button
-                  type="button"
-                  key={opt.value}
-                  onClick={() => setForm({ ...form, attendance: opt.value })}
-                  className={`flex-1 py-2 rounded-full border text-xs tracking-wide transition ${
-                    form.attendance === opt.value
-                      ? "bg-groove-primary border-groove-primary text-groove-bg"
-                      : "border-groove-line text-groove-bg/75"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+        {wishes.length > 0 && (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {wishes.map((w) => (
+              <div key={w.id} className="border border-groove-line-dark p-5 bg-groove-stone/30">
+                <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>
+                  {w.guestName}
+                </p>
+                <p className="font-groove-body text-sm text-groove-bg/75 leading-relaxed mb-4">{w.message}</p>
+                <p className="font-groove-label text-[0.65rem] uppercase tracking-wide text-groove-bg/50">
+                  {new Date(w.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}
+                </p>
+              </div>
+            ))}
           </div>
-
-          <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-              Jumlah Tamu
-            </label>
-            <input
-              type="number"
-              min={1}
-              className={fieldClass}
-              value={form.guestCount}
-              onChange={(e) => setForm({ ...form, guestCount: Number(e.target.value) })}
-            />
-          </div>
-
-          <div>
-            <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-              Ucapan &amp; Doa
-            </label>
-            <textarea
-              className={fieldClass}
-              rows={3}
-              placeholder="Tuliskan doa terbaikmu untuk kami..."
-              value={form.message}
-              onChange={(e) => setForm({ ...form, message: e.target.value })}
-            />
-          </div>
-
-          <button
-            disabled={loading}
-            className="w-full py-3.5 rounded-full bg-groove-stone text-groove-bg text-sm tracking-widest uppercase disabled:opacity-50"
-          >
-            {loading ? "Mengirim..." : "Kirim RSVP"}
-          </button>
-        </form>
-      </div>
+        )}
       </div>
     </section>
   );
