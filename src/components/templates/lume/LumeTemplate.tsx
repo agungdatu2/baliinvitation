@@ -9,7 +9,6 @@ import HeroGreeting from "./HeroGreeting";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
-import CountdownCalendar from "./CountdownCalendar";
 import EventDetails from "./EventDetails";
 import LiveStreaming from "./LiveStreaming";
 import DressCode from "./DressCode";
@@ -94,15 +93,8 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
               <LoveStory data={data} />
             </Reveal>
 
-            <Reveal>
-              <CountdownCalendar
-                eventDate={data.eventDate}
-                title={`${data.groomNickname} & ${data.brideNickname}`}
-                location={data.events?.[0]?.location}
-              />
-            </Reveal>
             <Reveal id="events">
-              <EventDetails events={data.events} />
+              <EventDetails events={data.events} title={`${data.groomNickname} & ${data.brideNickname}`} />
             </Reveal>
             <Reveal>
               <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />

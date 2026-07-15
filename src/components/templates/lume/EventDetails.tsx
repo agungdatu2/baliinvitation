@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, CalendarPlus } from "lucide-react";
 import { EventItem } from "@/types/invitation";
+import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 
 function getTimeParts(target: Date) {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -13,18 +14,22 @@ function getTimeParts(target: Date) {
   return { d, h, m, s };
 }
 
-export default function EventDetails({ events }: { events: EventItem[] }) {
+export default function EventDetails({ events, title }: { events: EventItem[]; title: string }) {
   if (!events?.length) return null;
   return (
     <section className="groove-overlay-dark text-groove-bg">
-      {events.map((ev, i) => (
-        <EventRow key={i} event={ev} last={i === events.length - 1} />
-      ))}
+      {/* max-w-4xl sama dengan container CoupleProfile — supaya lebar section ini
+          konsisten dengan section lain, bukan full-bleed edge-to-edge. */}
+      <div className="max-w-4xl mx-auto px-6">
+        {events.map((ev, i) => (
+          <EventRow key={i} event={ev} title={title} last={i === events.length - 1} />
+        ))}
+      </div>
     </section>
   );
 }
 
-function EventRow({ event, last }: { event: EventItem; last: boolean }) {
+function EventRow({ event, title, last }: { event: EventItem; title: string; last: boolean }) {
   const eventDateTime = new Date(`${event.date}T${event.timeStart || "00:00"}`);
   const [parts, setParts] = useState(() => getTimeParts(eventDateTime));
 
@@ -34,9 +39,16 @@ function EventRow({ event, last }: { event: EventItem; last: boolean }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [event.date, event.timeStart]);
 
+  const calendarUrl = buildGoogleCalendarUrl({
+    title: `${event.name} - ${title}`,
+    location: event.location,
+    start: eventDateTime,
+    end: new Date(eventDateTime.getTime() + 3 * 60 * 60 * 1000),
+  });
+
   return (
     <div className={`grid md:grid-cols-2 ${last ? "" : "border-b border-groove-line-dark"}`}>
-      <div className="p-8 md:p-14 flex flex-col justify-center">
+      <div className="py-10 md:py-14 md:pr-10 flex flex-col justify-center">
         <p className="font-groove-body text-lg text-groove-bg/90">
           {new Date(event.date).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
@@ -63,20 +75,30 @@ function EventRow({ event, last }: { event: EventItem; last: boolean }) {
           ))}
         </div>
 
-        {event.mapsUrl && (
+        <div className="flex flex-wrap gap-3">
+          {event.mapsUrl && (
+            <a
+              href={event.mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="font-groove-label inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
+            >
+              <MapPin className="h-3.5 w-3.5" /> Google Maps
+            </a>
+          )}
           <a
-            href={event.mapsUrl}
+            href={calendarUrl}
             target="_blank"
             rel="noreferrer"
-            className="font-groove-label inline-flex items-center gap-1.5 self-start bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
+            className="font-groove-label inline-flex items-center gap-1.5 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-bg hover:text-groove-stone transition"
           >
-            <MapPin className="h-3.5 w-3.5" /> Google Maps
+            <CalendarPlus className="h-3.5 w-3.5" /> Save The Date
           </a>
-        )}
+        </div>
       </div>
 
-      <div className="p-8 md:p-14 flex items-center">
-        <h3 className="font-groove-display uppercase leading-[0.95] text-4xl md:text-6xl" style={{ fontWeight: 500 }}>
+      <div className="py-10 md:py-14 md:pl-10 flex items-center">
+        <h3 className="font-groove-display uppercase leading-[0.95] text-4xl md:text-5xl" style={{ fontWeight: 500 }}>
           {event.name}
         </h3>
       </div>
