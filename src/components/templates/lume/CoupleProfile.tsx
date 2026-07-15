@@ -100,7 +100,9 @@ function ProfileCard({
           {fullName}
         </h3>
         <p className="font-groove-label text-xs uppercase tracking-widest text-groove-bg/60 mb-1.5">{childLabel}</p>
-        <p className="font-groove-body text-sm text-groove-bg/80 max-w-xs mx-auto md:mx-0">{parents}</p>
+        <p className={`font-groove-body text-sm text-groove-bg/80 max-w-xs mx-auto ${reverse ? "md:ml-auto md:mr-0" : "md:mx-0"}`}>
+          {parents}
+        </p>
         {instagram && (
           <a
             href={`https://instagram.com/${instagram.replace("@", "")}`}
