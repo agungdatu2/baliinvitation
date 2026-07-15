@@ -55,6 +55,7 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      style={{ backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)" }}
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
