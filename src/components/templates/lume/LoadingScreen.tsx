@@ -83,14 +83,14 @@ export default function LoadingScreen({ onComplete, label, words, images }: Load
 
       <div
         className="absolute inset-0 flex items-center justify-center"
-        style={{ ["--ring-radius" as string]: "clamp(96px, 20vw, 190px)" }}
+        style={{ ["--ring-radius" as string]: "clamp(108px, 22vw, 210px)" }}
       >
         {ringPhotos.map((src, i) => {
           const angle = (360 / RING_COUNT) * i;
           return (
             <div
               key={i}
-              className="absolute left-1/2 top-1/2 w-11 h-11 md:w-16 md:h-16"
+              className="absolute left-1/2 top-1/2 w-14 h-14 md:w-20 md:h-20"
               style={{
                 transform: `translate(-50%, -50%) rotate(${angle}deg) translateY(calc(-1 * var(--ring-radius))) rotate(${-angle}deg)`,
               }}
@@ -100,7 +100,7 @@ export default function LoadingScreen({ onComplete, label, words, images }: Load
                 style={{ borderColor: "rgba(245,245,245,0.25)" }}
                 initial={{ opacity: 0, scale: 0.3, filter: "blur(8px)" }}
                 animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.85], filter: ["blur(8px)", "blur(0px)", "blur(0px)", "blur(6px)"] }}
-                transition={{ duration: 1.9, delay: 0.35 + i * 0.12, times: [0, 0.3, 0.7, 1], ease: [0.4, 0, 0.2, 1] }}
+                transition={{ duration: 3.2, delay: 0.35 + i * 0.18, times: [0, 0.3, 0.7, 1], ease: [0.4, 0, 0.2, 1] }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt="" className="w-full h-full object-cover" />
@@ -133,19 +133,6 @@ export default function LoadingScreen({ onComplete, label, words, images }: Load
       >
         {Math.round(progress).toString().padStart(3, "0")}
       </motion.div>
-
-      <div className="absolute bottom-0 left-0 right-0 h-[3px]" style={{ backgroundColor: "rgba(31,31,31,0.5)" }}>
-        <motion.div
-          className="h-full origin-left"
-          style={{
-            background: "linear-gradient(90deg, #89AACC 0%, #4E85BF 100%)",
-            boxShadow: "0 0 8px rgba(137, 170, 204, 0.35)",
-          }}
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: progress / 100 }}
-          transition={{ duration: 0.1, ease: "linear" }}
-        />
-      </div>
     </motion.div>
   );
 }
