@@ -18,9 +18,9 @@ export default function EventDetails({ events, title }: { events: EventItem[]; t
   if (!events?.length) return null;
   return (
     <section className="groove-overlay-dark text-groove-bg">
-      {/* max-w-4xl sama dengan container CoupleProfile — supaya lebar section ini
-          konsisten dengan section lain, bukan full-bleed edge-to-edge. */}
-      <div className="max-w-4xl mx-auto px-6">
+      {/* max-w-5xl sama seperti semua section lain (mengikuti LoveStory) — supaya
+          lebar section ini konsisten, bukan full-bleed edge-to-edge. */}
+      <div className="max-w-5xl mx-auto px-6">
         {events.map((ev, i) => (
           <EventRow key={i} event={ev} title={title} last={i === events.length - 1} />
         ))}

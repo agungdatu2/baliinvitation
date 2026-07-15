@@ -17,7 +17,7 @@ function InstagramIcon({ className }: { className?: string }) {
 export default function CoupleProfile({ data }: { data: InvitationData }) {
   return (
     <section className="groove-overlay text-groove-bg py-24 px-6">
-      <div className="max-w-4xl mx-auto space-y-20 md:space-y-28">
+      <div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
         <ProfileCard
           label="The Groom"
           childLabel="Putra dari"

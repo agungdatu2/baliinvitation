@@ -42,7 +42,7 @@ export default function Gallery({ images, variant = "grid" }: { images: string[]
   // Masonry (CSS columns, break-inside-avoid) — tinggi tiap foto natural, bukan seragam.
   return (
     <section className="groove-overlay py-10 px-6">
-      <div className="max-w-3xl mx-auto columns-2 md:columns-3 gap-2">
+      <div className="max-w-5xl mx-auto columns-2 md:columns-3 gap-2">
         {items.map((src, i) =>
           src ? (
             <button

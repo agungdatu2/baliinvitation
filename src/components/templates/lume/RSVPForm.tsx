@@ -44,6 +44,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
   return (
     <section className="groove-overlay text-groove-bg py-16 px-6">
+      <div className="max-w-5xl mx-auto">
       <div className="max-w-md mx-auto">
         <div className="text-center mb-8">
           <p className="text-xs uppercase tracking-widest text-groove-bg/70 mb-2">Konfirmasi Kehadiran</p>
@@ -119,6 +120,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
             {loading ? "Mengirim..." : "Kirim RSVP"}
           </button>
         </form>
+      </div>
       </div>
     </section>
   );
