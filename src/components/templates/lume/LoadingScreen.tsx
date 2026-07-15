@@ -96,8 +96,7 @@ export default function LoadingScreen({ onComplete, label, words, images }: Load
               }}
             >
               <motion.div
-                className="w-full h-full rounded-full overflow-hidden border"
-                style={{ borderColor: "rgba(245,245,245,0.25)" }}
+                className="w-full h-full rounded-full overflow-hidden"
                 initial={{ opacity: 0, scale: 0.3, filter: "blur(8px)" }}
                 animate={{ opacity: [0, 1, 1, 0], scale: [0.3, 1, 1, 0.85], filter: ["blur(8px)", "blur(0px)", "blur(0px)", "blur(6px)"] }}
                 transition={{ duration: 3.2, delay: 0.35 + i * 0.18, times: [0, 0.3, 0.7, 1], ease: [0.4, 0, 0.2, 1] }}

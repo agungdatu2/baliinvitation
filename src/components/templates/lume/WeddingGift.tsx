@@ -12,7 +12,7 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
     <section className="groove-overlay text-groove-bg">
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center px-6 py-16">
         {image && (
-          <div className="w-full aspect-[4/5] border-4 border-groove-bg shadow-md overflow-hidden">
+          <div className="w-full aspect-[4/5] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={image} alt="Wedding gift" className="w-full h-full object-cover" />
           </div>

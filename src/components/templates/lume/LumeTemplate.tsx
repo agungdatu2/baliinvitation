@@ -41,21 +41,31 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
     }
   };
 
-  // Pause musik saat tab disembunyikan (pindah tab / minimize), lanjut lagi begitu
-  // tab dibuka lagi — hanya kalau musik memang lagi dinyalakan user (musicPlaying),
-  // bukan resume paksa kalau user sendiri yang pause.
+  // Pause musik saat tab/window disembunyikan (pindah tab, minimize, atau pindah
+  // ke app lain), lanjut lagi begitu balik — hanya kalau musik memang lagi
+  // dinyalakan user (musicPlaying), bukan resume paksa kalau user sendiri yang
+  // pause. visibilitychange sudah cover tab-switch & minimize; window blur/focus
+  // dipasang juga sebagai fallback untuk kasus pindah app yang kadang tidak selalu
+  // memicu visibilitychange di semua browser/OS.
   useEffect(() => {
-    const handleVisibility = () => {
+    const pauseIfPlaying = () => {
       const audio = audioRef.current;
-      if (!audio) return;
-      if (document.hidden) {
-        if (!audio.paused) audio.pause();
-      } else if (musicPlaying && audio.paused) {
-        audio.play().catch(() => {});
-      }
+      if (audio && !audio.paused) audio.pause();
     };
+    const resumeIfWasPlaying = () => {
+      const audio = audioRef.current;
+      if (audio && musicPlaying && audio.paused) audio.play().catch(() => {});
+    };
+    const handleVisibility = () => (document.hidden ? pauseIfPlaying() : resumeIfWasPlaying());
+
     document.addEventListener("visibilitychange", handleVisibility);
-    return () => document.removeEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("blur", pauseIfPlaying);
+    window.addEventListener("focus", resumeIfWasPlaying);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("blur", pauseIfPlaying);
+      window.removeEventListener("focus", resumeIfWasPlaying);
+    };
   }, [musicPlaying]);
 
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString("id-ID", {
