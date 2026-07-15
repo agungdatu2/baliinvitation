@@ -50,10 +50,7 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-groove-stone/60 animate-fadeIn"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-6 animate-fadeIn" onClick={onClose}>
       <div className="relative w-full max-w-sm space-y-4" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={onClose}
