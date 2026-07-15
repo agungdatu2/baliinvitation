@@ -1,8 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AtSign } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
+
+// lucide-react tidak menyediakan logo brand (Instagram dst.), jadi glyph-nya inline SVG sendiri.
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function CoupleProfile({ data }: { data: InvitationData }) {
   return (
@@ -11,6 +21,7 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
         <ProfileCard
           label="The Groom"
           childLabel="Putra dari"
+          nickname={data.groomNickname}
           fullName={data.groomFullName}
           parents={data.groomParents}
           instagram={data.groomInstagram}
@@ -20,6 +31,7 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
         <ProfileCard
           label="The Bride"
           childLabel="Putri dari"
+          nickname={data.brideNickname}
           fullName={data.brideFullName}
           parents={data.brideParents}
           instagram={data.brideInstagram}
@@ -35,6 +47,7 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
 function ProfileCard({
   label,
   childLabel,
+  nickname,
   fullName,
   parents,
   instagram,
@@ -44,6 +57,7 @@ function ProfileCard({
 }: {
   label: string;
   childLabel: string;
+  nickname: string;
   fullName: string;
   parents: string;
   instagram?: string;
@@ -95,7 +109,7 @@ function ProfileCard({
               reverse ? "md:flex-row-reverse" : ""
             }`}
           >
-            <AtSign className="h-3.5 w-3.5" /> {instagram.replace("@", "")}
+            <InstagramIcon className="h-3.5 w-3.5" /> {nickname}
           </a>
         )}
       </div>
