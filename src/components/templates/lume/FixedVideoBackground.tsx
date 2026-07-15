@@ -9,11 +9,15 @@ export default function FixedVideoBackground({ src }: { src?: string }) {
 
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
+      {/* Blur dipasang di sini, sekali untuk seluruh video (bukan per-section via
+          backdrop-filter) — supaya blur konsisten dan tidak ada garis "putus" tiap
+          section berganti. scale-110 dipakai supaya tepi yang buram dari blur
+          (biasanya transparan/kepotong) tidak pernah kelihatan di dalam viewport. */}
       {youtubeId ? (
         // Iframe di-scale lebih besar dari viewport (via aspect-ratio + min-w/min-h)
         // supaya selalu cover penuh tanpa letterbox, meniru object-cover video biasa.
         <iframe
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] h-[56.25vw] min-w-full min-h-full pointer-events-none"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[177.77vh] h-[56.25vw] min-w-full min-h-full scale-110 blur-md pointer-events-none"
           src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&modestbranding=1&playsinline=1&disablekb=1&rel=0&playlist=${youtubeId}`}
           title="Background video"
           allow="autoplay; encrypted-media"
@@ -21,7 +25,7 @@ export default function FixedVideoBackground({ src }: { src?: string }) {
         />
       ) : (
         <video
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-md"
           src={src || DEFAULT_HERO_VIDEO_URL}
           autoPlay
           muted

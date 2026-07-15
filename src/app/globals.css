@@ -98,17 +98,13 @@ html {
   );
 }
 
-/* Overlay flat (BUKAN gradient) yang dipasang di seluruh lebar section, dipakai
-   supaya video tetap terlihat konsisten di setiap section tanpa perlu "kartu"
-   kaca yang melayang di tengah — beda dari .groove-glass yang untuk elemen kecil
-   (tombol, panel nav) dan boleh punya border gradient dekoratif. */
-.groove-overlay {
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-}
+/* Dulu tiap section blur video-nya sendiri lewat backdrop-filter di sini, tapi itu
+   bikin blur "putus" di setiap batas section (video di belakangnya berubah frame,
+   dan blur cuma nyala di dalam kotak section). Blur sekarang dipindah jadi satu
+   lapisan menyatu di FixedVideoBackground, jadi kelas ini sengaja dikosongkan —
+   dipertahankan namanya karena masih dipakai banyak komponen section. */
+.groove-overlay,
 .groove-overlay-dark {
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
 }
 
 /* Versi "kuat" — dipakai tombol CTA utama: blur lebih berat + bayangan lebih tegas. */
