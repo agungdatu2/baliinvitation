@@ -1,12 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { Copy, Landmark } from "lucide-react";
+import { Copy, Check, X } from "lucide-react";
 import { BankAccountItem } from "@/types/invitation";
 
-export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] }) {
-  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+export default function WeddingGift({ accounts, image }: { accounts: BankAccountItem[]; image?: string }) {
+  const [open, setOpen] = useState(false);
   if (!accounts?.length) return null;
+
+  return (
+    <section className="groove-overlay text-groove-bg">
+      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center px-6 py-16">
+        {image && (
+          <div className="w-full aspect-[4/5] border-4 border-groove-bg shadow-md overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt="Wedding gift" className="w-full h-full object-cover" />
+          </div>
+        )}
+
+        <div className={image ? "" : "md:col-span-2 max-w-md"}>
+          <h2 className="font-groove-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 400 }}>
+            Wedding gift
+          </h2>
+          <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm">
+            For those of you who want to give a token of love to the bride and groom, you can use the account number
+            below:
+          </p>
+          <button
+            onClick={() => setOpen(true)}
+            className="font-groove-label inline-block px-8 py-2.5 rounded-full border border-groove-line-dark text-xs tracking-widest uppercase hover:bg-groove-bg hover:text-groove-stone transition"
+          >
+            Click Here
+          </button>
+        </div>
+      </div>
+
+      {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
+    </section>
+  );
+}
+
+function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[]; onClose: () => void }) {
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copy = (text: string, i: number) => {
     navigator.clipboard.writeText(text);
@@ -15,42 +50,54 @@ export default function WeddingGift({ accounts }: { accounts: BankAccountItem[] 
   };
 
   return (
-    <section className="groove-overlay text-groove-bg py-16 px-6 text-center">
-      <div className="max-w-5xl mx-auto">
-      <div className="max-w-md mx-auto">
-        <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-2">Tanda Kasih</p>
-        <h2 className="font-groove-display italic text-2xl mb-6" style={{ fontWeight: 400 }}>
-          Wedding Gift
-        </h2>
-        <p className="font-groove-body text-sm text-groove-bg/80 mb-8">
-          Ucapan dan doa sudah sangat berarti, namun jika ingin memberi hadiah, dapat melalui rekening berikut.
-        </p>
-        <div className="space-y-3">
-          {accounts.map((acc, i) => (
-            <div key={i} className="border border-groove-line rounded-lg p-4 flex items-center justify-between text-left">
-              <div className="flex items-start gap-3">
-                <Landmark className="h-6 w-6 text-groove-bg/70 shrink-0 mt-0.5" strokeWidth={1.5} />
-                <div>
-                  <p className="font-groove-label text-xs uppercase tracking-widest text-groove-bg/80">{acc.bank}</p>
-                  <p className="font-groove-display text-lg mt-0.5 text-groove-bg" style={{ fontWeight: 600 }}>
-                    {acc.accountNumber}
-                  </p>
-                  <p className="font-groove-body text-xs text-groove-bg/70">a.n. {acc.accountName}</p>
-                </div>
-              </div>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6 bg-groove-stone/60 animate-fadeIn"
+      onClick={onClose}
+    >
+      <div className="relative w-full max-w-sm space-y-4" onClick={(e) => e.stopPropagation()}>
+        <button
+          onClick={onClose}
+          className="absolute -top-10 right-0 text-groove-bg/80 hover:text-groove-bg"
+          aria-label="Tutup"
+        >
+          <X className="h-6 w-6" />
+        </button>
+
+        {accounts.map((acc, i) => (
+          <div
+            key={i}
+            className="rounded-2xl p-6 text-groove-bg shadow-xl"
+            style={{
+              background: "rgba(255,255,255,0.1)",
+              backdropFilter: "blur(20px)",
+              WebkitBackdropFilter: "blur(20px)",
+              border: "1px solid rgba(255,255,255,0.25)",
+            }}
+          >
+            <p className="font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/70 mb-6">{acc.bank}</p>
+            <p className="font-groove-display text-2xl tracking-widest mb-6" style={{ fontWeight: 600 }}>
+              {acc.accountNumber}
+            </p>
+            <div className="flex items-center justify-between">
+              <p className="font-groove-body text-sm text-groove-bg/85">{acc.accountName}</p>
               <button
                 onClick={() => copy(acc.accountNumber, i)}
-                className={`font-groove-label shrink-0 flex items-center gap-1 text-xs uppercase tracking-wide ${
-                  copiedIndex === i ? "text-groove-bg" : "text-groove-bg/75"
-                }`}
+                className="font-groove-label inline-flex items-center gap-1.5 text-xs uppercase tracking-wide bg-groove-bg/15 border border-groove-line-dark rounded-full px-4 py-2 hover:bg-groove-bg/25 transition"
               >
-                <Copy className="h-3.5 w-3.5" /> {copiedIndex === i ? "Tersalin!" : "Salin"}
+                {copiedIndex === i ? (
+                  <>
+                    <Check className="h-3.5 w-3.5" /> Tersalin
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-3.5 w-3.5" /> Salin
+                  </>
+                )}
               </button>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-      </div>
-    </section>
+    </div>
   );
 }

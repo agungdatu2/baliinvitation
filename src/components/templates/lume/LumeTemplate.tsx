@@ -114,7 +114,10 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             </div>
 
             <Reveal id="gift">
-              <WeddingGift accounts={data.bankAccounts} />
+              <WeddingGift
+                accounts={data.bankAccounts}
+                image={data.galleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+              />
             </Reveal>
 
             <ClosingFooter data={data} />
