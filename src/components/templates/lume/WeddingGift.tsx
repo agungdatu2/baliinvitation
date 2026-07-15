@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Copy, Check, X } from "lucide-react";
 import { BankAccountItem } from "@/types/invitation";
 
@@ -35,7 +36,9 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
         </div>
       </div>
 
-      {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
+      <AnimatePresence>
+        {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
+      </AnimatePresence>
     </section>
   );
 }
@@ -50,8 +53,22 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-6 animate-fadeIn" onClick={onClose}>
-      <div className="relative w-full max-w-sm space-y-4" onClick={(e) => e.stopPropagation()}>
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center px-6"
+      onClick={onClose}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+    >
+      <motion.div
+        className="relative w-full max-w-sm space-y-4"
+        onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0.94, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.94, y: 12 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+      >
         <button
           onClick={onClose}
           className="absolute -top-10 right-0 text-groove-bg/80 hover:text-groove-bg"
@@ -94,7 +111,7 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
             </div>
           </div>
         ))}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
