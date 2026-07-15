@@ -100,11 +100,18 @@ html {
 
 /* Dulu tiap section blur video-nya sendiri lewat backdrop-filter di sini, tapi itu
    bikin blur "putus" di setiap batas section (video di belakangnya berubah frame,
-   dan blur cuma nyala di dalam kotak section). Blur sekarang dipindah jadi satu
-   lapisan menyatu di FixedVideoBackground, jadi kelas ini sengaja dikosongkan —
-   dipertahankan namanya karena masih dipakai banyak komponen section. */
+   dan blur cuma nyala di dalam kotak section). Kelas ini sengaja dikosongkan —
+   dipertahankan namanya karena masih dipakai banyak komponen section — dan blur
+   dipindah ke SATU wrapper (.groove-page-blur) yang membungkus semua section
+   setelah hero, supaya gate & hero tetap tajam dan tidak ada garis putus di
+   antar-section sesudahnya. */
 .groove-overlay,
 .groove-overlay-dark {
+}
+
+.groove-page-blur {
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* Versi "kuat" — dipakai tombol CTA utama: blur lebih berat + bayangan lebih tegas. */

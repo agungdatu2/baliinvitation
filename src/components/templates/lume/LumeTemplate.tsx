@@ -82,47 +82,52 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             <HeroGreeting data={data} />
           </div>
 
-          <Reveal id="couple">
-            <CoupleProfile data={data} />
-          </Reveal>
-
-          <Reveal id="love-story">
-            <LoveStory data={data} />
-          </Reveal>
-
-          <Reveal>
-            <CountdownCalendar
-              eventDate={data.eventDate}
-              title={`${data.groomNickname} & ${data.brideNickname}`}
-              location={data.events?.[0]?.location}
-            />
-          </Reveal>
-          <Reveal id="events">
-            <EventDetails events={data.events} />
-          </Reveal>
-          <Reveal>
-            <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />
-          </Reveal>
-          <Reveal>
-            <DressCode items={data.dressCode} />
-          </Reveal>
-
-          <Reveal id="rsvp">
-            <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
-          </Reveal>
-
-          <div id="gallery">
-            <Reveal>
-              <Gallery images={data.galleryImages} variant="grid" />
+          {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
+              gate & hero lihat video tajam tapi tidak ada garis putus di antar
+              section (lihat .groove-page-blur di globals.css). */}
+          <div className="groove-page-blur">
+            <Reveal id="couple">
+              <CoupleProfile data={data} />
             </Reveal>
+
+            <Reveal id="love-story">
+              <LoveStory data={data} />
+            </Reveal>
+
+            <Reveal>
+              <CountdownCalendar
+                eventDate={data.eventDate}
+                title={`${data.groomNickname} & ${data.brideNickname}`}
+                location={data.events?.[0]?.location}
+              />
+            </Reveal>
+            <Reveal id="events">
+              <EventDetails events={data.events} />
+            </Reveal>
+            <Reveal>
+              <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />
+            </Reveal>
+            <Reveal>
+              <DressCode items={data.dressCode} />
+            </Reveal>
+
+            <Reveal id="rsvp">
+              <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
+            </Reveal>
+
+            <div id="gallery">
+              <Reveal>
+                <Gallery images={data.galleryImages} variant="grid" />
+              </Reveal>
+            </div>
+            <Gallery images={data.galleryImages} variant="strip" />
+
+            <Reveal id="gift">
+              <WeddingGift accounts={data.bankAccounts} />
+            </Reveal>
+
+            <ClosingFooter data={data} />
           </div>
-          <Gallery images={data.galleryImages} variant="strip" />
-
-          <Reveal id="gift">
-            <WeddingGift accounts={data.bankAccounts} />
-          </Reveal>
-
-          <ClosingFooter data={data} />
         </div>
       )}
     </main>
