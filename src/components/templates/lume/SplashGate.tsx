@@ -44,16 +44,11 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
 
       {!showLoading && (
         <div
-          className={`fixed inset-0 z-50 flex flex-col items-center justify-center text-center px-6 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
+          className={`fixed inset-0 z-50 flex flex-col items-center justify-between text-center px-6 py-16 md:py-20 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
             closing ? "opacity-0 scale-105" : "opacity-100 scale-100"
           }`}
         >
           <div className="absolute inset-0 bg-groove-stone/35" />
-
-          <span aria-hidden="true" className="absolute top-6 left-6 w-8 h-8 border-t border-l border-groove-primary-light/60 z-10" />
-          <span aria-hidden="true" className="absolute top-6 right-6 w-8 h-8 border-t border-r border-groove-primary-light/60 z-10" />
-          <span aria-hidden="true" className="absolute bottom-6 left-6 w-8 h-8 border-b border-l border-groove-primary-light/60 z-10" />
-          <span aria-hidden="true" className="absolute bottom-6 right-6 w-8 h-8 border-b border-r border-groove-primary-light/60 z-10" />
 
           <div className="relative z-10 px-8 md:px-14 max-w-sm w-full">
             <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-bg/60 mb-4">
@@ -63,23 +58,23 @@ export default function SplashGate({ groomNickname, brideNickname, eventDateLabe
               {groomNickname} <span className="not-italic text-groove-bg/60">&amp;</span> {brideNickname}
             </h1>
             <p className="font-groove-body text-sm text-groove-bg/80">{eventDateLabel}</p>
+          </div>
 
-            <div className="mt-8 space-y-3">
-              <p className="font-groove-body text-sm text-groove-bg/70">Dear,</p>
-              <p className="font-groove-display text-xl" style={{ fontWeight: 700 }}>
-                {guestName || "Tamu Undangan"}
-              </p>
-              <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">
-                We apologize if there is any misspelling of name or title
-              </p>
-              <button
-                onClick={handleOpen}
-                className="mt-4 w-full py-3.5 rounded-full bg-groove-primary text-groove-bg font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
-              >
-                <Mail size={14} strokeWidth={2} />
-                Let&apos;s Open
-              </button>
-            </div>
+          <div className="relative z-10 px-8 md:px-14 max-w-sm w-full space-y-3">
+            <p className="font-groove-body text-sm text-groove-bg/70">Dear,</p>
+            <p className="font-groove-display text-xl" style={{ fontWeight: 700 }}>
+              {guestName || "Tamu Undangan"}
+            </p>
+            <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">
+              We apologize if there is any misspelling of name or title
+            </p>
+            <button
+              onClick={handleOpen}
+              className="mt-4 w-full py-3.5 rounded-full bg-groove-primary text-groove-bg font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
+            >
+              <Mail size={14} strokeWidth={2} />
+              Let&apos;s Open
+            </button>
           </div>
         </div>
       )}
