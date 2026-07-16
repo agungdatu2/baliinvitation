@@ -14,6 +14,9 @@ export default function ThemePreviewPage({ params }: { params: { key: string } }
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
   const eventDateIso = eventDate.toISOString();
+  // EventItem.date dikonsumsi sebagai tanggal-saja (digabung "T" + timeStart di
+  // EventDetails), bukan datetime ISO lengkap — beda dari InvitationData.eventDate.
+  const eventDateOnly = eventDateIso.slice(0, 10);
 
   const data: InvitationData = {
     slug: "preview",
@@ -40,7 +43,7 @@ export default function ThemePreviewPage({ params }: { params: { key: string } }
     events: [
       {
         name: "Resepsi",
-        date: eventDateIso,
+        date: eventDateOnly,
         timeStart: "11:00",
         timeEnd: "13:00",
         location: "Bali, Indonesia",
