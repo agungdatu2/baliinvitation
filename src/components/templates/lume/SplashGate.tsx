@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { Mail } from "lucide-react";
+import { getDict, Lang } from "@/lib/i18n/lume";
 import LoadingScreen from "./LoadingScreen";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   guestName?: string;
   images?: string[];
   showIntro?: boolean; // dari Package.hasIntro — false = lompat langsung ke gate nama tamu
+  lang?: Lang;
   onOpen: () => void;
 }
 
@@ -29,8 +31,10 @@ export default function SplashGate({
   guestName,
   images,
   showIntro = true,
+  lang,
   onOpen,
 }: Props) {
+  const t = getDict(lang);
   const [showLoading, setShowLoading] = useState(showIntro);
   const [closing, setClosing] = useState(false);
 
@@ -44,7 +48,7 @@ export default function SplashGate({
       <AnimatePresence mode="wait">
         {showLoading && (
           <LoadingScreen
-            label="Undangan Pernikahan"
+            label={t.weddingInvitationLabel}
             words={[groomNickname, "&", brideNickname]}
             images={images}
             onComplete={() => setShowLoading(false)}
@@ -62,7 +66,7 @@ export default function SplashGate({
 
           <div className="relative z-10 px-8 md:px-14 max-w-sm w-full">
             <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-bg/60 mb-4">
-              The Wedding of
+              {t.theWeddingOf}
             </p>
             <h1 className="font-groove-display italic text-5xl mb-2" style={{ fontWeight: 400 }}>
               {groomNickname} <span className="not-italic text-groove-bg/60">&amp;</span> {brideNickname}
@@ -71,19 +75,17 @@ export default function SplashGate({
           </div>
 
           <div className="relative z-10 px-8 md:px-14 max-w-sm w-full space-y-3">
-            <p className="font-groove-body text-sm text-groove-bg/70">Dear,</p>
+            <p className="font-groove-body text-sm text-groove-bg/70">{t.dear}</p>
             <p className="font-groove-display text-xl" style={{ fontWeight: 700 }}>
-              {guestName || "Tamu Undangan"}
+              {guestName || t.defaultGuestName}
             </p>
-            <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">
-              We apologize if there is any misspelling of name or title
-            </p>
+            <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">{t.misspellingApology}</p>
             <button
               onClick={handleOpen}
               className="mt-4 w-full py-3.5 rounded-full bg-groove-primary text-groove-bg font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
             >
               <Mail size={14} strokeWidth={2} />
-              Let&apos;s Open
+              {t.letsOpen}
             </button>
           </div>
         </div>

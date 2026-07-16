@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { InvitationData } from "@/types/invitation";
+import { getDict } from "@/lib/i18n/lume";
 
 // lucide-react tidak menyediakan logo brand (Instagram dst.), jadi glyph-nya inline SVG sendiri.
 function InstagramIcon({ className }: { className?: string }) {
@@ -15,12 +16,13 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export default function CoupleProfile({ data }: { data: InvitationData }) {
+  const t = getDict(data.language);
   return (
     <section className="groove-overlay text-groove-bg py-24 px-6">
       <div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
         <ProfileCard
-          label="The Groom"
-          childLabel="Putra dari"
+          label={t.theGroom}
+          childLabel={t.sonOf}
           nickname={data.groomNickname}
           fullName={data.groomFullName}
           parents={data.groomParents}
@@ -29,8 +31,8 @@ export default function CoupleProfile({ data }: { data: InvitationData }) {
           imageSeed="lume-groom"
         />
         <ProfileCard
-          label="The Bride"
-          childLabel="Putri dari"
+          label={t.theBride}
+          childLabel={t.daughterOf}
           nickname={data.brideNickname}
           fullName={data.brideFullName}
           parents={data.brideParents}

@@ -96,6 +96,7 @@ export default async function InvitationPage({
     id: inv.id,
     slug: inv.slug,
     status: inv.status as "draft" | "published",
+    language: inv.language as "id" | "en",
     templateKey: inv.template.key,
     clientName: inv.clientName,
     clientPhone: inv.clientPhone ?? undefined,

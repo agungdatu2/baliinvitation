@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
     data: {
       slug: d.slug,
       status: d.status,
+      language: d.language,
       templateId: template.id,
       packageId,
       totalPrice,

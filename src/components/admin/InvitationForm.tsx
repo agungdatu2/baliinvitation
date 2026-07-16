@@ -22,6 +22,7 @@ interface PackageOption {
 const defaultValues: InvitationFormValues = {
   slug: "",
   status: "draft",
+  language: "id",
   templateKey: "lume",
   packageId: "",
   clientName: "",
@@ -148,6 +149,12 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             <select {...register("status")} className="input">
               <option value="draft">Draft</option>
               <option value="published">Published</option>
+            </select>
+          </Field>
+          <Field label="Bahasa Undangan">
+            <select {...register("language")} className="input">
+              <option value="id">Bahasa Indonesia</option>
+              <option value="en">English</option>
             </select>
           </Field>
           <Field label="Paket (opsional)">

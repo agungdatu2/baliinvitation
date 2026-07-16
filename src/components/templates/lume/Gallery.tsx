@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { getDict, Lang } from "@/lib/i18n/lume";
 import PlaceholderPhoto from "./PlaceholderPhoto";
 
 const PLACEHOLDER_COUNT = 6;
@@ -13,7 +14,8 @@ function isVideoUrl(url: string) {
   return VIDEO_EXT_RE.test(url);
 }
 
-export default function Gallery({ images }: { images: string[] }) {
+export default function Gallery({ images, lang }: { images: string[]; lang?: Lang }) {
+  const t = getDict(lang);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
 
@@ -32,7 +34,7 @@ export default function Gallery({ images }: { images: string[] }) {
     <section className="groove-overlay text-groove-bg py-10 px-6">
       <div className="max-w-5xl mx-auto">
         <h2 className="font-groove-display uppercase text-3xl md:text-4xl leading-tight mb-6" style={{ fontWeight: 500 }}>
-          Our Pre-Wedding Celebration.
+          {t.galleryHeading}
         </h2>
 
         {/* Featured item — video (kalau ada) atau foto pertama */}
@@ -45,7 +47,7 @@ export default function Gallery({ images }: { images: string[] }) {
                 <button
                   onClick={() => setVideoPlaying(true)}
                   className="absolute inset-0 w-full h-full flex items-center justify-center bg-groove-stone/30"
-                  aria-label="Putar video"
+                  aria-label={t.playVideo}
                 >
                   <span className="w-16 h-16 rounded-full border-2 border-groove-bg/90 flex items-center justify-center">
                     <span
@@ -77,7 +79,7 @@ export default function Gallery({ images }: { images: string[] }) {
             ) : (
               <PlaceholderPhoto
                 key={i}
-                label={`Photo ${i + 1}`}
+                label={`${t.photo} ${i + 1}`}
                 className={`w-full mb-2 break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
               />
             )
@@ -90,6 +92,7 @@ export default function Gallery({ images }: { images: string[] }) {
           index={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
           onIndexChange={setLightboxIndex}
+          lang={lang}
         />
       )}
     </section>
@@ -101,12 +104,15 @@ function Lightbox({
   index,
   onClose,
   onIndexChange,
+  lang,
 }: {
   images: string[];
   index: number;
   onClose: () => void;
   onIndexChange: (i: number) => void;
+  lang?: Lang;
 }) {
+  const t = getDict(lang);
   const total = images.length || PLACEHOLDER_COUNT;
   const goTo = (delta: number) => onIndexChange((index + delta + total) % total);
 
@@ -135,7 +141,7 @@ function Lightbox({
           goTo(-1);
         }}
         className="absolute left-2 md:left-6 text-groove-bg/70 text-3xl px-2"
-        aria-label="Sebelumnya"
+        aria-label={t.previous}
       >
         &#8249;
       </button>
@@ -143,7 +149,7 @@ function Lightbox({
         {images[index] ? (
           <Image src={images[index]} alt={`gallery-${index}`} fill className="object-contain" />
         ) : (
-          <PlaceholderPhoto label={`Photo ${index + 1}`} className="w-full h-full rounded-sm" />
+          <PlaceholderPhoto label={`${t.photo} ${index + 1}`} className="w-full h-full rounded-sm" />
         )}
       </div>
       <button
@@ -152,7 +158,7 @@ function Lightbox({
           goTo(1);
         }}
         className="absolute right-2 md:right-6 text-groove-bg/70 text-3xl px-2"
-        aria-label="Selanjutnya"
+        aria-label={t.next}
       >
         &#8250;
       </button>

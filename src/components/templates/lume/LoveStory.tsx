@@ -1,12 +1,14 @@
 import { InvitationData } from "@/types/invitation";
+import { getDict } from "@/lib/i18n/lume";
 
 export default function LoveStory({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
+  const t = getDict(data.language);
   return (
     <section className="groove-overlay text-groove-bg py-16 px-6">
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16">
         <h2 className="font-groove-display text-3xl md:text-4xl leading-tight" style={{ fontWeight: 500 }}>
-          A Journey In Love: The {data.groomNickname} and {data.brideNickname} Connection
+          {t.loveStoryPrefix} {data.groomNickname} {t.loveStoryAnd} {data.brideNickname} {t.loveStorySuffix}
         </h2>
 
         <div className="space-y-6">

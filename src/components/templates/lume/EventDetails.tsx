@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapPin, CalendarPlus } from "lucide-react";
 import { EventItem } from "@/types/invitation";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
+import { getDict, Lang } from "@/lib/i18n/lume";
 
 function getTimeParts(target: Date) {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -14,7 +15,15 @@ function getTimeParts(target: Date) {
   return { d, h, m, s };
 }
 
-export default function EventDetails({ events, title }: { events: EventItem[]; title: string }) {
+export default function EventDetails({
+  events,
+  title,
+  lang,
+}: {
+  events: EventItem[];
+  title: string;
+  lang?: Lang;
+}) {
   if (!events?.length) return null;
   return (
     <section className="groove-overlay-dark text-groove-bg">
@@ -22,14 +31,15 @@ export default function EventDetails({ events, title }: { events: EventItem[]; t
           lebar section ini konsisten, bukan full-bleed edge-to-edge. */}
       <div className="max-w-5xl mx-auto px-6">
         {events.map((ev, i) => (
-          <EventRow key={i} event={ev} title={title} last={i === events.length - 1} />
+          <EventRow key={i} event={ev} title={title} last={i === events.length - 1} lang={lang} />
         ))}
       </div>
     </section>
   );
 }
 
-function EventRow({ event, title, last }: { event: EventItem; title: string; last: boolean }) {
+function EventRow({ event, title, last, lang }: { event: EventItem; title: string; last: boolean; lang?: Lang }) {
+  const t = getDict(lang);
   const eventDateTime = new Date(`${event.date}T${event.timeStart || "00:00"}`);
   const [parts, setParts] = useState(() => getTimeParts(eventDateTime));
 
@@ -50,10 +60,10 @@ function EventRow({ event, title, last }: { event: EventItem; title: string; las
     <div className={`grid md:grid-cols-2 ${last ? "" : "border-b border-groove-line-dark"}`}>
       <div className="py-10 md:py-14 md:pr-10 flex flex-col justify-center">
         <p className="font-groove-body text-lg text-groove-bg/90">
-          {new Date(event.date).toLocaleDateString("en-US", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          {new Date(event.date).toLocaleDateString(t.dateLocale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
         <p className="font-groove-body text-lg text-groove-bg/90 mb-4">
-          AT {event.timeStart} {event.timezone}
+          {t.at} {event.timeStart} {event.timezone}
         </p>
         {event.location && (
           <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed mb-5 max-w-sm">{event.location}</p>
@@ -61,10 +71,10 @@ function EventRow({ event, title, last }: { event: EventItem; title: string; las
 
         <div className="flex gap-5 mb-6">
           {[
-            ["Hari", parts.d],
-            ["Jam", parts.h],
-            ["Menit", parts.m],
-            ["Detik", parts.s],
+            [t.days, parts.d],
+            [t.hours, parts.h],
+            [t.minutes, parts.m],
+            [t.seconds, parts.s],
           ].map(([label, value]) => (
             <div key={label as string} className="text-center">
               <div className="font-groove-display text-xl tabular-nums" style={{ fontWeight: 600 }}>
@@ -83,7 +93,7 @@ function EventRow({ event, title, last }: { event: EventItem; title: string; las
               rel="noreferrer"
               className="font-groove-label inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
             >
-              <MapPin className="h-3.5 w-3.5" /> Google Maps
+              <MapPin className="h-3.5 w-3.5" /> {t.googleMaps}
             </a>
           )}
           <a
@@ -92,7 +102,7 @@ function EventRow({ event, title, last }: { event: EventItem; title: string; las
             rel="noreferrer"
             className="font-groove-label inline-flex items-center gap-1.5 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-bg hover:text-groove-stone transition"
           >
-            <CalendarPlus className="h-3.5 w-3.5" /> Save The Date
+            <CalendarPlus className="h-3.5 w-3.5" /> {t.saveTheDate}
           </a>
         </div>
       </div>

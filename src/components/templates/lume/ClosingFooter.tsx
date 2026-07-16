@@ -1,6 +1,7 @@
 import { Globe } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { normalizeWaNumber } from "@/lib/utils/whatsapp";
+import { getDict } from "@/lib/i18n/lume";
 
 // Kontak resmi BaliInvitation (bukan data client) — sama untuk semua undangan,
 // ditampilkan di footer sebagai kredit "Created By".
@@ -30,18 +31,17 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export default function ClosingFooter({ data }: { data: InvitationData }) {
+  const t = getDict(data.language);
   return (
     <footer className="groove-overlay-dark text-groove-bg text-center py-24 px-6 min-h-screen flex flex-col items-center justify-center">
       <div className="max-w-5xl mx-auto">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-groove-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 500 }}>
-            Thank You
+            {t.thankYou}
             <br />
-            For Your Attendance And Support
+            {t.forYourAttendance}
           </h2>
-          <p className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-6">
-            It is a pleasure and honor for us, if you are willing to attend and give us your blessing.
-          </p>
+          <p className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-6">{t.honorText}</p>
           <h3 className="font-groove-display uppercase text-lg tracking-widest" style={{ fontWeight: 500 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h3>

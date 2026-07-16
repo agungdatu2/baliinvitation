@@ -5,8 +5,18 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { Copy, Check, X } from "lucide-react";
 import { BankAccountItem } from "@/types/invitation";
+import { getDict, Lang } from "@/lib/i18n/lume";
 
-export default function WeddingGift({ accounts, image }: { accounts: BankAccountItem[]; image?: string }) {
+export default function WeddingGift({
+  accounts,
+  image,
+  lang,
+}: {
+  accounts: BankAccountItem[];
+  image?: string;
+  lang?: Lang;
+}) {
+  const t = getDict(lang);
   const [open, setOpen] = useState(false);
   if (!accounts?.length) return null;
 
@@ -16,23 +26,22 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
         {image && (
           <div className="w-full aspect-[4/5] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image} alt="Wedding gift" className="w-full h-full object-cover" />
+            <img src={image} alt={t.weddingGiftHeading} className="w-full h-full object-cover" />
           </div>
         )}
 
         <div className={image ? "" : "md:col-span-2 max-w-md"}>
           <h2 className="font-groove-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 400 }}>
-            Wedding gift
+            {t.weddingGiftHeading}
           </h2>
           <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm">
-            For those of you who want to give a token of love to the bride and groom, you can use the account number
-            below:
+            {t.weddingGiftDescription}
           </p>
           <button
             onClick={() => setOpen(true)}
             className="font-groove-label inline-block px-8 py-2.5 rounded-full border border-groove-line-dark text-xs tracking-widest uppercase hover:bg-groove-bg hover:text-groove-stone transition"
           >
-            Click Here
+            {t.clickHere}
           </button>
         </div>
       </div>
@@ -40,7 +49,7 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
       {typeof document !== "undefined" &&
         createPortal(
           <AnimatePresence>
-            {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} />}
+            {open && <BankAccountsModal accounts={accounts} onClose={() => setOpen(false)} lang={lang} />}
           </AnimatePresence>,
           document.body
         )}
@@ -48,7 +57,16 @@ export default function WeddingGift({ accounts, image }: { accounts: BankAccount
   );
 }
 
-function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[]; onClose: () => void }) {
+function BankAccountsModal({
+  accounts,
+  onClose,
+  lang,
+}: {
+  accounts: BankAccountItem[];
+  onClose: () => void;
+  lang?: Lang;
+}) {
+  const t = getDict(lang);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   const copy = (text: string, i: number) => {
@@ -78,7 +96,7 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
         <button
           onClick={onClose}
           className="absolute -top-10 right-0 text-groove-bg/80 hover:text-groove-bg"
-          aria-label="Tutup"
+          aria-label={t.closeModal}
         >
           <X className="h-6 w-6" />
         </button>
@@ -106,11 +124,11 @@ function BankAccountsModal({ accounts, onClose }: { accounts: BankAccountItem[];
               >
                 {copiedIndex === i ? (
                   <>
-                    <Check className="h-3.5 w-3.5" /> Tersalin
+                    <Check className="h-3.5 w-3.5" /> {t.copied}
                   </>
                 ) : (
                   <>
-                    <Copy className="h-3.5 w-3.5" /> Salin
+                    <Copy className="h-3.5 w-3.5" /> {t.copy}
                   </>
                 )}
               </button>

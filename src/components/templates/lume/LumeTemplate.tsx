@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { TemplateProps } from "@/types/invitation";
+import { getDict } from "@/lib/i18n/lume";
 import FixedVideoBackground from "./FixedVideoBackground";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
@@ -68,7 +69,8 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
     };
   }, [musicPlaying]);
 
-  const eventDateLabel = new Date(data.eventDate).toLocaleDateString("id-ID", {
+  const t = getDict(data.language);
+  const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
     day: "numeric",
     month: "long",
@@ -93,6 +95,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           guestName={guestName}
           images={visibleGalleryImages}
           showIntro={data.hasIntro}
+          lang={data.language}
           onOpen={handleOpen}
         />
       )}
@@ -109,6 +112,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             hasMusic={Boolean(data.musicUrl)}
             musicPlaying={musicPlaying}
             onToggleMusic={toggleMusic}
+            lang={data.language}
           />
 
           <div id="hero">
@@ -128,22 +132,31 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             </Reveal>
 
             <Reveal id="events">
-              <EventDetails events={data.events} title={`${data.groomNickname} & ${data.brideNickname}`} />
+              <EventDetails
+                events={data.events}
+                title={`${data.groomNickname} & ${data.brideNickname}`}
+                lang={data.language}
+              />
             </Reveal>
             <Reveal>
-              <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} />
+              <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
             </Reveal>
             <Reveal>
-              <DressCode items={data.dressCode} />
+              <DressCode items={data.dressCode} lang={data.language} />
             </Reveal>
 
             <Reveal id="rsvp">
-              <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} />
+              <RSVPForm
+                invitationId={data.id ?? data.slug}
+                guestName={guestName}
+                guestId={guestId}
+                lang={data.language}
+              />
             </Reveal>
 
             <div id="gallery">
               <Reveal>
-                <Gallery images={visibleGalleryImages} />
+                <Gallery images={visibleGalleryImages} lang={data.language} />
               </Reveal>
             </div>
 
@@ -151,6 +164,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
               <WeddingGift
                 accounts={data.bankAccounts}
                 image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                lang={data.language}
               />
             </Reveal>
 

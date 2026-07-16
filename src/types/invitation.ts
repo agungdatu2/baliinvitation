@@ -29,6 +29,7 @@ export interface InvitationData {
   id?: string;
   slug: string;
   status: "draft" | "published";
+  language: "id" | "en";
   templateKey: string;
 
   clientName: string;

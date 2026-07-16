@@ -22,6 +22,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
   const initialValues: Partial<InvitationFormValues> = {
     slug: invitation.slug,
     status: invitation.status as "draft" | "published",
+    language: invitation.language as "id" | "en",
     templateKey: invitation.template.key,
     packageId: invitation.packageId ?? "",
     clientName: invitation.clientName,

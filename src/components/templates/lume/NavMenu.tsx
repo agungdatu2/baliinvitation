@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
+import { getDict, Lang } from "@/lib/i18n/lume";
 
-const LINKS = [
-  { href: "#hero", label: "Home" },
-  { href: "#couple", label: "Profile" },
-  { href: "#love-story", label: "Love Story" },
-  { href: "#events", label: "Wedding Event" },
-  { href: "#rsvp", label: "RSVP" },
-  { href: "#gift", label: "Wedding Gift" },
-  { href: "#gallery", label: "Gallery" },
-];
+const LINK_HREFS = [
+  { href: "#hero", key: "navHome" },
+  { href: "#couple", key: "navProfile" },
+  { href: "#love-story", key: "navLoveStory" },
+  { href: "#events", key: "navWeddingEvent" },
+  { href: "#rsvp", key: "navRsvp" },
+  { href: "#gift", key: "navWeddingGift" },
+  { href: "#gallery", key: "navGallery" },
+] as const;
 
 interface NavMenuProps {
   groomNickname: string;
@@ -22,6 +23,7 @@ interface NavMenuProps {
   hasMusic: boolean;
   musicPlaying: boolean;
   onToggleMusic: () => void;
+  lang?: Lang;
 }
 
 // Hamburger polos (tanpa background) di semua ukuran layar — warnanya berganti
@@ -35,7 +37,9 @@ export default function NavMenu({
   hasMusic,
   musicPlaying,
   onToggleMusic,
+  lang,
 }: NavMenuProps) {
+  const t = getDict(lang);
   const [open, setOpen] = useState(false);
   const [overHero, setOverHero] = useState(true);
 
@@ -61,13 +65,13 @@ export default function NavMenu({
     <>
       <button
         onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Tutup menu" : "Buka menu"}
+        aria-label={open ? t.closeMenu : t.openMenu}
         aria-expanded={open}
         className={`fixed top-6 right-6 md:top-8 md:right-8 z-50 ${open ? "" : `w-8 h-6 ${iconShadow}`}`}
       >
         {open ? (
           <span className="bg-groove-stone text-groove-bg font-groove-label text-xs uppercase tracking-widest px-5 py-2.5 rounded-full">
-            Close
+            {t.close}
           </span>
         ) : (
           <span className="relative w-full h-full block">
@@ -91,19 +95,17 @@ export default function NavMenu({
         }`}
       >
         <nav className="flex flex-col gap-4 mt-16">
-          {LINKS.map((l) => (
+          {LINK_HREFS.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
               className="font-groove-display text-2xl md:text-3xl text-groove-ink hover:text-groove-secondary transition-colors"
             >
-              {l.label}
+              {t[l.key]}
             </a>
           ))}
-          <p className="font-groove-body text-xs text-groove-ink/50 mt-4 max-w-[26ch]">
-            Klik salah satu menu di atas untuk langsung menuju halaman yang dituju.
-          </p>
+          <p className="font-groove-body text-xs text-groove-ink/50 mt-4 max-w-[26ch]">{t.navHint}</p>
         </nav>
 
         <div className="flex items-stretch gap-2 rounded-xl border border-groove-line bg-groove-bg/60 p-1.5">
@@ -113,16 +115,16 @@ export default function NavMenu({
             rel="noreferrer"
             className="flex-1 flex items-center justify-center text-center font-groove-label text-[10px] uppercase tracking-wider text-groove-ink/80 hover:text-groove-secondary transition-colors px-2 py-3"
           >
-            Simpan
+            {t.saveDateShort1}
             <br />
-            Tanggal
+            {t.saveDateShort2}
           </a>
           {hasMusic && (
             <>
               <div className="w-px bg-groove-line" aria-hidden="true" />
               <button
                 onClick={onToggleMusic}
-                aria-label={musicPlaying ? "Jeda musik" : "Putar musik"}
+                aria-label={musicPlaying ? t.pauseMusic : t.playMusic}
                 className="w-14 flex items-center justify-center rounded-lg hover:bg-groove-line/40 transition-colors"
               >
                 {musicPlaying ? (

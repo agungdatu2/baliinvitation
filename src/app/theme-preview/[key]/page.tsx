@@ -7,9 +7,16 @@ export const dynamic = "force-dynamic";
 // Preview tema tanpa undangan asli — dipakai tombol "Lihat" di admin/themes.
 // Semua field foto/video/musik/galeri sengaja dikosongkan supaya tiap komponen
 // jatuh ke placeholder bawaannya sendiri (picsum, DEFAULT_HERO_VIDEO_URL, dst).
-export default function ThemePreviewPage({ params }: { params: { key: string } }) {
+export default function ThemePreviewPage({
+  params,
+  searchParams,
+}: {
+  params: { key: string };
+  searchParams: { lang?: string };
+}) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
+  const language: "id" | "en" = searchParams.lang === "en" ? "en" : "id";
 
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
@@ -21,6 +28,7 @@ export default function ThemePreviewPage({ params }: { params: { key: string } }
   const data: InvitationData = {
     slug: "preview",
     status: "published",
+    language,
     templateKey: params.key,
     clientName: "Preview",
     groomNickname: "Made",

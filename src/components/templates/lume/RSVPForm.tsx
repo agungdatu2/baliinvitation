@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getDict, Lang } from "@/lib/i18n/lume";
 
 interface RSVPFormProps {
   invitationId: string;
   guestName?: string;
   guestId?: string;
+  lang?: Lang;
 }
 
 interface WishItem {
@@ -15,12 +17,12 @@ interface WishItem {
   createdAt: string;
 }
 
-const ATTEND_OPTIONS = [
-  { value: "hadir", label: "Excited To Attend" },
-  { value: "tidak_hadir", label: "Unable Attend" },
-];
-
-export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormProps) {
+export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSVPFormProps) {
+  const t = getDict(lang);
+  const ATTEND_OPTIONS = [
+    { value: "hadir", label: t.attendYes },
+    { value: "tidak_hadir", label: t.attendNo },
+  ];
   const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,25 +62,22 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
         <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-14">
           <div>
             <h2 className="font-groove-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 500 }}>
-              Kindly Confirm Your Presence and Share Your Blessings
+              {t.rsvpHeading}
             </h2>
-            <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed max-w-sm">
-              We kindly request your prompt response to confirm your attendance at our upcoming event. Alongside your
-              RSVP, please take a moment to extend your warm regards and best wishes.
-            </p>
+            <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed max-w-sm">{t.rsvpSubtext}</p>
           </div>
 
           {sent ? (
-            <p className="font-groove-body text-sm text-groove-bg/80">Terima kasih! RSVP kamu sudah kami terima.</p>
+            <p className="font-groove-body text-sm text-groove-bg/80">{t.rsvpSuccess}</p>
           ) : (
             <form onSubmit={submit} className="space-y-5 text-left">
               <div>
                 <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-                  Name
+                  {t.nameLabel}
                 </label>
                 <input
                   required
-                  placeholder="Guest Name"
+                  placeholder={t.namePlaceholder}
                   className={fieldClass}
                   value={form.guestName}
                   onChange={(e) => setForm({ ...form, guestName: e.target.value })}
@@ -87,7 +86,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
               <div>
                 <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-2">
-                  Attendance
+                  {t.attendanceLabel}
                 </label>
                 <div className="flex gap-3">
                   {ATTEND_OPTIONS.map((opt) => (
@@ -109,7 +108,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
               <div>
                 <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-                  No of Guest (max 5)
+                  {t.guestCountLabel}
                 </label>
                 <input
                   type="number"
@@ -123,7 +122,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
 
               <div>
                 <label className="font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/70 mb-1.5">
-                  Wishes
+                  {t.wishesLabel}
                 </label>
                 <textarea
                   className={fieldClass}
@@ -137,7 +136,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
                 disabled={loading}
                 className="px-8 py-2.5 bg-groove-bg text-groove-stone text-xs tracking-widest uppercase disabled:opacity-50"
               >
-                {loading ? "Sending..." : "Send"}
+                {loading ? t.sending : t.send}
               </button>
             </form>
           )}
@@ -152,7 +151,7 @@ export default function RSVPForm({ invitationId, guestName, guestId }: RSVPFormP
                 </p>
                 <p className="font-groove-body text-sm text-groove-bg/75 leading-relaxed mb-4">{w.message}</p>
                 <p className="font-groove-label text-[0.65rem] uppercase tracking-wide text-groove-bg/50">
-                  {new Date(w.createdAt).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" })}
+                  {new Date(w.createdAt).toLocaleDateString(t.dateLocale, { day: "2-digit", month: "short", year: "numeric" })}
                 </p>
               </div>
             ))}
