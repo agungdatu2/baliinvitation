@@ -62,6 +62,11 @@ export interface InvitationData {
   events: EventItem[];
   bankAccounts: BankAccountItem[];
   dressCode: DressCodeItem[];
+
+  // Gating dari Package yang dipilih (lihat src/app/[slug]/page.tsx) — default
+  // true/unlimited kalau undangan tidak punya package terkait.
+  hasIntro: boolean;
+  maxGalleryImages: number | null;
 }
 
 // Props standar yang wajib diterima SETIAP komponen template

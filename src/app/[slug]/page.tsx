@@ -13,8 +13,17 @@ export const dynamic = "force-dynamic";
 async function getInvitation(slug: string) {
   return prisma.invitation.findUnique({
     where: { slug },
-    include: { template: true },
+    include: { template: true, package: true },
   });
+}
+
+// Package.activeMonths (kalau diisi admin) membuat undangan expired otomatis
+// eventDate + N bulan — null berarti tidak pernah expired.
+function isExpired(eventDate: Date, activeMonths: number | null | undefined) {
+  if (!activeMonths) return false;
+  const expiresAt = new Date(eventDate);
+  expiresAt.setMonth(expiresAt.getMonth() + activeMonths);
+  return new Date() > expiresAt;
 }
 
 // ?g={guestCode} is the personalized/tracked link; ?to=Nama is the older untracked
@@ -52,6 +61,23 @@ export default async function InvitationPage({
   // Portal's "Preview undangan" button opens this same page with ?portal_preview={token}
   // so the client can see their draft without it counting as a real guest view.
   const isPortalPreview = Boolean(searchParams.portal_preview) && searchParams.portal_preview === inv.portalToken;
+
+  // Expired check dilewati untuk portal preview supaya admin/client tetap bisa
+  // lihat isinya walau masa aktif paketnya sudah lewat.
+  if (!isPortalPreview && isExpired(inv.eventDate, inv.package?.activeMonths)) {
+    return (
+      <div className="min-h-screen bg-groove-bg flex items-center justify-center px-6 text-center">
+        <div>
+          <p className="font-groove-label uppercase tracking-widest text-xs text-groove-secondary mb-3">
+            BaliInvitation
+          </p>
+          <p className="font-groove-body text-groove-ink">
+            Undangan ini sudah tidak aktif. Silakan hubungi mempelai untuk informasi lebih lanjut.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const guest = await resolveGuest(inv.id, searchParams.g);
   const viaParam: ViaParam = guest ? "guest" : searchParams.to ? "to" : "direct";
@@ -97,6 +123,8 @@ export default async function InvitationPage({
     events: (inv.events as unknown as InvitationData["events"]) ?? [],
     bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],
     dressCode: (inv.dressCode as unknown as InvitationData["dressCode"]) ?? [],
+    hasIntro: inv.package?.hasIntro ?? true,
+    maxGalleryImages: inv.package?.maxGalleryImages ?? null,
   };
 
   return <Template data={data} guestName={guestName} guestId={guest?.id} />;

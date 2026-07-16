@@ -11,17 +11,27 @@ interface Props {
   eventDateLabel: string;
   guestName?: string;
   images?: string[];
+  showIntro?: boolean; // dari Package.hasIntro — false = lompat langsung ke gate nama tamu
   onOpen: () => void;
 }
 
 const EXIT_DURATION_MS = 600;
 
-// Tahap 1: LoadingScreen (fullscreen takeover, kata bergantian + counter 0-100).
+// Tahap 1: LoadingScreen (fullscreen takeover, kata bergantian + counter 0-100) —
+// dilewati kalau showIntro=false (paket tidak termasuk fitur intro).
 // Tahap 2 (setelah loading selesai): gate video-hero dengan nama tamu personal +
 // tombol buka, di atas video yang fixed di belakang seluruh halaman
 // (lihat FixedVideoBackground/LumeTemplate).
-export default function SplashGate({ groomNickname, brideNickname, eventDateLabel, guestName, images, onOpen }: Props) {
-  const [showLoading, setShowLoading] = useState(true);
+export default function SplashGate({
+  groomNickname,
+  brideNickname,
+  eventDateLabel,
+  guestName,
+  images,
+  showIntro = true,
+  onOpen,
+}: Props) {
+  const [showLoading, setShowLoading] = useState(showIntro);
   const [closing, setClosing] = useState(false);
 
   const handleOpen = () => {

@@ -32,7 +32,13 @@ model Package {
   name        String       // "Silver", "Gold", dst
   price       Int          // harga dalam Rupiah
   description String?
-  features    Json         @default("[]") // string[]
+  features    Json         @default("[]") // string[] — teks bebas untuk tampilan admin
+
+  // Gating terstruktur yang benar-benar dibaca tema publik (lihat src/app/[slug]/page.tsx)
+  hasIntro         Boolean @default(true) // tampilkan LoadingScreen/splash intro atau langsung ke gate nama tamu
+  maxGalleryImages Int?    // batas jumlah galeri yang ditampilkan; null = unlimited
+  activeMonths     Int?    // undangan expired otomatis eventDate + N bulan; null = tidak pernah expired
+
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   invitations Invitation[]

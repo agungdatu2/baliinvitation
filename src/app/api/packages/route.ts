@@ -27,6 +27,9 @@ export async function POST(req: NextRequest) {
       price: d.price,
       description: d.description,
       features: d.features,
+      hasIntro: d.hasIntro,
+      maxGalleryImages: d.maxGalleryImages,
+      activeMonths: d.activeMonths,
       isActive: d.isActive,
     },
   });

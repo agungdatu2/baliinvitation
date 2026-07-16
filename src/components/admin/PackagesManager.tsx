@@ -10,11 +10,22 @@ interface PackageRow {
   price: number;
   description: string | null;
   features: string[];
+  hasIntro: boolean;
+  maxGalleryImages: number | null;
+  activeMonths: number | null;
   isActive: boolean;
   _count: { invitations: number };
 }
 
-const emptyForm = { name: "", price: "", description: "", features: "" };
+const emptyForm = {
+  name: "",
+  price: "",
+  description: "",
+  features: "",
+  hasIntro: true,
+  maxGalleryImages: "",
+  activeMonths: "",
+};
 
 export default function PackagesManager({ initialPackages }: { initialPackages: PackageRow[] }) {
   const router = useRouter();
@@ -59,6 +70,9 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
             .split("\n")
             .map((f) => f.trim())
             .filter(Boolean),
+          hasIntro: form.hasIntro,
+          maxGalleryImages: form.maxGalleryImages ? Number(form.maxGalleryImages) : null,
+          activeMonths: form.activeMonths ? Number(form.activeMonths) : null,
         }),
       });
       if (!res.ok) {
@@ -93,6 +107,10 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
               </button>
             </div>
             <p className="text-xl font-medium text-lume-gold mt-1">{formatRupiah(p.price)}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Intro: {p.hasIntro ? "Ya" : "Tidak"} · Galeri maks: {p.maxGalleryImages ?? "Unlimited"} · Aktif:{" "}
+              {p.activeMonths ? `${p.activeMonths} bulan` : "Tidak pernah expired"}
+            </p>
             {p.description && <p className="text-sm text-gray-600 mt-2">{p.description}</p>}
             {p.features.length > 0 && (
               <ul className="text-sm text-gray-600 mt-3 space-y-1 flex-1">
@@ -150,6 +168,34 @@ export default function PackagesManager({ initialPackages }: { initialPackages: 
               placeholder={"Undangan digital\nUnlimited tamu\nRSVP online"}
               value={form.features}
               onChange={(e) => setForm({ ...form, features: e.target.value })}
+            />
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.hasIntro}
+              onChange={(e) => setForm({ ...form, hasIntro: e.target.checked })}
+            />
+            <span className="text-gray-700">Tampilkan intro/splash</span>
+          </label>
+          <label className="block text-sm">
+            <span className="text-gray-700">Maks. Foto Galeri (kosongkan = unlimited)</span>
+            <input
+              type="number"
+              min={1}
+              className="input"
+              value={form.maxGalleryImages}
+              onChange={(e) => setForm({ ...form, maxGalleryImages: e.target.value })}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="text-gray-700">Masa Aktif dalam bulan (kosongkan = tidak pernah expired)</span>
+            <input
+              type="number"
+              min={1}
+              className="input"
+              value={form.activeMonths}
+              onChange={(e) => setForm({ ...form, activeMonths: e.target.value })}
             />
           </label>
           <div className="flex gap-2">

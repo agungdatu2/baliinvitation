@@ -75,6 +75,12 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
     year: "numeric",
   });
 
+  // Batas galeri dari paket (kalau ada) berlaku konsisten di ring foto splash,
+  // section Gallery, dan foto WeddingGift — semua pakai array yang sama.
+  const visibleGalleryImages = data.maxGalleryImages
+    ? data.galleryImages.slice(0, data.maxGalleryImages)
+    : data.galleryImages;
+
   return (
     <main className="text-groove-ink font-groove-body">
       <FixedVideoBackground src={data.heroVideoUrl} />
@@ -85,7 +91,8 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
           brideNickname={data.brideNickname}
           eventDateLabel={eventDateLabel}
           guestName={guestName}
-          images={data.galleryImages}
+          images={visibleGalleryImages}
+          showIntro={data.hasIntro}
           onOpen={handleOpen}
         />
       )}
@@ -136,14 +143,14 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
 
             <div id="gallery">
               <Reveal>
-                <Gallery images={data.galleryImages} />
+                <Gallery images={visibleGalleryImages} />
               </Reveal>
             </div>
 
             <Reveal id="gift">
               <WeddingGift
                 accounts={data.bankAccounts}
-                image={data.galleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
               />
             </Reveal>
 

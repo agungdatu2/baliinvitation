@@ -5,6 +5,9 @@ export const packageSchema = z.object({
   price: z.coerce.number().int().min(0, "Harga tidak boleh negatif"),
   description: z.string().optional(),
   features: z.array(z.string().min(1)).default([]),
+  hasIntro: z.boolean().default(true),
+  maxGalleryImages: z.coerce.number().int().positive().optional().nullable(),
+  activeMonths: z.coerce.number().int().positive().optional().nullable(),
   isActive: z.boolean().default(true),
 });
 
