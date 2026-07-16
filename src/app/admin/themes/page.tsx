@@ -13,9 +13,8 @@ export default async function ThemesPage() {
     <div>
       <h1 className="text-2xl font-semibold mb-1">Tema</h1>
       <p className="text-sm text-gray-500 mb-6">
-        Daftar tema yang bisa dipilih saat membuat undangan. Menambah tema di sini hanya mendaftarkan key & nama —
-        komponen React-nya tetap perlu dibuat terpisah di <code>src/components/templates</code> dan didaftarkan di{" "}
-        <code>registry.ts</code>.
+        Daftar tema yang bisa dipilih saat membuat undangan. Tema baru ditambahkan lewat kode (komponen React di{" "}
+        <code>src/components/templates</code>, didaftarkan di <code>registry.ts</code>), bukan dari sini.
       </p>
       <ThemesManager initialTemplates={templates} />
     </div>
