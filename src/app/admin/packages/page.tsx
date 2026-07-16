@@ -10,7 +10,7 @@ export default async function PackagesPage() {
   });
 
   return (
-    <div className="pt-6">
+    <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Paket</h1>
       </div>

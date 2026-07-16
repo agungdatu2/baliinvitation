@@ -18,7 +18,7 @@ export default async function InvitationDetailLayout({
   });
 
   return (
-    <div className="pt-6">
+    <div>
       <Link href="/admin" className="text-sm text-gray-500 mb-2 inline-block">
         &larr; Undangan Berjalan
       </Link>

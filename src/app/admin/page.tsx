@@ -61,7 +61,7 @@ export default async function AdminDashboard({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6 pt-6">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-semibold">Undangan Berjalan</h1>
         <Link href="/admin/invitations/new" className="px-4 py-2 rounded-lg bg-lume-ink text-white text-sm">
           + Buat Undangan

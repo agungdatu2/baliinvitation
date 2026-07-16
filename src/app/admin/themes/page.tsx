@@ -10,7 +10,7 @@ export default async function ThemesPage() {
   });
 
   return (
-    <div className="pt-6">
+    <div>
       <h1 className="text-2xl font-semibold mb-1">Tema</h1>
       <p className="text-sm text-gray-500 mb-6">
         Daftar tema yang bisa dipilih saat membuat undangan. Menambah tema di sini hanya mendaftarkan key & nama —

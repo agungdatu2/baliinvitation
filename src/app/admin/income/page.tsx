@@ -45,7 +45,7 @@ export default async function IncomePage() {
   }));
 
   return (
-    <div className="pt-6 space-y-8">
+    <div className="space-y-8">
       <h1 className="text-2xl font-semibold">Income</h1>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
