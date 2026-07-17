@@ -72,7 +72,7 @@ export default function SplashGate({
         <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">{t.misspellingApology}</p>
         <button
           onClick={handleOpen}
-          className="mt-4 w-full py-3.5 rounded-full bg-white text-black font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
+          className="mt-4 w-4/5 mx-auto py-3.5 rounded-full bg-white text-black font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
         >
           <Mail size={14} strokeWidth={2} />
           {t.letsOpen}
