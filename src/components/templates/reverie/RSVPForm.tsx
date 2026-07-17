@@ -59,9 +59,9 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
   return (
     <section className="groove-overlay-dark text-groove-bg py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="grid gap-10 mb-14">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-14">
           <div>
-            <h2 className="font-groove-display text-3xl leading-tight mb-5" style={{ fontWeight: 500 }}>
+            <h2 className="font-groove-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 500 }}>
               {t.rsvpHeading}
             </h2>
             <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed max-w-sm">{t.rsvpSubtext}</p>
@@ -143,7 +143,7 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
         </div>
 
         {wishes.length > 0 && (
-          <div className="grid gap-4">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
             {wishes.map((w) => (
               <div key={w.id} className="border border-groove-line-dark p-5 bg-groove-stone/30">
                 <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>

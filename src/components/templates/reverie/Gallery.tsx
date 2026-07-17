@@ -33,7 +33,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
   return (
     <section className="groove-overlay text-groove-bg py-10 px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="font-groove-display uppercase text-3xl leading-tight mb-6" style={{ fontWeight: 500 }}>
+        <h2 className="font-groove-display uppercase text-3xl md:text-4xl leading-tight mb-6" style={{ fontWeight: 500 }}>
           {t.galleryHeading}
         </h2>
 
@@ -65,7 +65,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
         )}
 
         {/* Masonry (CSS columns, break-inside-avoid) untuk sisa foto */}
-        <div className="columns-2 gap-2">
+        <div className="columns-2 md:columns-3 gap-2">
           {restImages.map((src, i) =>
             src ? (
               <button

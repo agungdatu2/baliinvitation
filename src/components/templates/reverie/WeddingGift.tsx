@@ -22,7 +22,7 @@ export default function WeddingGift({
 
   return (
     <section className="groove-overlay text-groove-bg">
-      <div className="max-w-5xl mx-auto grid gap-10 items-center px-6 py-16">
+      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center px-6 py-16">
         {image && (
           <div className="w-full aspect-[4/5] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -30,8 +30,8 @@ export default function WeddingGift({
           </div>
         )}
 
-        <div className={image ? "" : "max-w-md"}>
-          <h2 className="font-groove-display italic text-4xl mb-5" style={{ fontWeight: 400 }}>
+        <div className={image ? "" : "md:col-span-2 max-w-md"}>
+          <h2 className="font-groove-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 400 }}>
             {t.weddingGiftHeading}
           </h2>
           <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm">

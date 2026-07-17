@@ -27,20 +27,20 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
       <div className="absolute inset-0 bg-groove-stone/35" />
 
       <div className="relative z-10">
-        <motion.p {...fadeUp} transition={{ duration: 0.6 }} className="font-groove-display text-sm text-groove-bg/80 mb-3">
+        <motion.p {...fadeUp} transition={{ duration: 0.6 }} className="font-groove-display text-sm md:text-base text-groove-bg/80 mb-3">
           {t.theWeddingOf}
         </motion.p>
 
         <BlurText
           text={`${data.groomNickname} & ${data.brideNickname}`}
-          className="font-groove-display text-groove-bg leading-[0.95] text-5xl max-w-3xl mx-auto justify-center tracking-tight"
+          className="font-groove-display text-groove-bg leading-[0.95] text-5xl md:text-7xl lg:text-[5.5rem] max-w-3xl mx-auto justify-center tracking-tight"
           delay={100}
         />
 
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="font-groove-display text-xs text-groove-bg/70 tracking-widest mt-8"
+          className="font-groove-display text-xs md:text-sm text-groove-bg/70 tracking-widest mt-8"
         >
           {eventDateLabel}
         </motion.p>
@@ -48,7 +48,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6, delay: 0.9 }}
-          className="mt-8 text-sm text-groove-bg/85 max-w-md mx-auto font-groove-body font-light leading-relaxed whitespace-pre-line"
+          className="mt-8 text-sm md:text-base text-groove-bg/85 max-w-md mx-auto font-groove-body font-light leading-relaxed whitespace-pre-line"
         >
           {data.greeting || t.defaultGreeting}
         </motion.p>
