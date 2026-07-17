@@ -120,8 +120,8 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
             lang={data.language}
           />
 
-          {/* Dari sini (Hero dst) layout desktop dibagi kolom kiri 70% (foto
-              besar sticky mengikuti scroll) dan kolom kanan 30% (scroll
+          {/* Dari sini (Hero dst) layout desktop dibagi kolom kiri 35% (foto
+              besar sticky mengikuti scroll) dan kolom kanan 65% (scroll
               normal, berisi section-section yang sudah ada). Mobile tetap
               satu kolom penuh seperti sebelumnya (panel sticky disembunyikan,
               dan karena cuma satu yang tampil, urutan DOM kolom kanan duluan
@@ -131,14 +131,14 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
               sticky di dalamnya (h-screen) punya ruang scroll untuk benar-benar
               "nempel", bukan cuma setinggi 100vh lalu ikut scroll normal. */}
           <div className="md:flex">
-            <div className="hidden md:block md:w-[70%]">
+            <div className="hidden md:block md:w-[35%]">
               <div className="md:sticky md:top-0 md:h-screen overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={stickyPhoto} alt="" className="h-full w-full object-cover" />
               </div>
             </div>
 
-            <div className="md:w-[30%]">
+            <div className="md:w-[65%]">
               <div id="hero">
                 <HeroGreeting data={data} />
               </div>
