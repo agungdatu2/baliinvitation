@@ -44,6 +44,7 @@ const defaultValues: InvitationFormValues = {
   livestreamUrl: "",
   livestreamNote: "",
   heroVideoUrl: "",
+  reverieGateImage: "",
   eventDate: "",
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
@@ -80,11 +81,17 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
     register,
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<InvitationFormValues>({
     resolver: zodResolver(invitationSchema),
     defaultValues: { ...defaultValues, ...initialValues },
   });
+
+  // Field khusus tema Reverie (foto background gate) cuma relevan kalau
+  // template yang dipilih "reverie" — jangan bingungin admin dengan field
+  // yang tidak dipakai tema lain.
+  const selectedTemplateKey = watch("templateKey");
 
   const loveStory = useFieldArray({ control, name: "loveStory" });
   const events = useFieldArray({ control, name: "events" });
@@ -226,6 +233,11 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
+        {selectedTemplateKey === "reverie" && (
+          <Field label="URL Foto Background Gate (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+            <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
+          </Field>
+        )}
         <Field label="URL Musik Latar (mp3)">
           <input {...register("musicUrl")} className="input" placeholder="https://..." />
         </Field>

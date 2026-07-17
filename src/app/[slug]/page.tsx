@@ -118,6 +118,7 @@ export default async function InvitationPage({
     livestreamUrl: inv.livestreamUrl ?? undefined,
     livestreamNote: inv.livestreamNote ?? undefined,
     heroVideoUrl: inv.heroVideoUrl ?? undefined,
+    reverieGateImage: inv.reverieGateImage ?? undefined,
     eventDate: inv.eventDate.toISOString(),
     galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
     loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],

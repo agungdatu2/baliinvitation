@@ -61,6 +61,7 @@ export const invitationSchema = z.object({
   livestreamUrl: z.string().optional(),
   livestreamNote: z.string().optional(),
   heroVideoUrl: z.string().optional(),
+  reverieGateImage: z.string().optional(),
 
   eventDate: z.string().min(1, "Tanggal acara utama wajib diisi"),
 
