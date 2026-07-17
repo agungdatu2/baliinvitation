@@ -9,6 +9,7 @@ export const LUME_DICT = {
 
     // SplashGate / LoadingScreen
     weddingInvitationLabel: "Undangan Pernikahan",
+    loadingLabel: "Memuat",
     theWeddingOf: "The Wedding of",
     dear: "Dear,",
     defaultGuestName: "Tamu Undangan",
@@ -105,6 +106,7 @@ export const LUME_DICT = {
     dateLocale: "en-US",
 
     weddingInvitationLabel: "Wedding Invitation",
+    loadingLabel: "Loading",
     theWeddingOf: "The Wedding of",
     dear: "Dear,",
     defaultGuestName: "Guest",

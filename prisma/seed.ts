@@ -7,6 +7,11 @@ async function main() {
     update: {},
     create: { key: "lume", name: "Lume - Elegant Minimalist" },
   });
+  await prisma.template.upsert({
+    where: { key: "reverie" },
+    update: {},
+    create: { key: "reverie", name: "Reverie - Editorial Split" },
+  });
 }
 
 main().finally(() => prisma.$disconnect());
