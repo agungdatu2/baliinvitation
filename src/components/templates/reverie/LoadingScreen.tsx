@@ -89,7 +89,7 @@ export default function LoadingScreen({ onComplete, label, loadingText, images }
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.15 }}
         >
-          <div className="relative mb-4 w-32 md:w-36 aspect-[3/4] mx-auto overflow-hidden">
+          <div className="relative mb-4 w-full aspect-[3/4] overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.img
                 key={photoIndex}
