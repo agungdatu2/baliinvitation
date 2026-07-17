@@ -39,7 +39,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
 
         <BlurText
           text={`${data.groomNickname} & ${data.brideNickname}`}
-          className="font-groove-display text-groove-bg leading-[0.95] text-5xl md:text-7xl lg:text-[5.5rem] max-w-3xl mx-auto justify-center tracking-tight"
+          className="font-groove-display text-groove-bg leading-[0.95] text-[36px] max-w-3xl mx-auto justify-center tracking-tight"
           delay={100}
         />
 
