@@ -57,8 +57,8 @@ function EventRow({ event, title, last, lang }: { event: EventItem; title: strin
   });
 
   return (
-    <div className={`grid md:grid-cols-2 ${last ? "" : "border-b border-groove-line-dark"}`}>
-      <div className="py-10 md:py-14 md:pr-10 flex flex-col justify-center">
+    <div className={`grid ${last ? "" : "border-b border-groove-line-dark"}`}>
+      <div className="py-10 flex flex-col justify-center">
         <p className="font-groove-body text-lg text-groove-bg/90">
           {new Date(event.date).toLocaleDateString(t.dateLocale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
@@ -107,8 +107,8 @@ function EventRow({ event, title, last, lang }: { event: EventItem; title: strin
         </div>
       </div>
 
-      <div className="py-10 md:py-14 md:pl-10 flex items-center">
-        <h3 className="font-groove-display uppercase leading-[0.95] text-4xl md:text-5xl" style={{ fontWeight: 500 }}>
+      <div className="py-10 flex items-center">
+        <h3 className="font-groove-display uppercase leading-[0.95] text-4xl" style={{ fontWeight: 500 }}>
           {event.name}
         </h3>
       </div>

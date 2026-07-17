@@ -6,8 +6,8 @@ export default function LoveStory({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   return (
     <section className="groove-overlay text-groove-bg py-16 px-6">
-      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16">
-        <h2 className="font-groove-display text-3xl md:text-4xl leading-tight" style={{ fontWeight: 500 }}>
+      <div className="max-w-5xl mx-auto grid gap-10">
+        <h2 className="font-groove-display text-3xl leading-tight" style={{ fontWeight: 500 }}>
           {t.loveStoryPrefix} {data.groomNickname} {t.loveStoryAnd} {data.brideNickname} {t.loveStorySuffix}
         </h2>
 
