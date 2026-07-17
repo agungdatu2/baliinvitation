@@ -10,9 +10,9 @@ interface LoadingScreenProps {
   images?: string[]; // foto galeri — crossfade di atas indikator progress
 }
 
-const DURATION_MS = 2700;
-const COMPLETE_DELAY_MS = 400;
-const PHOTO_INTERVAL_MS = 700;
+const DURATION_MS = 5200;
+const COMPLETE_DELAY_MS = 500;
+const PHOTO_INTERVAL_MS = 1300;
 const PHOTO_COUNT = 5;
 
 // Foto placeholder (Lorem Picsum, seed tetap) — dipakai selama client belum upload galeri asli.
@@ -99,7 +99,7 @@ export default function LoadingScreen({ onComplete, label, loadingText, images }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
               />
             </AnimatePresence>
           </div>
