@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
+import { Play, Pause } from "lucide-react";
 import { TemplateProps } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 import FixedVideoBackground from "./FixedVideoBackground";
@@ -137,9 +138,29 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
               "nempel", bukan cuma setinggi 100vh lalu ikut scroll normal. */}
           <div className="md:flex">
             <div className="hidden md:block md:w-[65%]">
-              <div className="md:sticky md:top-0 md:h-screen overflow-hidden">
+              <div className="relative md:sticky md:top-0 md:h-screen overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={stickyPhoto} alt="" className="h-full w-full object-cover" />
+
+                {/* Nama mempelai + tombol play/pause lagu latar, overlay di bawah foto sticky. */}
+                <div className="absolute inset-x-0 bottom-0 pt-24 pb-10 px-6 flex flex-col items-center gap-4 bg-gradient-to-t from-black/55 via-black/10 to-transparent">
+                  <p className="font-groove-display uppercase tracking-[0.35em] text-sm text-white">
+                    {data.groomNickname} &amp; {data.brideNickname}
+                  </p>
+                  {data.musicUrl && (
+                    <button
+                      onClick={toggleMusic}
+                      aria-label={musicPlaying ? t.pauseMusic : t.playMusic}
+                      className="w-10 h-10 rounded-full border border-white/50 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+                    >
+                      {musicPlaying ? (
+                        <Pause className="h-4 w-4" />
+                      ) : (
+                        <Play className="h-4 w-4 fill-current" />
+                      )}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
