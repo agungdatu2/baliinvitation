@@ -87,10 +87,12 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
     : data.galleryImages;
 
   // Foto besar di panel sticky kanan (desktop) — foto pertama yang bukan video,
-  // fallback placeholder kalau galeri masih kosong.
+  // fallback placeholder kalau galeri masih kosong. Placeholder-nya foto
+  // siluet pasangan warna hangat golden-hour (Unsplash, resolusi tinggi)
+  // supaya lebih related & tidak sekadar foto acak Picsum.
   const stickyPhoto =
     visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src)) ??
-    "https://picsum.photos/seed/reverie-sticky/900/1400";
+    "https://images.unsplash.com/photo-1615966650071-855b15f29ad1?auto=format&fit=crop&w=1400&q=85";
 
   return (
     <main className="text-groove-ink font-groove-body">
