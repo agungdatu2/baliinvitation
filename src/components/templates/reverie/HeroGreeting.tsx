@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { Flower2 } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 import BlurText from "./BlurText";
@@ -16,8 +17,9 @@ const fadeUp = {
 export default function HeroGreeting({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
-    day: "2-digit",
-    month: "2-digit",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
     year: "numeric",
   });
 
@@ -27,8 +29,12 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
       <div className="absolute inset-0 bg-groove-stone/35" />
 
       <div className="relative z-10">
-        <motion.p {...fadeUp} transition={{ duration: 0.6 }} className="font-groove-display text-sm md:text-base text-groove-bg/80 mb-3">
-          {t.theWeddingOf}
+        <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="flex justify-center mb-4">
+          <Flower2 className="h-7 w-7 text-groove-bg/80" strokeWidth={1.25} />
+        </motion.div>
+
+        <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="font-groove-display text-sm md:text-base text-groove-bg/80 mb-3">
+          {t.heroInviteLabel}
         </motion.p>
 
         <BlurText
