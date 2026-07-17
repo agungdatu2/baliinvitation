@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence } from "motion/react";
 import { TemplateProps } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 import FixedVideoBackground from "./FixedVideoBackground";
+import LoadingScreen from "./LoadingScreen";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
@@ -22,6 +24,7 @@ import Reveal from "./Reveal";
 // diubah section demi section sesuai arahan. Semua data & gambar 100% dinamis
 // dari `data` (hasil input Form Admin), bukan hardcode.
 export default function ReverieTemplate({ data, guestName, guestId }: TemplateProps) {
+  const [showLoading, setShowLoading] = useState(Boolean(data.hasIntro));
   const [opened, setOpened] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -92,40 +95,42 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
     <main className="text-groove-ink font-groove-body">
       <FixedVideoBackground src={data.heroVideoUrl} />
 
-      {!opened && (
-        <SplashGate
-          groomNickname={data.groomNickname}
-          brideNickname={data.brideNickname}
-          eventDateLabel={eventDateLabel}
-          guestName={guestName}
-          images={visibleGalleryImages}
-          showIntro={data.hasIntro}
-          lang={data.language}
-          onOpen={handleOpen}
-        />
-      )}
+      {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru
+          setelah ini selesai, layout split sticky+scrollable mulai tampil,
+          termasuk untuk tahap gate "Dear, [nama tamu]" sebelum dibuka. */}
+      <AnimatePresence mode="wait">
+        {showLoading && (
+          <LoadingScreen
+            label={t.weddingInvitationLabel}
+            loadingText={t.loadingLabel}
+            images={visibleGalleryImages}
+            onComplete={() => setShowLoading(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
 
-      {opened && (
+      {!showLoading && (
         <div className="animate-fadeIn">
-          <NavMenu
-            groomNickname={data.groomNickname}
-            brideNickname={data.brideNickname}
-            eventDate={data.eventDate}
-            eventLocation={data.events?.[0]?.location}
-            hasMusic={Boolean(data.musicUrl)}
-            musicPlaying={musicPlaying}
-            onToggleMusic={toggleMusic}
-            lang={data.language}
-          />
+          {opened && (
+            <NavMenu
+              groomNickname={data.groomNickname}
+              brideNickname={data.brideNickname}
+              eventDate={data.eventDate}
+              eventLocation={data.events?.[0]?.location}
+              hasMusic={Boolean(data.musicUrl)}
+              musicPlaying={musicPlaying}
+              onToggleMusic={toggleMusic}
+              lang={data.language}
+            />
+          )}
 
-          {/* Dari sini (Hero dst) layout desktop dibagi kolom kiri 65% (foto
-              besar sticky mengikuti scroll) dan kolom kanan 35% (scroll
-              normal, berisi section-section yang sudah ada). Mobile tetap
-              satu kolom penuh seperti sebelumnya (panel sticky disembunyikan,
-              dan karena cuma satu yang tampil, urutan DOM kolom kanan duluan
-              tidak berpengaruh ke mobile). */}
+          {/* Layout desktop dibagi kolom kiri 65% (foto besar sticky mengikuti
+              scroll) dan kolom kanan 35% (scroll normal). Berlaku dari tahap
+              gate (sebelum dibuka) sampai footer — bukan cuma setelah dibuka —
+              supaya panel sticky sudah kelihatan sejak awal. Mobile tetap satu
+              kolom penuh (panel sticky disembunyikan). */}
           {/* items-stretch (default) sengaja TIDAK dioverride ke items-start: kolom
               sticky harus ikut meregang setinggi kolom scrollable supaya panel
               sticky di dalamnya (h-screen) punya ruang scroll untuk benar-benar
@@ -139,61 +144,74 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
             </div>
 
             <div className="md:w-[35%]">
-              <div id="hero">
-                <HeroGreeting data={data} />
-              </div>
+              {!opened ? (
+                <SplashGate
+                  groomNickname={data.groomNickname}
+                  brideNickname={data.brideNickname}
+                  eventDateLabel={eventDateLabel}
+                  guestName={guestName}
+                  lang={data.language}
+                  onOpen={handleOpen}
+                />
+              ) : (
+                <>
+                  <div id="hero">
+                    <HeroGreeting data={data} />
+                  </div>
 
-              {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
-                  gate & hero lihat video tajam tapi tidak ada garis putus di antar
-                  section (lihat .groove-page-blur di globals.css). */}
-              <div className="groove-page-blur">
-                <Reveal id="couple">
-                  <CoupleProfile data={data} />
-                </Reveal>
+                  {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
+                      gate & hero lihat video tajam tapi tidak ada garis putus di antar
+                      section (lihat .groove-page-blur di globals.css). */}
+                  <div className="groove-page-blur">
+                    <Reveal id="couple">
+                      <CoupleProfile data={data} />
+                    </Reveal>
 
-                <Reveal id="love-story">
-                  <LoveStory data={data} />
-                </Reveal>
+                    <Reveal id="love-story">
+                      <LoveStory data={data} />
+                    </Reveal>
 
-                <Reveal id="events">
-                  <EventDetails
-                    events={data.events}
-                    title={`${data.groomNickname} & ${data.brideNickname}`}
-                    lang={data.language}
-                  />
-                </Reveal>
-                <Reveal>
-                  <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
-                </Reveal>
-                <Reveal>
-                  <DressCode items={data.dressCode} lang={data.language} />
-                </Reveal>
+                    <Reveal id="events">
+                      <EventDetails
+                        events={data.events}
+                        title={`${data.groomNickname} & ${data.brideNickname}`}
+                        lang={data.language}
+                      />
+                    </Reveal>
+                    <Reveal>
+                      <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
+                    </Reveal>
+                    <Reveal>
+                      <DressCode items={data.dressCode} lang={data.language} />
+                    </Reveal>
 
-                <Reveal id="rsvp">
-                  <RSVPForm
-                    invitationId={data.id ?? data.slug}
-                    guestName={guestName}
-                    guestId={guestId}
-                    lang={data.language}
-                  />
-                </Reveal>
+                    <Reveal id="rsvp">
+                      <RSVPForm
+                        invitationId={data.id ?? data.slug}
+                        guestName={guestName}
+                        guestId={guestId}
+                        lang={data.language}
+                      />
+                    </Reveal>
 
-                <div id="gallery">
-                  <Reveal>
-                    <Gallery images={visibleGalleryImages} lang={data.language} />
-                  </Reveal>
-                </div>
+                    <div id="gallery">
+                      <Reveal>
+                        <Gallery images={visibleGalleryImages} lang={data.language} />
+                      </Reveal>
+                    </div>
 
-                <Reveal id="gift">
-                  <WeddingGift
-                    accounts={data.bankAccounts}
-                    image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
-                    lang={data.language}
-                  />
-                </Reveal>
+                    <Reveal id="gift">
+                      <WeddingGift
+                        accounts={data.bankAccounts}
+                        image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                        lang={data.language}
+                      />
+                    </Reveal>
 
-                <ClosingFooter data={data} />
-              </div>
+                    <ClosingFooter data={data} />
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
