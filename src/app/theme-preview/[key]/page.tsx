@@ -12,11 +12,13 @@ export default function ThemePreviewPage({
   searchParams,
 }: {
   params: { key: string };
-  searchParams: { lang?: string };
+  searchParams: { lang?: string; intro?: string };
 }) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
   const language: "id" | "en" = searchParams.lang === "en" ? "en" : "id";
+  // ?intro=0 lompat splash loading — mempercepat iterasi desain tanpa nunggu animasi tiap reload.
+  const hasIntro = searchParams.intro !== "0";
 
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
@@ -59,7 +61,7 @@ export default function ThemePreviewPage({
     ],
     bankAccounts: [],
     dressCode: [],
-    hasIntro: true,
+    hasIntro,
     maxGalleryImages: null,
   };
 

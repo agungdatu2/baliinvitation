@@ -82,6 +82,12 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
     ? data.galleryImages.slice(0, data.maxGalleryImages)
     : data.galleryImages;
 
+  // Foto besar di panel sticky kanan (desktop) — foto pertama yang bukan video,
+  // fallback placeholder kalau galeri masih kosong.
+  const stickyPhoto =
+    visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src)) ??
+    "https://picsum.photos/seed/reverie-sticky/900/1400";
+
   return (
     <main className="text-groove-ink font-groove-body">
       <FixedVideoBackground src={data.heroVideoUrl} />
@@ -114,60 +120,79 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
             lang={data.language}
           />
 
-          <div id="hero">
-            <HeroGreeting data={data} />
-          </div>
+          {/* Dari sini (Hero dst) layout desktop dibagi 70/30: kolom kiri scroll
+              normal berisi section-section yang sudah ada, kolom kanan foto
+              besar sticky mengikuti scroll. Mobile tetap satu kolom penuh
+              seperti sebelumnya (panel sticky disembunyikan). */}
+          {/* items-stretch (default) sengaja TIDAK dioverride ke items-start: kolom
+              kanan harus ikut meregang setinggi kolom kiri supaya panel sticky
+              di dalamnya (h-screen) punya ruang scroll untuk benar-benar "nempel",
+              bukan cuma setinggi 100vh lalu ikut scroll normal. */}
+          <div className="md:flex">
+            <div className="md:w-[70%]">
+              <div id="hero">
+                <HeroGreeting data={data} />
+              </div>
 
-          {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
-              gate & hero lihat video tajam tapi tidak ada garis putus di antar
-              section (lihat .groove-page-blur di globals.css). */}
-          <div className="groove-page-blur">
-            <Reveal id="couple">
-              <CoupleProfile data={data} />
-            </Reveal>
+              {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
+                  gate & hero lihat video tajam tapi tidak ada garis putus di antar
+                  section (lihat .groove-page-blur di globals.css). */}
+              <div className="groove-page-blur">
+                <Reveal id="couple">
+                  <CoupleProfile data={data} />
+                </Reveal>
 
-            <Reveal id="love-story">
-              <LoveStory data={data} />
-            </Reveal>
+                <Reveal id="love-story">
+                  <LoveStory data={data} />
+                </Reveal>
 
-            <Reveal id="events">
-              <EventDetails
-                events={data.events}
-                title={`${data.groomNickname} & ${data.brideNickname}`}
-                lang={data.language}
-              />
-            </Reveal>
-            <Reveal>
-              <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
-            </Reveal>
-            <Reveal>
-              <DressCode items={data.dressCode} lang={data.language} />
-            </Reveal>
+                <Reveal id="events">
+                  <EventDetails
+                    events={data.events}
+                    title={`${data.groomNickname} & ${data.brideNickname}`}
+                    lang={data.language}
+                  />
+                </Reveal>
+                <Reveal>
+                  <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
+                </Reveal>
+                <Reveal>
+                  <DressCode items={data.dressCode} lang={data.language} />
+                </Reveal>
 
-            <Reveal id="rsvp">
-              <RSVPForm
-                invitationId={data.id ?? data.slug}
-                guestName={guestName}
-                guestId={guestId}
-                lang={data.language}
-              />
-            </Reveal>
+                <Reveal id="rsvp">
+                  <RSVPForm
+                    invitationId={data.id ?? data.slug}
+                    guestName={guestName}
+                    guestId={guestId}
+                    lang={data.language}
+                  />
+                </Reveal>
 
-            <div id="gallery">
-              <Reveal>
-                <Gallery images={visibleGalleryImages} lang={data.language} />
-              </Reveal>
+                <div id="gallery">
+                  <Reveal>
+                    <Gallery images={visibleGalleryImages} lang={data.language} />
+                  </Reveal>
+                </div>
+
+                <Reveal id="gift">
+                  <WeddingGift
+                    accounts={data.bankAccounts}
+                    image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                    lang={data.language}
+                  />
+                </Reveal>
+
+                <ClosingFooter data={data} />
+              </div>
             </div>
 
-            <Reveal id="gift">
-              <WeddingGift
-                accounts={data.bankAccounts}
-                image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
-                lang={data.language}
-              />
-            </Reveal>
-
-            <ClosingFooter data={data} />
+            <div className="hidden md:block md:w-[30%]">
+              <div className="md:sticky md:top-0 md:h-screen overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={stickyPhoto} alt="" className="h-full w-full object-cover" />
+              </div>
+            </div>
           </div>
         </div>
       )}
