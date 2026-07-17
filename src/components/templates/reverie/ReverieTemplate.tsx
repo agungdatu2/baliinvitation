@@ -92,6 +92,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
           brideNickname={data.brideNickname}
           eventDateLabel={eventDateLabel}
           guestName={guestName}
+          images={visibleGalleryImages}
           showIntro={data.hasIntro}
           lang={data.language}
           onOpen={handleOpen}

@@ -11,6 +11,7 @@ interface Props {
   brideNickname: string;
   eventDateLabel: string;
   guestName?: string;
+  images?: string[];
   showIntro?: boolean; // dari Package.hasIntro — false = lompat langsung ke gate nama tamu
   lang?: Lang;
   onOpen: () => void;
@@ -29,6 +30,7 @@ export default function SplashGate({
   brideNickname,
   eventDateLabel,
   guestName,
+  images,
   showIntro = true,
   lang,
   onOpen,
@@ -49,6 +51,7 @@ export default function SplashGate({
           <LoadingScreen
             label={t.weddingInvitationLabel}
             loadingText={t.loadingLabel}
+            images={images}
             onComplete={() => setShowLoading(false)}
           />
         )}
