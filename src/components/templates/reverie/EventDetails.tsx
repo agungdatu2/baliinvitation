@@ -51,7 +51,7 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
             const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd, t.eventTimeAtLabel);
             return (
               <div key={i}>
-                <h3 className="font-reverie-display leading-snug text-lg md:text-xl" style={{ fontWeight: 500 }}>
+                <h3 className="font-reverie-display leading-snug text-lg md:text-xl" style={{ fontWeight: 400 }}>
                   {ev.name}
                   {timeLabel && (
                     <>

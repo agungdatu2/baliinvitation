@@ -34,7 +34,7 @@ export default function BrideSection({ data }: { data: InvitationData }) {
         <p className="font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/70 mb-4">
           {t.theBride}
         </p>
-        <h2 className="font-reverie-display text-4xl md:text-5xl mb-6" style={{ fontWeight: 500 }}>
+        <h2 className="font-reverie-display text-4xl md:text-5xl mb-6" style={{ fontWeight: 400 }}>
           {data.brideFullName}
         </h2>
         <div className="flex items-center gap-4 mb-4">

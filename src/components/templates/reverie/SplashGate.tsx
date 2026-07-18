@@ -58,7 +58,7 @@ export default function SplashGate({
         <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-bg/60 mb-4">
           {t.theWeddingOf}
         </p>
-        <h1 className="font-reverie-display italic text-5xl mb-2" style={{ fontWeight: 400 }}>
+        <h1 className="font-reverie-display italic text-5xl mb-2" style={{ fontWeight: 300 }}>
           {groomNickname} <span className="not-italic text-groove-bg/60">&amp;</span> {brideNickname}
         </h1>
         <p className="font-groove-body text-sm text-groove-bg/80">{eventDateLabel}</p>
@@ -66,7 +66,7 @@ export default function SplashGate({
 
       <div className="relative z-10 px-4 max-w-sm w-full space-y-3">
         <p className="font-groove-body text-sm text-groove-bg/70">{t.dear}</p>
-        <p className="font-reverie-display text-xl" style={{ fontWeight: 700 }}>
+        <p className="font-reverie-display text-xl" style={{ fontWeight: 500 }}>
           {guestName || t.defaultGuestName}
         </p>
         <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">{t.misspellingApology}</p>

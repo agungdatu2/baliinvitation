@@ -48,7 +48,7 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
       />
       <h2
         className="font-reverie-display italic text-3xl md:text-4xl leading-tight max-w-xs mb-10"
-        style={{ fontWeight: 500 }}
+        style={{ fontWeight: 400 }}
       >
         {t.saveTheDateHeading}
       </h2>

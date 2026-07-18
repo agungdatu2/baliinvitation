@@ -8,7 +8,7 @@ export default function LiveStreaming({ url, note, lang }: { url?: string; note?
       <div className="max-w-5xl mx-auto">
       <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-2">{t.liveStreamingTitle}</p>
-        <h2 className="font-reverie-display italic text-2xl mb-4" style={{ fontWeight: 400 }}>
+        <h2 className="font-reverie-display italic text-2xl mb-4" style={{ fontWeight: 300 }}>
           {t.liveStreamingSubtitle}
         </h2>
         {note && <p className="font-groove-body text-sm text-groove-bg/80 mb-6">{note}</p>}

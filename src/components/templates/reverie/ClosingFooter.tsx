@@ -36,13 +36,13 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
     <footer className="groove-overlay-dark text-groove-bg text-center py-24 px-6 min-h-screen flex flex-col items-center justify-center">
       <div className="max-w-5xl mx-auto">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 500 }}>
+          <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 400 }}>
             {t.thankYou}
             <br />
             {t.forYourAttendance}
           </h2>
           <p className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-6">{t.honorText}</p>
-          <h3 className="font-reverie-display italic text-2xl" style={{ fontWeight: 500 }}>
+          <h3 className="font-reverie-display italic text-2xl" style={{ fontWeight: 400 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h3>
         </div>
