@@ -49,6 +49,21 @@ export default function ThemePreviewPage({
         title: "Awal Bertemu",
         story: "Kami dipertemukan dalam sebuah acara keluarga di Bali, dan sejak itu kisah kami dimulai.",
       },
+      {
+        title: "Menjalin Kedekatan",
+        story:
+          "Perlahan kami saling mengenal lebih dalam, melewati suka duka, dan belajar untuk saling menguatkan satu sama lain.",
+      },
+      {
+        title: "Melamar",
+        story:
+          "Di tempat yang penuh kenangan bagi kami berdua, ia berlutut dan bertanya apakah saya bersedia menghabiskan sisa hidup bersamanya.",
+      },
+      {
+        title: "Menuju Pernikahan",
+        story:
+          "Kini kami bersiap merayakan babak baru dalam hidup kami, dan dengan penuh syukur mengundang Anda untuk turut merayakannya.",
+      },
     ],
     events: [
       {
