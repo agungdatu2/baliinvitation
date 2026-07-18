@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Cormorant, Hanken_Grotesk } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 
 // Dipakai tema "Lume" (redesign fine-art/editorial paper) — self-hosted otomatis
@@ -30,6 +31,12 @@ const cormorantLoading = Cormorant({
   style: ["italic", "normal"],
   variable: "--font-loading-display",
 });
+// Dipakai khusus tema "Reverie" untuk heading (font-reverie-display) — terpisah dari
+// --font-groove-display supaya tema Lume tidak ikut berubah.
+const blindsAudience = localFont({
+  src: "./fonts/BlindsAudience.otf",
+  variable: "--font-reverie-display",
+});
 
 export const metadata: Metadata = {
   title: "BaliInvitation - Undangan Digital",
@@ -40,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${blindsAudience.variable}`}
     >
       <body>{children}</body>
     </html>

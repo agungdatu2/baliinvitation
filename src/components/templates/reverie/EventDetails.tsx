@@ -43,7 +43,7 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
   return (
     <section className="relative z-10 text-groove-bg px-6 md:px-14 py-24">
       <div className="max-w-md">
-        <p className="font-groove-display italic text-3xl md:text-4xl leading-tight mb-8">{heading}</p>
+        <p className="font-reverie-display italic text-3xl md:text-4xl leading-tight mb-8">{heading}</p>
         <div className="h-px bg-groove-bg/40 mb-10" />
 
         <div className="space-y-8">
@@ -51,7 +51,7 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
             const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd, t.eventTimeAtLabel);
             return (
               <div key={i}>
-                <h3 className="font-groove-display leading-snug text-lg md:text-xl" style={{ fontWeight: 500 }}>
+                <h3 className="font-reverie-display leading-snug text-lg md:text-xl" style={{ fontWeight: 500 }}>
                   {ev.name}
                   {timeLabel && (
                     <>
@@ -61,7 +61,7 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
                   )}
                 </h3>
                 {ev.venueName && (
-                  <p className="font-groove-display italic text-sm mt-2.5">{ev.venueName}</p>
+                  <p className="font-reverie-display italic text-sm mt-2.5">{ev.venueName}</p>
                 )}
                 {ev.location && (
                   <p className="font-groove-body text-xs text-groove-bg/80 leading-relaxed mt-1.5 max-w-sm">

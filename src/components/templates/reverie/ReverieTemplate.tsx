@@ -141,8 +141,8 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
             />
           )}
 
-          {/* Layout desktop dibagi kolom kiri 65% (foto besar sticky mengikuti
-              scroll) dan kolom kanan 35% (scroll normal). Berlaku dari tahap
+          {/* Layout desktop dibagi kolom kiri 70% (foto besar sticky mengikuti
+              scroll) dan kolom kanan 30% (scroll normal). Berlaku dari tahap
               gate (sebelum dibuka) sampai footer — bukan cuma setelah dibuka —
               supaya panel sticky sudah kelihatan sejak awal. Mobile tetap satu
               kolom penuh (panel sticky disembunyikan). */}
@@ -151,14 +151,14 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
               sticky di dalamnya (h-screen) punya ruang scroll untuk benar-benar
               "nempel", bukan cuma setinggi 100vh lalu ikut scroll normal. */}
           <div className="md:flex">
-            <div className="hidden md:block md:w-[65%]">
+            <div className="hidden md:block md:w-[70%]">
               <div className="relative md:sticky md:top-0 md:h-screen overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={stickyPhoto} alt="" className="h-full w-full object-cover" />
 
                 {/* Nama mempelai + tombol play/pause lagu latar, overlay di bawah foto sticky. */}
                 <div className="absolute inset-x-0 bottom-0 pt-24 pb-10 px-6 flex flex-col items-center gap-4 bg-gradient-to-t from-black/55 via-black/10 to-transparent">
-                  <p className="font-groove-display uppercase tracking-[0.35em] text-sm text-white">
+                  <p className="font-reverie-display uppercase tracking-[0.35em] text-sm text-white">
                     {data.groomNickname} &amp; {data.brideNickname}
                   </p>
                   {data.musicUrl && (
@@ -178,7 +178,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
               </div>
             </div>
 
-            <div className="md:w-[35%]">
+            <div className="md:w-[30%]">
               {!opened ? (
                 <SplashGate
                   groomNickname={data.groomNickname}

@@ -34,11 +34,11 @@ export default function GroomSection({ data }: { data: InvitationData }) {
         <p className="font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/70 mb-4">
           {t.theGroom}
         </p>
-        <h2 className="font-groove-display text-4xl md:text-5xl mb-6" style={{ fontWeight: 500 }}>
+        <h2 className="font-reverie-display text-4xl md:text-5xl mb-6" style={{ fontWeight: 500 }}>
           {data.groomFullName}
         </h2>
         <div className="flex items-center gap-4 mb-4">
-          <p className="font-groove-display italic text-lg shrink-0">{t.sonOf}</p>
+          <p className="font-reverie-display italic text-lg shrink-0">{t.sonOf}</p>
           <div className="h-px flex-1 bg-groove-bg/40" />
         </div>
         <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed mb-8">

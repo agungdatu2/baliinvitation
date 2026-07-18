@@ -47,7 +47,7 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
         className="w-36 h-36 object-cover mb-8"
       />
       <h2
-        className="font-groove-display italic text-3xl md:text-4xl leading-tight max-w-xs mb-10"
+        className="font-reverie-display italic text-3xl md:text-4xl leading-tight max-w-xs mb-10"
         style={{ fontWeight: 500 }}
       >
         {t.saveTheDateHeading}
@@ -61,8 +61,8 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
           [t.seconds, parts.s],
         ].map(([label, value]) => (
           <div key={label as string} className="text-center">
-            <div className="font-groove-display text-3xl tabular-nums">{String(value).padStart(2, "0")}</div>
-            <div className="font-groove-display italic text-sm mt-1">{label}</div>
+            <div className="font-reverie-display text-3xl tabular-nums">{String(value).padStart(2, "0")}</div>
+            <div className="font-reverie-display italic text-sm mt-1">{label}</div>
           </div>
         ))}
       </div>

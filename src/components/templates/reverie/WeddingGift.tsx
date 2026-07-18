@@ -31,7 +31,7 @@ export default function WeddingGift({
         )}
 
         <div className={image ? "" : "md:col-span-2 max-w-md"}>
-          <h2 className="font-groove-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 400 }}>
+          <h2 className="font-reverie-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 400 }}>
             {t.weddingGiftHeading}
           </h2>
           <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm">
@@ -113,7 +113,7 @@ function BankAccountsModal({
             }}
           >
             <p className="font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/70 mb-6">{acc.bank}</p>
-            <p className="font-groove-display text-2xl tracking-widest mb-6" style={{ fontWeight: 600 }}>
+            <p className="font-reverie-display text-2xl tracking-widest mb-6" style={{ fontWeight: 600 }}>
               {acc.accountNumber}
             </p>
             <div className="flex items-center justify-between">

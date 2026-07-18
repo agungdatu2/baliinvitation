@@ -100,7 +100,7 @@ export default function NavMenu({
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-groove-display text-2xl md:text-3xl text-groove-ink hover:text-groove-secondary transition-colors"
+              className="font-reverie-display text-2xl md:text-3xl text-groove-ink hover:text-groove-secondary transition-colors"
             >
               {t[l.key]}
             </a>

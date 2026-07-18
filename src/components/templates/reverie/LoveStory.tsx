@@ -11,7 +11,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
   return (
     <section className="relative h-[100svh] flex items-center text-groove-bg px-6 md:px-14">
       <div className="max-w-2xl mx-auto md:mx-0">
-        <h2 className="font-groove-display italic text-4xl md:text-5xl leading-tight mb-10" style={{ fontWeight: 500 }}>
+        <h2 className="font-reverie-display italic text-4xl md:text-5xl leading-tight mb-10" style={{ fontWeight: 500 }}>
           {t.loveStoryHeading}
         </h2>
 
@@ -28,7 +28,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
           ))}
         </div>
 
-        <p className="font-groove-display italic text-xl mt-10 text-right">
+        <p className="font-reverie-display italic text-xl mt-10 text-right">
           {data.groomNickname} &amp; {data.brideNickname}
         </p>
       </div>

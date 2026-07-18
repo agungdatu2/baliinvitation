@@ -33,7 +33,7 @@ export default function PrayerSection({ data }: { data: InvitationData }) {
         <p className="font-groove-body text-base text-groove-bg/90 leading-relaxed whitespace-pre-line">
           {data.quote || t.defaultPrayerQuote}
         </p>
-        <p className="font-groove-display italic text-xl mt-8 text-right">
+        <p className="font-reverie-display italic text-xl mt-8 text-right">
           {data.groomNickname} &amp; {data.brideNickname}
         </p>
       </div>
