@@ -26,10 +26,10 @@ export default function PrayerSection({ data }: { data: InvitationData }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent -z-10" />
 
+      {/* t.prayerLabel ("Doa"/"Prayer") sengaja TIDAK ditampilkan di sini — cuma
+          dipakai sebagai label field di form admin, bukan teks yang tampil
+          di undangan publik. */}
       <div className="relative px-6 md:px-14 pb-16 md:pb-20 max-w-xl">
-        <h2 className="font-groove-display text-3xl mb-4" style={{ fontWeight: 500 }}>
-          {t.prayerLabel}
-        </h2>
         <p className="font-groove-body text-base text-groove-bg/90 leading-relaxed whitespace-pre-line">
           {data.quote || t.defaultPrayerQuote}
         </p>
