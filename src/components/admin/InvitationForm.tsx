@@ -39,6 +39,7 @@ const defaultValues: InvitationFormValues = {
   brideInstagram: "",
   bridePhoto: "",
   coverImage: "",
+  quote: "",
   greeting: "",
   musicUrl: "",
   livestreamUrl: "",
@@ -234,9 +235,14 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
         {selectedTemplateKey === "reverie" && (
-          <Field label="URL Foto Background Gate (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
-            <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
-          </Field>
+          <>
+            <Field label="URL Foto Background Gate (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+              <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
+            </Field>
+            <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie, opsional — kosongkan untuk pakai kutipan default)">
+              <textarea {...register("quote")} className="input" rows={3} placeholder="mis. kutipan ayat, doa, atau kata-kata pernikahan" />
+            </Field>
+          </>
         )}
         <Field label="URL Musik Latar (mp3)">
           <input {...register("musicUrl")} className="input" placeholder="https://..." />

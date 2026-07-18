@@ -39,6 +39,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     brideInstagram: invitation.brideInstagram ?? "",
     bridePhoto: invitation.bridePhoto ?? "",
     coverImage: invitation.coverImage ?? "",
+    quote: invitation.quote ?? "",
     greeting: invitation.greeting ?? "",
     musicUrl: invitation.musicUrl ?? "",
     livestreamUrl: invitation.livestreamUrl ?? "",
