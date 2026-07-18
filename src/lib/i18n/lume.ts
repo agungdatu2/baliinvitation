@@ -21,6 +21,11 @@ export const LUME_DICT = {
     defaultGreeting: "Dengan penuh syukur, kami mengundang Anda untuk merayakan hari bahagia kami.",
     scroll: "Scroll",
 
+    // PrayerSection
+    prayerLabel: "Doa",
+    defaultPrayerQuote:
+      "“Kasih itu sabar, kasih itu murah hati. Ia tidak cemburu, ia tidak memegahkan diri dan tidak sombong. Kasih tidak berkesudahan.”",
+
     // CoupleProfile
     theGroom: "The Groom",
     theBride: "The Bride",
@@ -117,6 +122,10 @@ export const LUME_DICT = {
 
     defaultGreeting: "With heartfelt gratitude, we invite you to celebrate our special day with us.",
     scroll: "Scroll",
+
+    prayerLabel: "Prayer",
+    defaultPrayerQuote:
+      "“Love is patient, love is kind. It does not envy, it does not boast, it is not proud. Love never fails.”",
 
     theGroom: "The Groom",
     theBride: "The Bride",

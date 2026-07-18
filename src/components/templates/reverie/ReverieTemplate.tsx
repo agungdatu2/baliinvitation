@@ -10,6 +10,7 @@ import LoadingScreen from "./LoadingScreen";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
+import PrayerSection from "./PrayerSection";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
@@ -71,6 +72,15 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
       window.removeEventListener("focus", resumeIfWasPlaying);
     };
   }, [musicPlaying]);
+
+  // scroll-snap (Hero -> PrayerSection -> section-section berikutnya) cuma aktif
+  // setelah undangan dibuka — sebelum itu (loading/gate) bukan alur multi-section
+  // yang perlu snap. Class-nya di-toggle ke <html> karena scroll-snap-type harus
+  // dipasang di elemen yang benar-benar scroll (viewport), bukan div wrapper biasa.
+  useEffect(() => {
+    if (opened) document.documentElement.classList.add("reverie-snap-scroll");
+    return () => document.documentElement.classList.remove("reverie-snap-scroll");
+  }, [opened]);
 
   const t = getDict(data.language);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
@@ -179,9 +189,14 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                 />
               ) : (
                 <>
-                  <div id="hero">
+                  <div id="hero" className="snap-start">
                     <HeroGreeting data={data} />
                   </div>
+
+                  {/* Section "Doa" — foto background sendiri (bukan FixedVideoBackground),
+                      full-viewport, sengaja DI LUAR .groove-page-blur karena sudah punya
+                      foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
+                  <PrayerSection data={data} />
 
                   {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
                       gate & hero lihat video tajam tapi tidak ada garis putus di antar

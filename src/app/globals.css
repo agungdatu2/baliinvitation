@@ -11,6 +11,15 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Scroll-snap khusus tema Reverie — di-toggle ke <html> lewat useEffect di
+   ReverieTemplate (bukan diaktifkan global di semua halaman/tema lain).
+   scroll-snap-type dipasang di elemen yang benar-benar scroll (html/viewport,
+   bukan div wrapper), section yang mau nge-snap ditandai .snap-start (Tailwind
+   scroll-snap-align: start) satu per satu. */
+html.reverie-snap-scroll {
+  scroll-snap-type: y mandatory;
+}
+
 @layer components {
   .input {
     @apply mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-lume-gold;
