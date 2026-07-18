@@ -36,6 +36,7 @@ export const LUME_DICT = {
     loveStoryPrefix: "A Journey In Love: The",
     loveStoryAnd: "and",
     loveStorySuffix: "Connection",
+    loveStoryHeading: "Perjalanan Dua Jiwa dalam Cinta",
 
     // EventDetails
     at: "AT",
@@ -135,6 +136,7 @@ export const LUME_DICT = {
     loveStoryPrefix: "A Journey In Love: The",
     loveStoryAnd: "and",
     loveStorySuffix: "Connection",
+    loveStoryHeading: "The Journey of Two Souls in Love",
 
     at: "AT",
     days: "Days",
