@@ -12,7 +12,7 @@ import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
 import PrayerSection from "./PrayerSection";
 import GroomSection from "./GroomSection";
-import CoupleProfile from "./CoupleProfile";
+import BrideSection from "./BrideSection";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
 import EventDetails from "./EventDetails";
@@ -199,18 +199,18 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                       foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
                   <PrayerSection data={data} />
 
-                  {/* Section "The Groom" — foto pengantin pria full-viewport sendiri,
-                      sama pola dengan PrayerSection (di luar .groove-page-blur). */}
-                  <GroomSection data={data} />
+                  {/* Section "The Groom" & "The Bride" — foto masing-masing full-viewport
+                      sendiri, sama pola dengan PrayerSection (di luar .groove-page-blur).
+                      Menggantikan CoupleProfile (kartu ganda kecil) sepenuhnya. */}
+                  <div id="couple">
+                    <GroomSection data={data} />
+                    <BrideSection data={data} />
+                  </div>
 
                   {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
                       gate & hero lihat video tajam tapi tidak ada garis putus di antar
                       section (lihat .groove-page-blur di globals.css). */}
                   <div className="groove-page-blur">
-                    <Reveal id="couple">
-                      <CoupleProfile data={data} />
-                    </Reveal>
-
                     <Reveal id="love-story">
                       <LoveStory data={data} />
                     </Reveal>
