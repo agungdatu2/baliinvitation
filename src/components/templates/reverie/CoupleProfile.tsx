@@ -17,19 +17,11 @@ function InstagramIcon({ className }: { className?: string }) {
 
 export default function CoupleProfile({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
+  // Kartu "The Groom" sudah dipindah ke GroomSection.tsx (full-viewport, dedicated
+  // section) — di sini tinggal kartu bride, sampai dibuatkan BrideSection serupa.
   return (
     <section className="groove-overlay text-groove-bg py-24 px-6">
       <div className="max-w-5xl mx-auto space-y-20 md:space-y-28">
-        <ProfileCard
-          label={t.theGroom}
-          childLabel={t.sonOf}
-          nickname={data.groomNickname}
-          fullName={data.groomFullName}
-          parents={data.groomParents}
-          instagram={data.groomInstagram}
-          photo={data.groomPhoto}
-          imageSeed="reverie-groom"
-        />
         <ProfileCard
           label={t.theBride}
           childLabel={t.daughterOf}

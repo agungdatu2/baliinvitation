@@ -11,6 +11,7 @@ import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import HeroGreeting from "./HeroGreeting";
 import PrayerSection from "./PrayerSection";
+import GroomSection from "./GroomSection";
 import CoupleProfile from "./CoupleProfile";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
@@ -197,6 +198,10 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                       full-viewport, sengaja DI LUAR .groove-page-blur karena sudah punya
                       foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
                   <PrayerSection data={data} />
+
+                  {/* Section "The Groom" — foto pengantin pria full-viewport sendiri,
+                      sama pola dengan PrayerSection (di luar .groove-page-blur). */}
+                  <GroomSection data={data} />
 
                   {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
                       gate & hero lihat video tajam tapi tidak ada garis putus di antar
