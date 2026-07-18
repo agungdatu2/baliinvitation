@@ -8,6 +8,7 @@ export default function PlaceholderPhoto({ label, className = "" }: { label?: st
   );
 }
 
-// Klip CC0 pendek dari MDN (dibuat khusus untuk contoh/prototipe) — dipakai sebagai
-// video hero default kalau admin belum isi `heroVideoUrl` dengan footage venue asli.
-export const DEFAULT_HERO_VIDEO_URL = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+// Klip stok gratis (Mixkit, no watermark) — sinar matahari menembus dedaunan pohon,
+// nuansa lebih related ke wedding — dipakai sebagai video hero default kalau admin
+// belum isi `heroVideoUrl` dengan footage venue asli.
+export const DEFAULT_HERO_VIDEO_URL = "https://assets.mixkit.co/videos/34371/34371-720.mp4";
