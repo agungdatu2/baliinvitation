@@ -35,7 +35,7 @@ export default function Reveal({
     <div
       ref={ref}
       id={id}
-      className={`snap-start transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0 blur-none" : "opacity-0 translate-y-6 blur-sm"} ${className}`}
+      className={`snap-start transition-all duration-[1400ms] ease-out ${visible ? "opacity-100 translate-y-0 blur-none" : "opacity-0 translate-y-6 blur-sm"} ${className}`}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >
       {children}
