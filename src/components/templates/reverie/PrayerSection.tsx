@@ -17,7 +17,7 @@ export default function PrayerSection({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
 
   return (
-    <section className="relative z-10 h-[100svh] snap-start overflow-hidden flex items-end text-groove-bg">
+    <section className="relative z-10 h-[100svh] overflow-hidden flex items-end text-groove-bg">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={data.coverImage || DEFAULT_BACKGROUND}

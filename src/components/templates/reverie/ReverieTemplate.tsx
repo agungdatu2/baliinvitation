@@ -190,21 +190,27 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                 />
               ) : (
                 <>
-                  <div id="hero" className="snap-start">
+                  <Reveal id="hero">
                     <HeroGreeting data={data} />
-                  </div>
+                  </Reveal>
 
                   {/* Section "Doa" — foto background sendiri (bukan FixedVideoBackground),
                       full-viewport, sengaja DI LUAR .groove-page-blur karena sudah punya
                       foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
-                  <PrayerSection data={data} />
+                  <Reveal>
+                    <PrayerSection data={data} />
+                  </Reveal>
 
                   {/* Section "The Groom" & "The Bride" — foto masing-masing full-viewport
                       sendiri, sama pola dengan PrayerSection (di luar .groove-page-blur).
                       Menggantikan CoupleProfile (kartu ganda kecil) sepenuhnya. */}
                   <div id="couple">
-                    <GroomSection data={data} />
-                    <BrideSection data={data} />
+                    <Reveal>
+                      <GroomSection data={data} />
+                    </Reveal>
+                    <Reveal>
+                      <BrideSection data={data} />
+                    </Reveal>
                   </div>
 
                   {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
