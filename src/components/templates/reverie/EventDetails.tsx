@@ -1,117 +1,88 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { MapPin, CalendarPlus } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { EventItem } from "@/types/invitation";
-import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
-function getTimeParts(target: Date) {
-  const diff = Math.max(0, target.getTime() - Date.now());
-  const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((diff / (1000 * 60)) % 60);
-  const s = Math.floor((diff / 1000) % 60);
-  return { d, h, m, s };
+// Format "15:00" -> { label: "3.00", period: "PM" }. Return null kalau formatnya
+// tidak dikenali (mis. field kosong) supaya caller bisa fallback dengan aman.
+function formatTime12(hhmm?: string) {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(hhmm?.trim() ?? "");
+  if (!match) return null;
+  let hour = parseInt(match[1], 10);
+  const minute = match[2];
+  const period = hour >= 12 ? "PM" : "AM";
+  hour = hour % 12 || 12;
+  return { label: `${hour}.${minute}`, period };
 }
 
-export default function EventDetails({
-  events,
-  title,
-  lang,
-}: {
-  events: EventItem[];
-  title: string;
-  lang?: Lang;
-}) {
+// Gabung timeStart-timeEnd jadi satu baris seperti referensi ("9.00 - 10.00 AM"),
+// AM/PM cuma ditulis sekali di akhir kalau kedua waktu ada di periode yang sama.
+function formatTimeRange(timeStart: string, timeEnd: string | undefined, atLabel: string) {
+  const start = formatTime12(timeStart);
+  if (!start) return null;
+  const end = formatTime12(timeEnd);
+  if (!end) return `${atLabel} ${start.label} ${start.period}`;
+  if (end.period === start.period) return `${atLabel} ${start.label} - ${end.label} ${end.period}`;
+  return `${atLabel} ${start.label} ${start.period} - ${end.label} ${end.period}`;
+}
+
+// Section jadwal acara — satu heading tanggal besar (italic, diambil dari acara
+// pertama) di atas, lalu tiap acara ditampilkan ringkas: nama + jam, nama venue
+// (italic), alamat, tombol Google Maps. Sengaja tanpa countdown/calendar-button
+// mengikuti referensi desain yang diberikan (minimal, bukan dashboard-style).
+export default function EventDetails({ events, lang }: { events: EventItem[]; lang?: Lang }) {
   if (!events?.length) return null;
-  return (
-    <section className="groove-overlay-dark text-groove-bg">
-      {/* max-w-5xl sama seperti semua section lain (mengikuti LoveStory) — supaya
-          lebar section ini konsisten, bukan full-bleed edge-to-edge. */}
-      <div className="max-w-5xl mx-auto px-6">
-        {events.map((ev, i) => (
-          <EventRow key={i} event={ev} title={title} last={i === events.length - 1} lang={lang} />
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function EventRow({ event, title, last, lang }: { event: EventItem; title: string; last: boolean; lang?: Lang }) {
   const t = getDict(lang);
-  const eventDateTime = new Date(`${event.date}T${event.timeStart || "00:00"}`);
-  const [parts, setParts] = useState(() => getTimeParts(eventDateTime));
 
-  useEffect(() => {
-    const t = setInterval(() => setParts(getTimeParts(eventDateTime)), 1000);
-    return () => clearInterval(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [event.date, event.timeStart]);
-
-  const calendarUrl = buildGoogleCalendarUrl({
-    title: `${event.name} - ${title}`,
-    location: event.location,
-    start: eventDateTime,
-    end: new Date(eventDateTime.getTime() + 3 * 60 * 60 * 1000),
+  const heading = new Date(events[0].date).toLocaleDateString(t.dateLocale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
   });
 
   return (
-    <div className={`grid md:grid-cols-2 ${last ? "" : "border-b border-groove-line-dark"}`}>
-      <div className="py-10 md:py-14 md:pr-10 flex flex-col justify-center">
-        <p className="font-groove-body text-lg text-groove-bg/90">
-          {new Date(event.date).toLocaleDateString(t.dateLocale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-        </p>
-        <p className="font-groove-body text-lg text-groove-bg/90 mb-4">
-          {t.at} {event.timeStart} {event.timezone}
-        </p>
-        {event.location && (
-          <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed mb-5 max-w-sm">{event.location}</p>
-        )}
+    <section className="relative z-10 text-groove-bg px-6 md:px-14 py-24">
+      <div className="max-w-md">
+        <p className="font-groove-display italic text-4xl md:text-5xl leading-tight mb-8">{heading}</p>
+        <div className="h-px bg-groove-bg/40 mb-10" />
 
-        <div className="flex gap-5 mb-6">
-          {[
-            [t.days, parts.d],
-            [t.hours, parts.h],
-            [t.minutes, parts.m],
-            [t.seconds, parts.s],
-          ].map(([label, value]) => (
-            <div key={label as string} className="text-center">
-              <div className="font-groove-display text-xl tabular-nums" style={{ fontWeight: 600 }}>
-                {String(value).padStart(2, "0")}
+        <div className="space-y-10">
+          {events.map((ev, i) => {
+            const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd, t.eventTimeAtLabel);
+            return (
+              <div key={i}>
+                <h3 className="font-groove-display leading-snug text-2xl md:text-3xl" style={{ fontWeight: 500 }}>
+                  {ev.name}
+                  {timeLabel && (
+                    <>
+                      <br />
+                      {timeLabel}
+                    </>
+                  )}
+                </h3>
+                {ev.venueName && (
+                  <p className="font-groove-display italic text-lg mt-3">{ev.venueName}</p>
+                )}
+                {ev.location && (
+                  <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mt-2 max-w-sm">
+                    {ev.location}
+                  </p>
+                )}
+                {ev.mapsUrl && (
+                  <a
+                    href={ev.mapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-groove-label mt-5 inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
+                  >
+                    <MapPin className="h-3.5 w-3.5" /> {t.googleMaps}
+                  </a>
+                )}
               </div>
-              <div className="font-groove-label text-[0.6rem] uppercase tracking-widest text-groove-bg/60 mt-0.5">{label}</div>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          {event.mapsUrl && (
-            <a
-              href={event.mapsUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="font-groove-label inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
-            >
-              <MapPin className="h-3.5 w-3.5" /> {t.googleMaps}
-            </a>
-          )}
-          <a
-            href={calendarUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="font-groove-label inline-flex items-center gap-1.5 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-bg hover:text-groove-stone transition"
-          >
-            <CalendarPlus className="h-3.5 w-3.5" /> {t.saveTheDate}
-          </a>
+            );
+          })}
         </div>
       </div>
-
-      <div className="py-10 md:py-14 md:pl-10 flex items-center">
-        <h3 className="font-groove-display uppercase leading-[0.95] text-4xl md:text-5xl" style={{ fontWeight: 500 }}>
-          {event.name}
-        </h3>
-      </div>
-    </div>
+    </section>
   );
 }

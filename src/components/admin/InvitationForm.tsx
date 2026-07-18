@@ -50,7 +50,7 @@ const defaultValues: InvitationFormValues = {
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
   events: [
-    { name: "Resepsi", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", location: "", mapsUrl: "" },
+    { name: "Resepsi", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" },
   ],
   bankAccounts: [{ bank: "", accountNumber: "", accountName: "" }],
   dressCode: [],
@@ -290,7 +290,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <button
             type="button"
             onClick={() =>
-              events.append({ name: "", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", location: "", mapsUrl: "" })
+              events.append({ name: "", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" })
             }
             className="btn-add"
           >
@@ -313,6 +313,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             </Field>
             <Field label="Zona Waktu">
               <input {...register(`events.${i}.timezone`)} className="input" placeholder="WITA" />
+            </Field>
+            <Field label="Nama Venue (opsional, mis. The Garden Grille)">
+              <input {...register(`events.${i}.venueName`)} className="input" />
             </Field>
             <Field label="Lokasi">
               <input {...register(`events.${i}.location`)} className="input" />

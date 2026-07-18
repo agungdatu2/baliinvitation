@@ -11,6 +11,7 @@ export const eventItemSchema = z.object({
   timeStart: z.string().min(1, "Jam mulai wajib diisi"),
   timeEnd: z.string().optional(),
   timezone: z.string().optional(),
+  venueName: z.string().optional(),
   location: z.string().min(1, "Lokasi wajib diisi"),
   mapsUrl: z.string().url("URL Google Maps tidak valid").optional().or(z.literal("")),
 });

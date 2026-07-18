@@ -9,6 +9,7 @@ export interface EventItem {
   timeStart: string; // "15:00"
   timeEnd?: string; // "Selesai" jika kosong
   timezone?: string; // "WITA" | "WIB" | "WIT"
+  venueName?: string; // nama venue singkat, mis. "The Garden Grille" — dipisah dari `location` (alamat lengkap)
   location: string;
   mapsUrl?: string;
 }

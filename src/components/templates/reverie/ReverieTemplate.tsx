@@ -216,11 +216,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                     </Reveal>
 
                     <Reveal id="events">
-                      <EventDetails
-                        events={data.events}
-                        title={`${data.groomNickname} & ${data.brideNickname}`}
-                        lang={data.language}
-                      />
+                      <EventDetails events={data.events} lang={data.language} />
                     </Reveal>
                     <Reveal>
                       <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />

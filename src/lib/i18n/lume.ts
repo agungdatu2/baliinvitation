@@ -40,6 +40,7 @@ export const LUME_DICT = {
 
     // EventDetails
     at: "AT",
+    eventTimeAtLabel: "Pukul",
     days: "Hari",
     hours: "Jam",
     minutes: "Menit",
@@ -139,6 +140,7 @@ export const LUME_DICT = {
     loveStoryHeading: "The Journey of Two Souls in Love",
 
     at: "AT",
+    eventTimeAtLabel: "At",
     days: "Days",
     hours: "Hours",
     minutes: "Minutes",
