@@ -33,8 +33,8 @@ const cormorantLoading = Cormorant({
 });
 // Dipakai khusus tema "Reverie" untuk heading (font-reverie-display) — terpisah dari
 // --font-groove-display supaya tema Lume tidak ikut berubah.
-const symphonigraphy = localFont({
-  src: "./fonts/SymphonigraphyRegular.otf",
+const nikahanScript = localFont({
+  src: "./fonts/NikahanScript.otf",
   variable: "--font-reverie-display",
 });
 
@@ -47,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${symphonigraphy.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${nikahanScript.variable}`}
     >
       <body>{children}</body>
     </html>

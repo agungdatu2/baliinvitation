@@ -42,7 +42,7 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
             {t.forYourAttendance}
           </h2>
           <p className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-6">{t.honorText}</p>
-          <h3 className="font-reverie-display uppercase text-lg tracking-widest" style={{ fontWeight: 500 }}>
+          <h3 className="font-reverie-display italic text-2xl" style={{ fontWeight: 500 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h3>
         </div>

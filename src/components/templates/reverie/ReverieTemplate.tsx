@@ -158,7 +158,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
 
                 {/* Nama mempelai + tombol play/pause lagu latar, overlay di bawah foto sticky. */}
                 <div className="absolute inset-x-0 bottom-0 pt-24 pb-10 px-6 flex flex-col items-center gap-4 bg-gradient-to-t from-black/55 via-black/10 to-transparent">
-                  <p className="font-reverie-display uppercase tracking-[0.35em] text-sm text-white">
+                  <p className="font-reverie-display text-2xl text-white">
                     {data.groomNickname} &amp; {data.brideNickname}
                   </p>
                   {data.musicUrl && (
