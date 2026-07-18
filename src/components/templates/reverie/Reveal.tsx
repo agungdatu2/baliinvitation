@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Fade + slide-up on scroll-into-view, staggered by `delay` — same motion language as
-// most modern invitation templates (fade + translateY, cascading per element).
+// Fade + blur + slide-up on scroll-into-view, staggered by `delay` — same motion
+// language as most modern invitation templates, with a soft blur-to-sharp settle
+// on top of the usual fade + translateY.
 export default function Reveal({
   children,
   delay = 0,
@@ -34,7 +35,7 @@ export default function Reveal({
     <div
       ref={ref}
       id={id}
-      className={`snap-start transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} ${className}`}
+      className={`snap-start transition-all duration-700 ease-out ${visible ? "opacity-100 translate-y-0 blur-none" : "opacity-0 translate-y-6 blur-sm"} ${className}`}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >
       {children}
