@@ -43,15 +43,15 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
   return (
     <section className="relative z-10 text-groove-bg px-6 md:px-14 py-24">
       <div className="max-w-md">
-        <p className="font-groove-display italic text-4xl md:text-5xl leading-tight mb-8">{heading}</p>
+        <p className="font-groove-display italic text-3xl md:text-4xl leading-tight mb-8">{heading}</p>
         <div className="h-px bg-groove-bg/40 mb-10" />
 
-        <div className="space-y-10">
+        <div className="space-y-8">
           {events.map((ev, i) => {
             const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd, t.eventTimeAtLabel);
             return (
               <div key={i}>
-                <h3 className="font-groove-display leading-snug text-2xl md:text-3xl" style={{ fontWeight: 500 }}>
+                <h3 className="font-groove-display leading-snug text-lg md:text-xl" style={{ fontWeight: 500 }}>
                   {ev.name}
                   {timeLabel && (
                     <>
@@ -61,10 +61,10 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
                   )}
                 </h3>
                 {ev.venueName && (
-                  <p className="font-groove-display italic text-lg mt-3">{ev.venueName}</p>
+                  <p className="font-groove-display italic text-sm mt-2.5">{ev.venueName}</p>
                 )}
                 {ev.location && (
-                  <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mt-2 max-w-sm">
+                  <p className="font-groove-body text-xs text-groove-bg/80 leading-relaxed mt-1.5 max-w-sm">
                     {ev.location}
                   </p>
                 )}
@@ -73,9 +73,9 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
                     href={ev.mapsUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="font-groove-label mt-5 inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-xs uppercase tracking-widest px-6 py-2.5 rounded-md hover:bg-groove-stone transition"
+                    className="font-groove-label mt-4 inline-flex items-center gap-1.5 bg-groove-stone/70 border border-groove-line-dark text-groove-bg text-[0.65rem] uppercase tracking-widest px-5 py-2 rounded-md hover:bg-groove-stone transition"
                   >
-                    <MapPin className="h-3.5 w-3.5" /> {t.googleMaps}
+                    <MapPin className="h-3 w-3" /> {t.googleMaps}
                   </a>
                 )}
               </div>
