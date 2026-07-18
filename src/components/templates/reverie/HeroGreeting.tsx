@@ -33,7 +33,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
           <Flower2 className="h-7 w-7 text-groove-bg/80" strokeWidth={1.25} />
         </motion.div>
 
-        <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="font-reverie-display text-sm md:text-base text-groove-bg/80 mb-3">
+        <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-3">
           {t.heroInviteLabel}
         </motion.p>
 
@@ -46,7 +46,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="font-reverie-display text-xs md:text-sm text-groove-bg/70 tracking-widest mt-8"
+          className="font-groove-body text-xs md:text-sm text-groove-bg/70 tracking-widest mt-8"
         >
           {eventDateLabel}
         </motion.p>
