@@ -46,6 +46,7 @@ const defaultValues: InvitationFormValues = {
   livestreamNote: "",
   heroVideoUrl: "",
   reverieGateImage: "",
+  reverieSaveTheDateImage: "",
   eventDate: "",
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
@@ -241,6 +242,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             </Field>
             <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie, opsional — kosongkan untuk pakai kutipan default)">
               <textarea {...register("quote")} className="input" rows={3} placeholder="mis. kutipan ayat, doa, atau kata-kata pernikahan" />
+            </Field>
+            <Field label="URL Foto Section Save the Date (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+              <input {...register("reverieSaveTheDateImage")} className="input" placeholder="https://..." />
             </Field>
           </>
         )}

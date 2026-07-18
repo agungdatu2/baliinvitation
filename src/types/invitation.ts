@@ -57,6 +57,7 @@ export interface InvitationData {
   livestreamNote?: string;
   heroVideoUrl?: string;
   reverieGateImage?: string; // foto background layar gate — khusus tema Reverie
+  reverieSaveTheDateImage?: string; // foto kecil di section Save the Date/countdown — khusus tema Reverie
 
   eventDate: string; // ISO
 

@@ -41,6 +41,7 @@ export const LUME_DICT = {
     // EventDetails
     at: "AT",
     eventTimeAtLabel: "Pukul",
+    saveTheDateHeading: "Sebentar Lagi Waktunya Merayakan",
     days: "Hari",
     hours: "Jam",
     minutes: "Menit",
@@ -141,6 +142,7 @@ export const LUME_DICT = {
 
     at: "AT",
     eventTimeAtLabel: "At",
+    saveTheDateHeading: "Almost Time For Our Celebration",
     days: "Days",
     hours: "Hours",
     minutes: "Minutes",

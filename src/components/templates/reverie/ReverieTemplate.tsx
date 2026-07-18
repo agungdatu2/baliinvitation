@@ -13,6 +13,7 @@ import HeroGreeting from "./HeroGreeting";
 import PrayerSection from "./PrayerSection";
 import GroomSection from "./GroomSection";
 import BrideSection from "./BrideSection";
+import SaveTheDateSection from "./SaveTheDateSection";
 import LoveStory from "./LoveStory";
 import Gallery from "./Gallery";
 import EventDetails from "./EventDetails";
@@ -217,6 +218,10 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                       gate & hero lihat video tajam tapi tidak ada garis putus di antar
                       section (lihat .groove-page-blur di globals.css). */}
                   <div className="groove-page-blur">
+                    <Reveal id="save-the-date">
+                      <SaveTheDateSection data={data} />
+                    </Reveal>
+
                     <Reveal id="love-story">
                       <LoveStory data={data} />
                     </Reveal>
