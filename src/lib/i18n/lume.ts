@@ -72,6 +72,8 @@ export const LUME_DICT = {
     wishesLabel: "Wishes",
     sending: "Sending...",
     send: "Send",
+    rsvpNext: "Next",
+    rsvpBack: "Back",
 
     // Gallery
     galleryHeading: "Our Pre-Wedding Celebration.",
@@ -170,6 +172,8 @@ export const LUME_DICT = {
     wishesLabel: "Wishes",
     sending: "Sending...",
     send: "Send",
+    rsvpNext: "Next",
+    rsvpBack: "Back",
 
     galleryHeading: "Our Pre-Wedding Celebration.",
     playVideo: "Play video",
