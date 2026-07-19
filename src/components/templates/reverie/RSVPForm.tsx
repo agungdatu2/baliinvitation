@@ -17,11 +17,11 @@ interface WishItem {
   createdAt: string;
 }
 
-const DEFAULT_BACKGROUND = "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1200&q=80";
-
-// Section RSVP — foto background sendiri (sama pola dengan Groom/Bride/Doa), lalu
-// form dua-langkah: Step 1 (nama, kehadiran, jumlah tamu) -> tombol NEXT -> Step 2
-// (ucapan + kirim), mengikuti referensi desain yang diberikan.
+// Section RSVP — TANPA foto background sendiri (sama pola dengan LoveStory/
+// EventDetails/SaveTheDateSection), transparan supaya FixedVideoBackground yang
+// sudah nge-blur (.groove-page-blur) tetap kelihatan di belakangnya. Form
+// dua-langkah: Step 1 (nama, kehadiran, jumlah tamu) -> tombol NEXT -> Step 2
+// (ucapan + kirim).
 export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSVPFormProps) {
   const t = getDict(lang);
   const ATTEND_OPTIONS = [
@@ -72,10 +72,6 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
 
   return (
     <section className="relative min-h-[100svh] flex flex-col justify-center text-groove-bg px-6 py-20">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={DEFAULT_BACKGROUND} alt="" className="absolute inset-0 h-full w-full object-cover -z-10" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-transparent -z-10" />
-
       <div className="max-w-md">
         <h2 className="font-reverie-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 400 }}>
           {t.rsvpHeading}
