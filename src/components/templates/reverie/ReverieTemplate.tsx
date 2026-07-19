@@ -20,6 +20,7 @@ import EventDetails from "./EventDetails";
 import LiveStreaming from "./LiveStreaming";
 import DressCode from "./DressCode";
 import RSVPForm from "./RSVPForm";
+import WishesSection from "./WishesSection";
 import WeddingGift from "./WeddingGift";
 import ClosingFooter from "./ClosingFooter";
 import Reveal from "./Reveal";
@@ -243,6 +244,10 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                         guestId={guestId}
                         lang={data.language}
                       />
+                    </Reveal>
+
+                    <Reveal>
+                      <WishesSection invitationId={data.id ?? data.slug} lang={data.language} />
                     </Reveal>
 
                     <div id="gallery">

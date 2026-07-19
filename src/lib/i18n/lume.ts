@@ -65,6 +65,7 @@ export const LUME_DICT = {
     rsvpSubtext:
       "We kindly request your prompt response to confirm your attendance at our upcoming event. Alongside your RSVP, please take a moment to extend your warm regards and best wishes.",
     rsvpSuccess: "Terima kasih! RSVP kamu sudah kami terima.",
+    wishesHeading: "Ucapan & Doa",
     nameLabel: "Name",
     namePlaceholder: "Guest Name",
     attendanceLabel: "Attendance",
@@ -165,6 +166,7 @@ export const LUME_DICT = {
     rsvpSubtext:
       "We kindly request your prompt response to confirm your attendance at our upcoming event. Alongside your RSVP, please take a moment to extend your warm regards and best wishes.",
     rsvpSuccess: "Thank you! Your RSVP has been received.",
+    wishesHeading: "Wishes & Blessings",
     nameLabel: "Name",
     namePlaceholder: "Guest Name",
     attendanceLabel: "Attendance",

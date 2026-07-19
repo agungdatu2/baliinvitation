@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
 interface RSVPFormProps {
@@ -10,18 +10,12 @@ interface RSVPFormProps {
   lang?: Lang;
 }
 
-interface WishItem {
-  id: string;
-  guestName: string;
-  message?: string | null;
-  createdAt: string;
-}
-
 // Section RSVP — TANPA foto background sendiri (sama pola dengan LoveStory/
 // EventDetails/SaveTheDateSection), transparan supaya FixedVideoBackground yang
 // sudah nge-blur (.groove-page-blur) tetap kelihatan di belakangnya. Form
 // dua-langkah: Step 1 (nama, kehadiran, jumlah tamu) -> tombol NEXT -> Step 2
-// (ucapan + kirim).
+// (ucapan + kirim). Daftar ucapan yang masuk ditampilkan di WishesSection
+// terpisah (bukan di sini) — lihat WishesSection.tsx.
 export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSVPFormProps) {
   const t = getDict(lang);
   const ATTEND_OPTIONS = [
@@ -32,19 +26,6 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
   const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [wishes, setWishes] = useState<WishItem[]>([]);
-
-  const loadWishes = () => {
-    fetch(`/api/rsvp?invitationId=${invitationId}`)
-      .then((r) => r.json())
-      .then((data: WishItem[]) => setWishes(Array.isArray(data) ? data.filter((w) => w.message?.trim()) : []))
-      .catch(() => {});
-  };
-
-  useEffect(() => {
-    loadWishes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [invitationId]);
 
   const goNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +42,7 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
     });
     setLoading(false);
     setSent(true);
-    loadWishes();
+    window.dispatchEvent(new CustomEvent("rsvp-submitted"));
   };
 
   const fieldClass =
@@ -152,22 +133,6 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
               </button>
             </div>
           </form>
-        )}
-
-        {wishes.length > 0 && (
-          <div className="grid sm:grid-cols-2 gap-4 mt-14">
-            {wishes.map((w) => (
-              <div key={w.id} className="border border-groove-bg/30 p-5 bg-black/25">
-                <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>
-                  {w.guestName}
-                </p>
-                <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed mb-4">{w.message}</p>
-                <p className="font-groove-label text-[0.65rem] uppercase tracking-wide text-groove-bg/60">
-                  {new Date(w.createdAt).toLocaleDateString(t.dateLocale, { day: "2-digit", month: "short", year: "numeric" })}
-                </p>
-              </div>
-            ))}
-          </div>
         )}
       </div>
     </section>
