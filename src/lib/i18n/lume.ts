@@ -78,6 +78,7 @@ export const LUME_DICT = {
 
     // Gallery
     galleryHeading: "Our Pre-Wedding Celebration.",
+    clickForPreview: "Klik foto untuk pratinjau",
     playVideo: "Putar video",
     photo: "Photo",
     previous: "Sebelumnya",
@@ -178,6 +179,7 @@ export const LUME_DICT = {
     rsvpBack: "Back",
 
     galleryHeading: "Our Pre-Wedding Celebration.",
+    clickForPreview: "Click image for preview",
     playVideo: "Play video",
     photo: "Photo",
     previous: "Previous",

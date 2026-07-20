@@ -1,52 +1,65 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 import PlaceholderPhoto from "./PlaceholderPhoto";
 
-const PLACEHOLDER_COUNT = 6;
-// Variasi tinggi supaya placeholder terlihat seperti masonry sungguhan sebelum ada foto asli.
-const PLACEHOLDER_HEIGHTS = ["h-56", "h-72", "h-64", "h-80", "h-60", "h-72"];
+const PLACEHOLDER_COUNT = 8;
 
 const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 function isVideoUrl(url: string) {
   return VIDEO_EXT_RE.test(url);
 }
 
+// Full-height section, satu framed card (sama pola dengan DressCode) berisi
+// slideshow: video pre-wedding (kalau ada) selalu jadi slide pertama, disusul
+// foto-foto lain. Kalau tidak ada video, langsung mulai dari foto pertama.
 export default function Gallery({ images, lang }: { images: string[]; lang?: Lang }) {
   const t = getDict(lang);
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [index, setIndex] = useState(0);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const usingPlaceholders = !images?.length;
-
-  // Video (kalau ada) selalu jadi featured item pertama dengan thumbnail besar +
-  // tombol play; kalau tidak ada video, foto pertama yang jadi featured item.
-  const videoIndex = usingPlaceholders ? -1 : images.findIndex(isVideoUrl);
-  const featuredSrc = usingPlaceholders ? null : videoIndex >= 0 ? images[videoIndex] : images[0];
-  const featuredIsVideo = videoIndex >= 0;
-  const restImages = usingPlaceholders
+  const videoSrc = usingPlaceholders ? null : images.find(isVideoUrl) ?? null;
+  const photoSrcs = usingPlaceholders ? [] : images.filter((src) => !isVideoUrl(src));
+  const slides: (string | null)[] = usingPlaceholders
     ? Array.from({ length: PLACEHOLDER_COUNT }, () => null)
-    : images.filter((_, i) => i !== (videoIndex >= 0 ? videoIndex : 0));
+    : videoSrc
+      ? [videoSrc, ...photoSrcs]
+      : photoSrcs;
+
+  const total = slides.length;
+  const current = slides[index];
+  const isVideoSlide = Boolean(videoSrc) && current === videoSrc;
+
+  const goTo = (delta: number) => {
+    setIndex((i) => (i + delta + total) % total);
+    setVideoPlaying(false);
+  };
 
   return (
-    <section className="groove-overlay text-groove-bg py-10 px-6">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="font-reverie-display italic text-3xl md:text-4xl leading-tight mb-6" style={{ fontWeight: 400 }}>
-          {t.galleryHeading}
-        </h2>
-
-        {/* Featured item — video (kalau ada) atau foto pertama */}
-        {featuredSrc && (
-          <div className="relative w-full aspect-video mb-3 overflow-hidden bg-groove-stone">
-            {featuredIsVideo ? (
-              videoPlaying ? (
-                <video src={featuredSrc} controls autoPlay className="w-full h-full object-cover" />
-              ) : (
+    <section className="relative h-[100svh] flex items-center justify-center px-6 py-10">
+      <div className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden bg-groove-stone">
+        {current ? (
+          isVideoSlide ? (
+            <>
+              <video
+                src={current}
+                controls={videoPlaying}
+                autoPlay={videoPlaying}
+                muted={!videoPlaying}
+                loop={!videoPlaying}
+                playsInline
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              {!videoPlaying && (
                 <button
                   onClick={() => setVideoPlaying(true)}
-                  className="absolute inset-0 w-full h-full flex items-center justify-center bg-groove-stone/30"
+                  className="absolute inset-0 flex items-center justify-center bg-black/20"
                   aria-label={t.playVideo}
                 >
                   <span className="w-16 h-16 rounded-full border-2 border-groove-bg/90 flex items-center justify-center">
@@ -56,115 +69,72 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
                     />
                   </span>
                 </button>
-              )
-            ) : (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={featuredSrc} alt="featured" className="w-full h-full object-cover" />
-            )}
-          </div>
-        )}
-
-        {/* Masonry (CSS columns, break-inside-avoid) untuk sisa foto */}
-        <div className="columns-2 md:columns-3 gap-2">
-          {restImages.map((src, i) =>
-            src ? (
-              <button
-                key={i}
-                onClick={() => setLightboxIndex(i)}
-                className="block w-full mb-2 break-inside-avoid"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
-              </button>
-            ) : (
-              <PlaceholderPhoto
-                key={i}
-                label={`${t.photo} ${i + 1}`}
-                className={`w-full mb-2 break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
-              />
-            )
-          )}
-        </div>
-      </div>
-      {lightboxIndex !== null && (
-        <Lightbox
-          images={usingPlaceholders ? [] : (restImages as string[])}
-          index={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          onIndexChange={setLightboxIndex}
-          lang={lang}
-        />
-      )}
-    </section>
-  );
-}
-
-function Lightbox({
-  images,
-  index,
-  onClose,
-  onIndexChange,
-  lang,
-}: {
-  images: string[];
-  index: number;
-  onClose: () => void;
-  onIndexChange: (i: number) => void;
-  lang?: Lang;
-}) {
-  const t = getDict(lang);
-  const total = images.length || PLACEHOLDER_COUNT;
-  const goTo = (delta: number) => onIndexChange((index + delta + total) % total);
-
-  let touchStartX = 0;
-  const onTouchStart = (e: React.TouchEvent) => {
-    touchStartX = e.touches[0].clientX;
-  };
-  const onTouchEnd = (e: React.TouchEvent) => {
-    const delta = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(delta) > 50) goTo(delta < 0 ? 1 : -1);
-  };
-
-  return (
-    <div
-      className="fixed inset-0 z-50 bg-groove-stone/95 flex items-center justify-center animate-fadeIn"
-      onClick={onClose}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      <button onClick={onClose} className="absolute top-4 right-4 text-groove-bg/80 text-2xl leading-none">
-        &times;
-      </button>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          goTo(-1);
-        }}
-        className="absolute left-2 md:left-6 text-groove-bg/70 text-3xl px-2"
-        aria-label={t.previous}
-      >
-        &#8249;
-      </button>
-      <div className="relative w-full h-full max-w-2xl max-h-[80vh] mx-8" onClick={(e) => e.stopPropagation()}>
-        {images[index] ? (
-          <Image src={images[index]} alt={`gallery-${index}`} fill className="object-contain" />
+              )}
+            </>
+          ) : (
+            <button onClick={() => setPreviewOpen(true)} className="absolute inset-0" aria-label={t.clickForPreview}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={current} alt={`gallery-${index}`} className="h-full w-full object-cover" />
+            </button>
+          )
         ) : (
-          <PlaceholderPhoto label={`${t.photo} ${index + 1}`} className="w-full h-full rounded-sm" />
+          <PlaceholderPhoto label={`${t.photo} ${index + 1}`} className="absolute inset-0 h-full w-full" />
         )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/25 pointer-events-none" />
+
+        <div className="absolute top-6 inset-x-0 flex flex-col items-center gap-1 text-groove-bg pointer-events-none">
+          <p className="font-groove-body text-sm">
+            {index + 1} / {total}
+          </p>
+          {!isVideoSlide && current && <p className="font-groove-body text-xs text-groove-bg/80">{t.clickForPreview}</p>}
+        </div>
+
+        {total > 1 && (
+          <>
+            <button
+              onClick={() => goTo(-1)}
+              aria-label={t.previous}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-groove-bg/80 hover:text-groove-bg transition-colors"
+            >
+              <ChevronLeft className="h-7 w-7" strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={() => goTo(1)}
+              aria-label={t.next}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-groove-bg/80 hover:text-groove-bg transition-colors"
+            >
+              <ChevronRight className="h-7 w-7" strokeWidth={1.5} />
+            </button>
+          </>
+        )}
+
+        <p className="absolute bottom-8 left-8 right-8 font-reverie-display italic text-3xl text-groove-bg" style={{ fontWeight: 400 }}>
+          {t.galleryHeading}
+        </p>
       </div>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          goTo(1);
-        }}
-        className="absolute right-2 md:right-6 text-groove-bg/70 text-3xl px-2"
-        aria-label={t.next}
-      >
-        &#8250;
-      </button>
-      <p className="absolute bottom-4 text-groove-bg/50 text-xs">
-        {index + 1} / {total}
-      </p>
-    </div>
+
+      {/* Portal ke document.body — Reveal (parent) pakai `transform` buat animasi
+          fade-in, dan itu bikin `position: fixed` di dalamnya jadi ke-contain di
+          box Reveal alih-alih viewport sungguhan (sama masalah & fix seperti
+          WeddingGift's BankAccountsModal). */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          previewOpen && current && !isVideoSlide ? (
+            <div
+              className="fixed inset-0 z-50 bg-groove-stone/95 flex items-center justify-center animate-fadeIn"
+              onClick={() => setPreviewOpen(false)}
+            >
+              <button onClick={() => setPreviewOpen(false)} className="absolute top-4 right-4 text-groove-bg/80" aria-label={t.close}>
+                <X className="h-6 w-6" />
+              </button>
+              <div className="relative w-full h-full max-w-2xl max-h-[80vh] mx-8" onClick={(e) => e.stopPropagation()}>
+                <Image src={current} alt={`gallery-${index}`} fill className="object-contain" />
+              </div>
+            </div>
+          ) : null,
+          document.body
+        )}
+    </section>
   );
 }

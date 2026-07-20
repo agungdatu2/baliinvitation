@@ -81,7 +81,13 @@ export default function ThemePreviewPage({
     quote: content.quote,
     greeting: content.greeting,
     eventDate: eventDateIso,
-    galleryImages: [],
+    galleryImages: [
+      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80",
+      "https://assets.mixkit.co/videos/34371/34371-720.mp4",
+      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=900&q=80",
+      "https://images.unsplash.com/photo-1615966650071-855b15f29ad1?auto=format&fit=crop&w=900&q=80",
+    ],
     loveStory: content.loveStory,
     events: [
       {
