@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
-// 1 "halaman" = 1 baris kartu (sm:grid-cols-2 -> 2 kartu per baris) — supaya
-// section tetap muat dalam satu layar (100svh) berapa pun banyaknya ucapan yang
-// masuk, alih-alih grid yang terus memanjang ke bawah.
-const PAGE_SIZE = 2;
+// 1 kolom, maksimal 4 baris per halaman — supaya section tetap muat dalam satu
+// layar (100svh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
+// terus memanjang ke bawah.
+const PAGE_SIZE = 4;
 
 interface WishItem {
   id: string;
@@ -89,7 +89,7 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
           {t.wishesHeading}
         </h2>
 
-        <div className="grid sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           {visibleWishes.map((w) => (
             <div key={w.id} className="border border-groove-bg/30 p-5 bg-black/25">
               <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>
@@ -106,13 +106,18 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
         {/* Loop balik ke halaman pertama setelah halaman terakhir, supaya tombol
             ini tetap konsisten "Next" (bukan berubah jadi "kembali"/disabled). */}
         {hasNext && (
-          <button
-            type="button"
-            onClick={() => setPage((p) => (p + 1) % totalPages)}
-            className="mt-8 mx-auto flex items-center gap-2 font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/90 border border-groove-bg/40 px-6 py-2.5 rounded-full hover:border-groove-bg transition"
-          >
-            {t.rsvpNext} <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <div className="mt-8 flex flex-col items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setPage((p) => (p + 1) % totalPages)}
+              className="flex items-center gap-2 font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/90 border border-groove-bg/40 px-6 py-2.5 rounded-full hover:border-groove-bg transition"
+            >
+              {t.rsvpNext} <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            <p className="font-groove-label text-[0.65rem] uppercase tracking-widest text-groove-bg/50">
+              {page + 1} / {totalPages}
+            </p>
+          </div>
         )}
       </div>
     </section>
