@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
+
+// 1 "halaman" = 1 baris kartu (sm:grid-cols-2 -> 2 kartu per baris) — supaya
+// section tetap muat dalam satu layar (100svh) berapa pun banyaknya ucapan yang
+// masuk, alih-alih grid yang terus memanjang ke bawah.
+const PAGE_SIZE = 2;
 
 interface WishItem {
   id: string;
@@ -47,6 +53,7 @@ const DEMO_WISHES: Record<"id" | "en", { guestName: string; message: string }[]>
 export default function WishesSection({ invitationId, lang }: { invitationId: string; lang?: Lang }) {
   const t = getDict(lang);
   const [wishes, setWishes] = useState<WishItem[]>([]);
+  const [page, setPage] = useState(0);
 
   useEffect(() => {
     const loadWishes = () => {
@@ -60,6 +67,7 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
           } else {
             setWishes(real);
           }
+          setPage(0);
         })
         .catch(() => {});
     };
@@ -70,6 +78,10 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
 
   if (!wishes.length) return null;
 
+  const totalPages = Math.ceil(wishes.length / PAGE_SIZE);
+  const visibleWishes = wishes.slice(page * PAGE_SIZE, page * PAGE_SIZE + PAGE_SIZE);
+  const hasNext = totalPages > 1;
+
   return (
     <section className="relative min-h-[100svh] flex flex-col justify-center text-groove-bg px-6 py-20">
       <div className="max-w-2xl mx-auto w-full">
@@ -78,7 +90,7 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
         </h2>
 
         <div className="grid sm:grid-cols-2 gap-4">
-          {wishes.map((w) => (
+          {visibleWishes.map((w) => (
             <div key={w.id} className="border border-groove-bg/30 p-5 bg-black/25">
               <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>
                 {w.guestName}
@@ -90,6 +102,18 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
             </div>
           ))}
         </div>
+
+        {/* Loop balik ke halaman pertama setelah halaman terakhir, supaya tombol
+            ini tetap konsisten "Next" (bukan berubah jadi "kembali"/disabled). */}
+        {hasNext && (
+          <button
+            type="button"
+            onClick={() => setPage((p) => (p + 1) % totalPages)}
+            className="mt-8 mx-auto flex items-center gap-2 font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/90 border border-groove-bg/40 px-6 py-2.5 rounded-full hover:border-groove-bg transition"
+          >
+            {t.rsvpNext} <ArrowRight className="h-3.5 w-3.5" />
+          </button>
+        )}
       </div>
     </section>
   );
