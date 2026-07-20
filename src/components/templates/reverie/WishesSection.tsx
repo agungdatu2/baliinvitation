@@ -10,6 +10,35 @@ interface WishItem {
   createdAt: string;
 }
 
+// 9 ucapan contoh — cuma dipakai theme-preview (invitationId "preview" tidak
+// terhubung ke undangan asli di DB, jadi fetch API selalu balik array kosong)
+// supaya section ini kelihatan terisi saat client/tim lihat demo tema, bukan
+// kosong melompong.
+const DEMO_WISHES: Record<"id" | "en", { guestName: string; message: string }[]> = {
+  id: [
+    { guestName: "Dewi Anjani", message: "Selamat menempuh hidup baru! Semoga selalu bahagia dan langgeng sampai kakek nenek." },
+    { guestName: "Rangga Pratama", message: "Kalian pasangan yang sangat serasi. Turut berbahagia atas pernikahan kalian!" },
+    { guestName: "Putu Ayu Lestari", message: "Selamat ya buat kalian berdua, semoga rumah tangganya sakinah mawaddah warahmah." },
+    { guestName: "Kadek Wirawan", message: "Happy wedding! Semoga cinta kalian terus tumbuh setiap harinya." },
+    { guestName: "Nadia Safitri", message: "Bahagia banget lihat kalian akhirnya menikah. Selamat menempuh hidup baru!" },
+    { guestName: "Bayu Segara", message: "Selamat! Semoga jadi keluarga yang harmonis dan selalu diberkahi." },
+    { guestName: "Made Suryani", message: "Wishing you both a lifetime of love and happiness. Congratulations!" },
+    { guestName: "Agus Setiawan", message: "Selamat menikah! Sehat selalu dan cepat dikasih momongan ya hehe." },
+    { guestName: "Intan Permatasari", message: "So happy for you two! May your marriage be filled with love and laughter." },
+  ],
+  en: [
+    { guestName: "Dewi Anjani", message: "Congratulations on your new journey together! Wishing you a lifetime of happiness." },
+    { guestName: "Rangga Pratama", message: "You two are such a perfect match. So happy for your wedding!" },
+    { guestName: "Putu Ayu Lestari", message: "Congratulations to you both — may your marriage be filled with love and blessings." },
+    { guestName: "Kadek Wirawan", message: "Happy wedding! May your love keep growing every single day." },
+    { guestName: "Nadia Safitri", message: "So thrilled to see you two finally tie the knot. Congratulations!" },
+    { guestName: "Bayu Segara", message: "Congrats! Wishing you a harmonious family and endless blessings." },
+    { guestName: "Made Suryani", message: "Wishing you both a lifetime of love and happiness. Congratulations!" },
+    { guestName: "Agus Setiawan", message: "Congratulations on your wedding! Stay healthy and happy always." },
+    { guestName: "Intan Permatasari", message: "So happy for you two! May your marriage be filled with love and laughter." },
+  ],
+};
+
 // Section terpisah dari RSVPForm — sengaja dipisah karena daftar ucapan bisa
 // tumbuh panjang dan akan merusak feel "satu section per scroll-snap" kalau
 // digabung di kolom form yang sama. Fetch sendiri saat mount, lalu refetch saat
@@ -23,13 +52,21 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
     const loadWishes = () => {
       fetch(`/api/rsvp?invitationId=${invitationId}`)
         .then((r) => r.json())
-        .then((data: WishItem[]) => setWishes(Array.isArray(data) ? data.filter((w) => w.message?.trim()) : []))
+        .then((data: WishItem[]) => {
+          const real = Array.isArray(data) ? data.filter((w) => w.message?.trim()) : [];
+          if (real.length === 0 && invitationId === "preview") {
+            const demo = DEMO_WISHES[lang === "en" ? "en" : "id"];
+            setWishes(demo.map((w, i) => ({ id: `demo-${i}`, ...w, createdAt: new Date().toISOString() })));
+          } else {
+            setWishes(real);
+          }
+        })
         .catch(() => {});
     };
     loadWishes();
     window.addEventListener("rsvp-submitted", loadWishes);
     return () => window.removeEventListener("rsvp-submitted", loadWishes);
-  }, [invitationId]);
+  }, [invitationId, lang]);
 
   if (!wishes.length) return null;
 
