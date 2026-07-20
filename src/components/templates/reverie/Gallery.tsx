@@ -20,7 +20,6 @@ function isVideoUrl(url: string) {
 export default function Gallery({ images, lang }: { images: string[]; lang?: Lang }) {
   const t = getDict(lang);
   const [index, setIndex] = useState(0);
-  const [videoPlaying, setVideoPlaying] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
 
   const usingPlaceholders = !images?.length;
@@ -38,7 +37,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
 
   const goTo = (delta: number) => {
     setIndex((i) => (i + delta + total) % total);
-    setVideoPlaying(false);
+    setPreviewOpen(false);
   };
 
   return (
@@ -49,27 +48,24 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
             <>
               <video
                 src={current}
-                controls={videoPlaying}
-                autoPlay={videoPlaying}
-                muted={!videoPlaying}
-                loop={!videoPlaying}
+                muted
+                loop
+                autoPlay
                 playsInline
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              {!videoPlaying && (
-                <button
-                  onClick={() => setVideoPlaying(true)}
-                  className="absolute inset-0 flex items-center justify-center bg-black/20"
-                  aria-label={t.playVideo}
-                >
-                  <span className="w-16 h-16 rounded-full border-2 border-groove-bg/90 flex items-center justify-center">
-                    <span
-                      className="w-0 h-0 border-y-[10px] border-y-transparent border-l-[16px] border-l-groove-bg ml-1"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </button>
-              )}
+              <button
+                onClick={() => setPreviewOpen(true)}
+                className="absolute inset-0 flex items-center justify-center bg-black/20"
+                aria-label={t.playVideo}
+              >
+                <span className="w-16 h-16 rounded-full border-2 border-groove-bg/90 flex items-center justify-center">
+                  <span
+                    className="w-0 h-0 border-y-[10px] border-y-transparent border-l-[16px] border-l-groove-bg ml-1"
+                    aria-hidden="true"
+                  />
+                </span>
+              </button>
             </>
           ) : (
             <button onClick={() => setPreviewOpen(true)} className="absolute inset-0" aria-label={t.clickForPreview}>
@@ -87,7 +83,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
           <p className="font-groove-body text-sm">
             {index + 1} / {total}
           </p>
-          {!isVideoSlide && current && <p className="font-groove-body text-xs text-groove-bg/80">{t.clickForPreview}</p>}
+          {current && <p className="font-groove-body text-xs text-groove-bg/80">{isVideoSlide ? t.playVideo : t.clickForPreview}</p>}
         </div>
 
         {total > 1 && (
@@ -120,7 +116,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
           WeddingGift's BankAccountsModal). */}
       {typeof document !== "undefined" &&
         createPortal(
-          previewOpen && current && !isVideoSlide ? (
+          previewOpen && current ? (
             <div
               className="fixed inset-0 z-50 bg-groove-stone/95 flex items-center justify-center animate-fadeIn"
               onClick={() => setPreviewOpen(false)}
@@ -129,7 +125,11 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
                 <X className="h-6 w-6" />
               </button>
               <div className="relative w-full h-full max-w-2xl max-h-[80vh] mx-8" onClick={(e) => e.stopPropagation()}>
-                <Image src={current} alt={`gallery-${index}`} fill className="object-contain" />
+                {isVideoSlide ? (
+                  <video src={current} controls autoPlay playsInline className="h-full w-full object-contain" />
+                ) : (
+                  <Image src={current} alt={`gallery-${index}`} fill className="object-contain" />
+                )}
               </div>
             </div>
           ) : null,
