@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
-// 1 kolom, maksimal 4 baris per halaman — supaya section tetap muat dalam satu
+// 1 kolom, maksimal 3 baris per halaman — supaya section tetap muat dalam satu
 // layar (100svh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
 // terus memanjang ke bawah.
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 3;
 
 interface WishItem {
   id: string;
