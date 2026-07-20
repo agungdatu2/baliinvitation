@@ -58,6 +58,7 @@ export interface InvitationData {
   heroVideoUrl?: string;
   reverieGateImage?: string; // foto background layar gate — khusus tema Reverie
   reverieSaveTheDateImage?: string; // foto kecil di section Save the Date/countdown — khusus tema Reverie
+  hiddenSections?: string[]; // key section yang disembunyikan client — khusus tema Reverie, lihat REVERIE_SECTION_KEYS
 
   eventDate: string; // ISO
 

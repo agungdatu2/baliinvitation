@@ -47,6 +47,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     heroVideoUrl: invitation.heroVideoUrl ?? "",
     reverieGateImage: invitation.reverieGateImage ?? "",
     reverieSaveTheDateImage: invitation.reverieSaveTheDateImage ?? "",
+    hiddenSections: (invitation.hiddenSections as string[]) ?? [],
     eventDate: toDatetimeLocalValue(invitation.eventDate),
     galleryImages: (invitation.galleryImages as string[]) ?? [],
     loveStory: (invitation.loveStory as InvitationFormValues["loveStory"]) ?? [],

@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { invitationSchema, InvitationFormValues } from "@/lib/validations/invitation.schema";
 import { useEffect, useState } from "react";
 import { formatRupiah } from "@/lib/utils/format";
+import { REVERIE_SECTION_KEYS } from "@/lib/reverie-sections";
 
 interface TemplateOption {
   key: string;
@@ -47,6 +48,7 @@ const defaultValues: InvitationFormValues = {
   heroVideoUrl: "",
   reverieGateImage: "",
   reverieSaveTheDateImage: "",
+  hiddenSections: [],
   eventDate: "",
   galleryImages: [],
   loveStory: [{ title: "", story: "" }],
@@ -84,6 +86,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<InvitationFormValues>({
     resolver: zodResolver(invitationSchema),
@@ -94,6 +97,14 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   // template yang dipilih "reverie" — jangan bingungin admin dengan field
   // yang tidak dipakai tema lain.
   const selectedTemplateKey = watch("templateKey");
+  const hiddenSections = watch("hiddenSections") ?? [];
+  const toggleHiddenSection = (key: string) => {
+    setValue(
+      "hiddenSections",
+      hiddenSections.includes(key) ? hiddenSections.filter((k) => k !== key) : [...hiddenSections, key],
+      { shouldDirty: true }
+    );
+  };
 
   const loveStory = useFieldArray({ control, name: "loveStory" });
   const events = useFieldArray({ control, name: "events" });
@@ -402,6 +413,27 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           </div>
         ))}
       </section>
+
+      {selectedTemplateKey === "reverie" && (
+        <section className="space-y-3 border rounded-lg p-4">
+          <h2 className="font-medium">10. Tampilkan / Sembunyikan Section (khusus tema Reverie)</h2>
+          <p className="text-xs text-gray-500">
+            Centang section yang ingin disembunyikan dari undangan publik client. Hero dan footer selalu tampil.
+          </p>
+          <div className="grid grid-cols-2 gap-2">
+            {REVERIE_SECTION_KEYS.map((s) => (
+              <label key={s.key} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={hiddenSections.includes(s.key)}
+                  onChange={() => toggleHiddenSection(s.key)}
+                />
+                {s.label}
+              </label>
+            ))}
+          </div>
+        </section>
+      )}
 
       <button type="submit" disabled={submitting} className="w-full py-3 rounded-lg bg-lume-ink text-white font-medium disabled:opacity-50">
         {submitting ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Simpan & Buat Undangan"}

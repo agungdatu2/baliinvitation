@@ -120,6 +120,7 @@ export default async function InvitationPage({
     heroVideoUrl: inv.heroVideoUrl ?? undefined,
     reverieGateImage: inv.reverieGateImage ?? undefined,
     reverieSaveTheDateImage: inv.reverieSaveTheDateImage ?? undefined,
+    hiddenSections: (inv.hiddenSections as unknown as string[]) ?? [],
     eventDate: inv.eventDate.toISOString(),
     galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
     loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],

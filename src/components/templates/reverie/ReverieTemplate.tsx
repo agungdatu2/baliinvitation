@@ -85,6 +85,10 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
     return () => document.documentElement.classList.remove("reverie-snap-scroll");
   }, [opened]);
 
+  // Section yang di-hide client dari admin dashboard (lihat REVERIE_SECTION_KEYS)
+  // — hero & footer sengaja tidak bisa di-hide, jadi tidak dicek di sini.
+  const hidden = new Set(data.hiddenSections ?? []);
+
   const t = getDict(data.language);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
@@ -139,6 +143,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
               musicPlaying={musicPlaying}
               onToggleMusic={toggleMusic}
               lang={data.language}
+              hiddenSections={data.hiddenSections}
             />
           )}
 
@@ -199,70 +204,92 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                   {/* Section "Doa" — foto background sendiri (bukan FixedVideoBackground),
                       full-viewport, sengaja DI LUAR .groove-page-blur karena sudah punya
                       foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
-                  <Reveal>
-                    <PrayerSection data={data} />
-                  </Reveal>
+                  {!hidden.has("prayer") && (
+                    <Reveal>
+                      <PrayerSection data={data} />
+                    </Reveal>
+                  )}
 
                   {/* Section "The Groom" & "The Bride" — foto masing-masing full-viewport
                       sendiri, sama pola dengan PrayerSection (di luar .groove-page-blur).
                       Menggantikan CoupleProfile (kartu ganda kecil) sepenuhnya. */}
-                  <div id="couple">
-                    <Reveal>
-                      <GroomSection data={data} />
-                    </Reveal>
-                    <Reveal>
-                      <BrideSection data={data} />
-                    </Reveal>
-                  </div>
+                  {!hidden.has("couple") && (
+                    <div id="couple">
+                      <Reveal>
+                        <GroomSection data={data} />
+                      </Reveal>
+                      <Reveal>
+                        <BrideSection data={data} />
+                      </Reveal>
+                    </div>
+                  )}
 
                   {/* Satu wrapper backdrop-blur untuk semua section setelah hero, supaya
                       gate & hero lihat video tajam tapi tidak ada garis putus di antar
                       section (lihat .groove-page-blur di globals.css). */}
                   <div className="groove-page-blur">
-                    <Reveal id="save-the-date">
-                      <SaveTheDateSection data={data} />
-                    </Reveal>
-
-                    <Reveal id="love-story">
-                      <LoveStory data={data} />
-                    </Reveal>
-
-                    <Reveal id="events">
-                      <EventDetails events={data.events} lang={data.language} />
-                    </Reveal>
-                    <Reveal>
-                      <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
-                    </Reveal>
-                    <Reveal>
-                      <DressCode items={data.dressCode} lang={data.language} />
-                    </Reveal>
-
-                    <Reveal id="rsvp">
-                      <RSVPForm
-                        invitationId={data.id ?? data.slug}
-                        guestName={guestName}
-                        guestId={guestId}
-                        lang={data.language}
-                      />
-                    </Reveal>
-
-                    <Reveal>
-                      <WishesSection invitationId={data.id ?? data.slug} lang={data.language} />
-                    </Reveal>
-
-                    <div id="gallery">
-                      <Reveal>
-                        <Gallery images={visibleGalleryImages} lang={data.language} />
+                    {!hidden.has("saveTheDate") && (
+                      <Reveal id="save-the-date">
+                        <SaveTheDateSection data={data} />
                       </Reveal>
-                    </div>
+                    )}
 
-                    <Reveal id="gift">
-                      <WeddingGift
-                        accounts={data.bankAccounts}
-                        image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
-                        lang={data.language}
-                      />
-                    </Reveal>
+                    {!hidden.has("loveStory") && (
+                      <Reveal id="love-story">
+                        <LoveStory data={data} />
+                      </Reveal>
+                    )}
+
+                    {!hidden.has("events") && (
+                      <Reveal id="events">
+                        <EventDetails events={data.events} lang={data.language} />
+                      </Reveal>
+                    )}
+                    {!hidden.has("liveStreaming") && (
+                      <Reveal>
+                        <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
+                      </Reveal>
+                    )}
+                    {!hidden.has("dressCode") && (
+                      <Reveal>
+                        <DressCode items={data.dressCode} lang={data.language} />
+                      </Reveal>
+                    )}
+
+                    {!hidden.has("rsvp") && (
+                      <>
+                        <Reveal id="rsvp">
+                          <RSVPForm
+                            invitationId={data.id ?? data.slug}
+                            guestName={guestName}
+                            guestId={guestId}
+                            lang={data.language}
+                          />
+                        </Reveal>
+
+                        <Reveal>
+                          <WishesSection invitationId={data.id ?? data.slug} lang={data.language} />
+                        </Reveal>
+                      </>
+                    )}
+
+                    {!hidden.has("gallery") && (
+                      <div id="gallery">
+                        <Reveal>
+                          <Gallery images={visibleGalleryImages} lang={data.language} />
+                        </Reveal>
+                      </div>
+                    )}
+
+                    {!hidden.has("gift") && (
+                      <Reveal id="gift">
+                        <WeddingGift
+                          accounts={data.bankAccounts}
+                          image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                          lang={data.language}
+                        />
+                      </Reveal>
+                    )}
 
                     <ClosingFooter data={data} />
                   </div>

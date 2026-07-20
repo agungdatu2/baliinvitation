@@ -12,7 +12,7 @@ export default function ThemePreviewPage({
   searchParams,
 }: {
   params: { key: string };
-  searchParams: { lang?: string; intro?: string };
+  searchParams: { lang?: string; intro?: string; hidden?: string };
 }) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
@@ -23,6 +23,9 @@ export default function ThemePreviewPage({
     searchParams.lang === "en" ? "en" : searchParams.lang === "id" ? "id" : defaultLanguage;
   // ?intro=0 lompat splash loading — mempercepat iterasi desain tanpa nunggu animasi tiap reload.
   const hasIntro = searchParams.intro !== "0";
+  // ?hidden=gift,dressCode — test-only, buat coba fitur "hide section" (lihat
+  // REVERIE_SECTION_KEYS) tanpa perlu bikin undangan asli.
+  const hiddenSections = searchParams.hidden ? searchParams.hidden.split(",") : [];
 
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
@@ -104,6 +107,7 @@ export default function ThemePreviewPage({
     dressCode: [],
     hasIntro,
     maxGalleryImages: null,
+    hiddenSections,
   };
 
   return <Template data={data} guestName={content.guestName} />;
