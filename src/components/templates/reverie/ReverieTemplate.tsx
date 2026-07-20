@@ -252,7 +252,11 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                     )}
                     {!hidden.has("dressCode") && (
                       <Reveal>
-                        <DressCode items={data.dressCode} lang={data.language} />
+                        <DressCode
+                          items={data.dressCode}
+                          image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                          lang={data.language}
+                        />
                       </Reveal>
                     )}
 

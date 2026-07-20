@@ -104,7 +104,12 @@ export default function ThemePreviewPage({
       },
     ],
     bankAccounts: [],
-    dressCode: [],
+    dressCode: [
+      { label: "Ivory", hex: "#f2ede4" },
+      { label: "Espresso", hex: "#2b2420" },
+      { label: "Taupe", hex: "#93826d" },
+      { label: "Dusty Rose", hex: "#d9b8ae" },
+    ],
     hasIntro,
     maxGalleryImages: null,
     hiddenSections,
