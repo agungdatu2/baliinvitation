@@ -69,6 +69,10 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
     };
   }, [musicPlaying]);
 
+  // Section yang di-hide client dari admin dashboard (lihat HIDEABLE_SECTIONS_BY_TEMPLATE)
+  // — hero & footer sengaja tidak bisa di-hide, jadi tidak dicek di sini.
+  const hidden = new Set(data.hiddenSections ?? []);
+
   const t = getDict(data.language);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
@@ -113,6 +117,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
             musicPlaying={musicPlaying}
             onToggleMusic={toggleMusic}
             lang={data.language}
+            hiddenSections={data.hiddenSections}
           />
 
           <div id="hero">
@@ -123,50 +128,66 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
               gate & hero lihat video tajam tapi tidak ada garis putus di antar
               section (lihat .groove-page-blur di globals.css). */}
           <div className="groove-page-blur">
-            <Reveal id="couple">
-              <CoupleProfile data={data} />
-            </Reveal>
-
-            <Reveal id="love-story">
-              <LoveStory data={data} />
-            </Reveal>
-
-            <Reveal id="events">
-              <EventDetails
-                events={data.events}
-                title={`${data.groomNickname} & ${data.brideNickname}`}
-                lang={data.language}
-              />
-            </Reveal>
-            <Reveal>
-              <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
-            </Reveal>
-            <Reveal>
-              <DressCode items={data.dressCode} lang={data.language} />
-            </Reveal>
-
-            <Reveal id="rsvp">
-              <RSVPForm
-                invitationId={data.id ?? data.slug}
-                guestName={guestName}
-                guestId={guestId}
-                lang={data.language}
-              />
-            </Reveal>
-
-            <div id="gallery">
-              <Reveal>
-                <Gallery images={visibleGalleryImages} lang={data.language} />
+            {!hidden.has("couple") && (
+              <Reveal id="couple">
+                <CoupleProfile data={data} />
               </Reveal>
-            </div>
+            )}
 
-            <Reveal id="gift">
-              <WeddingGift
-                accounts={data.bankAccounts}
-                image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
-                lang={data.language}
-              />
-            </Reveal>
+            {!hidden.has("loveStory") && (
+              <Reveal id="love-story">
+                <LoveStory data={data} />
+              </Reveal>
+            )}
+
+            {!hidden.has("events") && (
+              <Reveal id="events">
+                <EventDetails
+                  events={data.events}
+                  title={`${data.groomNickname} & ${data.brideNickname}`}
+                  lang={data.language}
+                />
+              </Reveal>
+            )}
+            {!hidden.has("liveStreaming") && (
+              <Reveal>
+                <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
+              </Reveal>
+            )}
+            {!hidden.has("dressCode") && (
+              <Reveal>
+                <DressCode items={data.dressCode} lang={data.language} />
+              </Reveal>
+            )}
+
+            {!hidden.has("rsvp") && (
+              <Reveal id="rsvp">
+                <RSVPForm
+                  invitationId={data.id ?? data.slug}
+                  guestName={guestName}
+                  guestId={guestId}
+                  lang={data.language}
+                />
+              </Reveal>
+            )}
+
+            {!hidden.has("gallery") && (
+              <div id="gallery">
+                <Reveal>
+                  <Gallery images={visibleGalleryImages} lang={data.language} />
+                </Reveal>
+              </div>
+            )}
+
+            {!hidden.has("gift") && (
+              <Reveal id="gift">
+                <WeddingGift
+                  accounts={data.bankAccounts}
+                  image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                  lang={data.language}
+                />
+              </Reveal>
+            )}
 
             <ClosingFooter data={data} />
           </div>

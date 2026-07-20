@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { invitationSchema, InvitationFormValues } from "@/lib/validations/invitation.schema";
 import { useEffect, useState } from "react";
 import { formatRupiah } from "@/lib/utils/format";
-import { REVERIE_SECTION_KEYS } from "@/lib/reverie-sections";
+import { HIDEABLE_SECTIONS_BY_TEMPLATE } from "@/lib/hideable-sections";
 
 interface TemplateOption {
   key: string;
@@ -414,14 +414,14 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         ))}
       </section>
 
-      {selectedTemplateKey === "reverie" && (
+      {(HIDEABLE_SECTIONS_BY_TEMPLATE[selectedTemplateKey]?.length ?? 0) > 0 && (
         <section className="space-y-3 border rounded-lg p-4">
-          <h2 className="font-medium">10. Tampilkan / Sembunyikan Section (khusus tema Reverie)</h2>
+          <h2 className="font-medium">10. Tampilkan / Sembunyikan Section</h2>
           <p className="text-xs text-gray-500">
             Centang section yang ingin disembunyikan dari undangan publik client. Hero dan footer selalu tampil.
           </p>
           <div className="grid grid-cols-2 gap-2">
-            {REVERIE_SECTION_KEYS.map((s) => (
+            {HIDEABLE_SECTIONS_BY_TEMPLATE[selectedTemplateKey].map((s) => (
               <label key={s.key} className="flex items-center gap-2 text-sm">
                 <input
                   type="checkbox"

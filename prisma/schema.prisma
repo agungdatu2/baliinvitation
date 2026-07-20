@@ -92,7 +92,7 @@ model Invitation {
   heroVideoUrl   String? // video background hero (mp4) — kalau kosong pakai placeholder
   reverieGateImage String? // foto background layar gate/pembuka — khusus tema Reverie, kalau kosong pakai placeholder
   reverieSaveTheDateImage String? // foto kecil di section Save the Date/countdown — khusus tema Reverie, kalau kosong pakai placeholder
-  hiddenSections Json @default("[]") // key section yang disembunyikan client (mis. ["prayer","gift"]) — khusus tema Reverie
+  hiddenSections Json @default("[]") // key section yang disembunyikan client (mis. ["prayer","gift"]) — berlaku semua tema, lihat src/lib/hideable-sections.ts
   dressCode      Json?   // { label: string; hex: string }[] — warna baju yang disarankan
 
   eventDate     DateTime // tanggal utama acara (dipakai countdown)

@@ -5,14 +5,17 @@ import { Play, Pause } from "lucide-react";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
+// `section` di sini adalah key HIDEABLE_SECTIONS_BY_TEMPLATE.lume yang
+// bersangkutan (null = tidak bisa di-hide) — dipakai buat filter link kalau
+// section-nya disembunyikan client dari admin dashboard.
 const LINK_HREFS = [
-  { href: "#hero", key: "navHome" },
-  { href: "#couple", key: "navProfile" },
-  { href: "#love-story", key: "navLoveStory" },
-  { href: "#events", key: "navWeddingEvent" },
-  { href: "#rsvp", key: "navRsvp" },
-  { href: "#gift", key: "navWeddingGift" },
-  { href: "#gallery", key: "navGallery" },
+  { href: "#hero", key: "navHome", section: null },
+  { href: "#couple", key: "navProfile", section: "couple" },
+  { href: "#love-story", key: "navLoveStory", section: "loveStory" },
+  { href: "#events", key: "navWeddingEvent", section: "events" },
+  { href: "#rsvp", key: "navRsvp", section: "rsvp" },
+  { href: "#gift", key: "navWeddingGift", section: "gift" },
+  { href: "#gallery", key: "navGallery", section: "gallery" },
 ] as const;
 
 interface NavMenuProps {
@@ -24,6 +27,7 @@ interface NavMenuProps {
   musicPlaying: boolean;
   onToggleMusic: () => void;
   lang?: Lang;
+  hiddenSections?: string[];
 }
 
 // Hamburger polos (tanpa background) di semua ukuran layar — warnanya berganti
@@ -38,8 +42,11 @@ export default function NavMenu({
   musicPlaying,
   onToggleMusic,
   lang,
+  hiddenSections,
 }: NavMenuProps) {
   const t = getDict(lang);
+  const hidden = new Set(hiddenSections ?? []);
+  const visibleLinks = LINK_HREFS.filter((l) => !l.section || !hidden.has(l.section));
   const [open, setOpen] = useState(false);
   const [overHero, setOverHero] = useState(true);
 
@@ -95,7 +102,7 @@ export default function NavMenu({
         }`}
       >
         <nav className="flex flex-col gap-4 mt-16">
-          {LINK_HREFS.map((l) => (
+          {visibleLinks.map((l) => (
             <a
               key={l.href}
               href={l.href}
