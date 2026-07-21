@@ -46,7 +46,7 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
 
       <div className="pt-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-4" style={{ fontWeight: 400 }}>
+          <h2 className="font-reverie-display text-2xl md:text-4xl leading-tight mb-4" style={{ fontWeight: 400 }}>
             {t.thankYou}
             <br />
             {t.forYourAttendance}
