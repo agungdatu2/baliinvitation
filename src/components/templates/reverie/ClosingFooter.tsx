@@ -35,7 +35,7 @@ function InstagramIcon({ className }: { className?: string }) {
 export default function ClosingFooter({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   return (
-    <footer className="relative h-[100svh] snap-start flex flex-col justify-between text-groove-bg text-center">
+    <footer className="relative h-[100lvh] snap-start flex flex-col justify-between text-groove-bg text-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={data.reverieFooterImage || DEFAULT_PHOTO}
@@ -58,7 +58,7 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
         </div>
       </div>
 
-      <div className="pb-8 px-6 flex flex-col items-center gap-3">
+      <div className="pb-16 px-6 flex flex-col items-center gap-3">
         <p className="font-groove-label text-[10px] opacity-70 tracking-widest uppercase">Created By</p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           <a

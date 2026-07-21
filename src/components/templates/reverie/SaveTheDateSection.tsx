@@ -39,7 +39,7 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
   });
 
   return (
-    <section className="relative h-[100svh] flex flex-col items-center justify-center text-center text-groove-bg px-6">
+    <section className="relative h-[100lvh] flex flex-col items-center justify-center text-center text-groove-bg px-6">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={data.reverieSaveTheDateImage || DEFAULT_PHOTO}
