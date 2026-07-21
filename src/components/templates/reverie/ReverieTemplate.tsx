@@ -240,13 +240,19 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                       </Reveal>
                     )}
 
+                    {/* snap={false} — tinggi section ini mengikuti isi konten (jumlah
+                        acara / ada-tidaknya livestream), bukan 100lvh tetap seperti
+                        section lain. Kalau ikut jadi target snap, grid snap jadi
+                        tidak rata dan scroll cepat bisa "kebablasan" lompat lewat
+                        section sesudahnya (mis. DressCode) — makanya dilepas dari
+                        snap, tapi tetap diberi transisi Reveal yang sama. */}
                     {!hidden.has("events") && (
-                      <Reveal id="events">
+                      <Reveal id="events" snap={false}>
                         <EventDetails events={data.events} lang={data.language} />
                       </Reveal>
                     )}
                     {!hidden.has("liveStreaming") && (
-                      <Reveal>
+                      <Reveal snap={false}>
                         <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
                       </Reveal>
                     )}
