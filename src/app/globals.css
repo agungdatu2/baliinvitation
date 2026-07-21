@@ -19,10 +19,9 @@ html {
 html.reverie-snap-scroll {
   /* mandatory (bukan proximity) — proximity ternyata terlalu lemah, banyak browser
      mobile (terutama swipe cepat) jadi nyaris tidak pernah snap sama sekali.
-     Section sengaja dikembalikan ke 100svh (bukan 100lvh) supaya tinggi section
-     tidak berubah-ubah saat address bar browser show/hide — itu akar masalah
-     "goyang"-nya, bukan mandatory-nya. svh dijamin tidak pernah overflow karena
-     selalu mengukur viewport terkecil (saat chrome browser terlihat penuh). */
+     Section tetap pakai 100lvh (bukan 100svh) supaya konten tidak nyisa gap
+     hitam pas address bar browser sudah hide; potensi "goyang" saat address
+     bar lagi transisi dianggap trade-off yang diterima demi tampilan penuh. */
   scroll-snap-type: y mandatory;
 }
 

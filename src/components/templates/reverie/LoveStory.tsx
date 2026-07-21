@@ -9,7 +9,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
   const t = getDict(data.language);
   return (
-    <section className="relative h-[100svh] flex items-center text-groove-bg px-6 md:px-14">
+    <section className="relative h-[100lvh] flex items-center text-groove-bg px-6 md:px-14">
       <div className="max-w-2xl mx-auto md:mx-0">
         <h2 className="font-reverie-display italic text-4xl md:text-5xl leading-tight mb-10" style={{ fontWeight: 400 }}>
           {t.loveStoryHeading}
