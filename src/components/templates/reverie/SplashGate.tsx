@@ -42,7 +42,7 @@ export default function SplashGate({
 
   return (
     <div
-      className={`relative min-h-screen flex flex-col items-center justify-between text-center px-6 py-16 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
+      className={`relative min-h-[100lvh] flex flex-col items-center justify-between text-center px-6 pt-16 pb-24 md:pb-28 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
         closing ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
     >
