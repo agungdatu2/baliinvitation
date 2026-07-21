@@ -64,7 +64,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.3 }}
-        className="absolute bottom-16 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-groove-bg/70"
+        className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-groove-bg/70"
       >
         <span className="font-groove-label text-[10px] uppercase tracking-[0.35em]">{t.scroll}</span>
         <motion.div
