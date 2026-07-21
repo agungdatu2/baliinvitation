@@ -55,7 +55,7 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
     "w-full py-3.5 bg-groove-stone text-groove-bg text-xs tracking-[0.25em] uppercase disabled:opacity-50 transition hover:bg-groove-stone/85";
 
   return (
-    <section className="relative min-h-[100lvh] flex flex-col justify-center text-groove-bg px-6 py-20">
+    <section className="relative min-h-[100svh] flex flex-col justify-center text-groove-bg px-6 py-20">
       <div className="max-w-md">
         <h2 className="font-reverie-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 400 }}>
           {t.rsvpHeading}

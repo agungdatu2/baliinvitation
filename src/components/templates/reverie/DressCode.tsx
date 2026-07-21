@@ -11,7 +11,7 @@ export default function DressCode({ items, image, lang }: { items: DressCodeItem
   const t = getDict(lang);
 
   return (
-    <section className="relative h-[100lvh] flex items-center justify-center px-6 py-10">
+    <section className="relative h-[100svh] flex items-center justify-center px-6 py-10">
       <div className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={image || DEFAULT_PHOTO} alt="" className="absolute inset-0 h-full w-full object-cover" />

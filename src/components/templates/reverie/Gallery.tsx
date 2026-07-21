@@ -41,7 +41,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
   };
 
   return (
-    <section className="relative h-[100lvh] flex items-center justify-center px-6 py-10">
+    <section className="relative h-[100svh] flex items-center justify-center px-6 py-10">
       <div className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden bg-groove-stone">
         {current ? (
           isVideoSlide ? (
@@ -105,7 +105,7 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
           </>
         )}
 
-        <p className="absolute bottom-14 left-8 right-8 font-reverie-display italic text-3xl text-groove-bg" style={{ fontWeight: 400 }}>
+        <p className="absolute bottom-8 left-8 right-8 font-reverie-display italic text-3xl text-groove-bg" style={{ fontWeight: 400 }}>
           {t.galleryHeading}
         </p>
       </div>

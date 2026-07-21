@@ -17,11 +17,13 @@ html {
    bukan div wrapper), section yang mau nge-snap ditandai .snap-start (Tailwind
    scroll-snap-align: start) satu per satu. */
 html.reverie-snap-scroll {
-  /* proximity (bukan mandatory) — mandatory memaksa snap bahkan di tengah gesture
-     scroll aktif, yang di mobile suka baku-hantam sama animasi address bar
-     show/hide (apalagi sekarang section pakai 100lvh), bikin efek "goyang" pas
-     scroll. proximity cuma snap kalau scroll sudah berhenti dekat sebuah section. */
-  scroll-snap-type: y proximity;
+  /* mandatory (bukan proximity) — proximity ternyata terlalu lemah, banyak browser
+     mobile (terutama swipe cepat) jadi nyaris tidak pernah snap sama sekali.
+     Section sengaja dikembalikan ke 100svh (bukan 100lvh) supaya tinggi section
+     tidak berubah-ubah saat address bar browser show/hide — itu akar masalah
+     "goyang"-nya, bukan mandatory-nya. svh dijamin tidak pernah overflow karena
+     selalu mengukur viewport terkecil (saat chrome browser terlihat penuh). */
+  scroll-snap-type: y mandatory;
 }
 
 @layer components {

@@ -24,7 +24,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
   });
 
   return (
-    <section className="relative h-[100lvh] overflow-hidden flex flex-col items-center justify-center text-center px-4 text-groove-bg">
+    <section className="relative h-[100svh] overflow-hidden flex flex-col items-center justify-center text-center px-4 text-groove-bg">
       {/* Overlay flat (bukan gradient), sama seperti section lain — cuma supaya teks tetap terbaca */}
       <div className="absolute inset-0 bg-groove-stone/35" />
 

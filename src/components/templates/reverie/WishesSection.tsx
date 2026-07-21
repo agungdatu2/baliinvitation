@@ -5,7 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
 // 1 kolom, maksimal 3 baris per halaman — supaya section tetap muat dalam satu
-// layar (100lvh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
+// layar (100svh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
 // terus memanjang ke bawah.
 const PAGE_SIZE = 3;
 
@@ -83,7 +83,7 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
   const hasNext = totalPages > 1;
 
   return (
-    <section className="relative min-h-[100lvh] flex flex-col justify-center text-groove-bg px-6 py-20">
+    <section className="relative min-h-[100svh] flex flex-col justify-center text-groove-bg px-6 py-20">
       <div className="max-w-2xl mx-auto w-full">
         <h2 className="font-reverie-display text-3xl md:text-4xl leading-tight mb-10 text-center" style={{ fontWeight: 400 }}>
           {t.wishesHeading}

@@ -14,14 +14,14 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-// Section "The Groom" full-viewport (100lvh) dengan foto pengantin pria sendiri
+// Section "The Groom" full-viewport (100svh) dengan foto pengantin pria sendiri
 // sebagai background, mengikuti pola PrayerSection (bukan FixedVideoBackground,
 // z-index relative supaya di atas video, snap-start untuk ikut scroll-snap).
 export default function GroomSection({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
 
   return (
-    <section className="relative z-10 h-[100lvh] overflow-hidden flex items-end text-groove-bg">
+    <section className="relative z-10 h-[100svh] overflow-hidden flex items-end text-groove-bg">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={data.groomPhoto || DEFAULT_PHOTO}
@@ -30,7 +30,7 @@ export default function GroomSection({ data }: { data: InvitationData }) {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent -z-10" />
 
-      <div className="relative px-6 md:px-14 pb-24 md:pb-28 max-w-md">
+      <div className="relative px-6 md:px-14 pb-16 md:pb-20 max-w-md">
         <p className="font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/70 mb-4">
           {t.theGroom}
         </p>
