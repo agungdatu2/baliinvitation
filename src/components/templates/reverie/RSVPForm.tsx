@@ -45,8 +45,11 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
     window.dispatchEvent(new CustomEvent("rsvp-submitted"));
   };
 
+  // text-base (16px) bukan text-sm — di bawah 16px, Safari/Chrome mobile auto-zoom
+  // begitu input di-focus (mengganggu, harus di-pinch-zoom-out manual sesudahnya).
+  // md:text-sm supaya di desktop tetap konsisten ukurannya dengan teks lain.
   const fieldClass =
-    "w-full border border-groove-bg/40 bg-transparent px-4 py-3 text-sm text-groove-bg placeholder:text-groove-bg/50 focus:outline-none focus:border-groove-bg transition-colors";
+    "w-full border border-groove-bg/40 bg-transparent px-4 py-3 text-base md:text-sm text-groove-bg placeholder:text-groove-bg/50 focus:outline-none focus:border-groove-bg transition-colors";
   const labelClass = "font-groove-label block text-[0.68rem] uppercase tracking-widest text-groove-bg/80 mb-2";
   const solidButtonClass =
     "w-full py-3.5 bg-groove-stone text-groove-bg text-xs tracking-[0.25em] uppercase disabled:opacity-50 transition hover:bg-groove-stone/85";

@@ -17,7 +17,11 @@ html {
    bukan div wrapper), section yang mau nge-snap ditandai .snap-start (Tailwind
    scroll-snap-align: start) satu per satu. */
 html.reverie-snap-scroll {
-  scroll-snap-type: y mandatory;
+  /* proximity (bukan mandatory) — mandatory memaksa snap bahkan di tengah gesture
+     scroll aktif, yang di mobile suka baku-hantam sama animasi address bar
+     show/hide (apalagi sekarang section pakai 100lvh), bikin efek "goyang" pas
+     scroll. proximity cuma snap kalau scroll sudah berhenti dekat sebuah section. */
+  scroll-snap-type: y proximity;
 }
 
 @layer components {
