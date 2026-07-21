@@ -3,6 +3,8 @@ import { InvitationData } from "@/types/invitation";
 import { normalizeWaNumber } from "@/lib/utils/whatsapp";
 import { getDict } from "@/lib/i18n/lume";
 
+const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1200&q=85";
+
 // Kontak resmi BaliInvitation (bukan data client) — sama untuk semua undangan,
 // ditampilkan di footer sebagai kredit "Created By".
 const CREATOR = {
@@ -33,23 +35,31 @@ function InstagramIcon({ className }: { className?: string }) {
 export default function ClosingFooter({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   return (
-    <footer className="groove-overlay-dark text-groove-bg text-center py-24 px-6 min-h-screen flex flex-col items-center justify-center">
-      <div className="max-w-5xl mx-auto">
+    <footer className="relative min-h-[130svh] flex flex-col justify-between text-groove-bg text-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={data.reverieFooterImage || DEFAULT_PHOTO}
+        alt=""
+        className="absolute inset-0 h-full w-full object-cover -z-10"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/70 -z-10" />
+
+      <div className="pt-20 px-6">
         <div className="max-w-2xl mx-auto">
           <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 400 }}>
             {t.thankYou}
             <br />
             {t.forYourAttendance}
           </h2>
-          <p className="font-groove-body text-sm md:text-base text-groove-bg/80 mb-6">{t.honorText}</p>
+          <p className="font-groove-body text-sm md:text-base text-groove-bg/85 mb-6">{t.honorText}</p>
           <h3 className="font-reverie-display italic text-2xl" style={{ fontWeight: 400 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h3>
         </div>
       </div>
 
-      <div className="mt-16 flex flex-col items-center gap-4">
-        <p className="font-groove-label text-[10px] opacity-45 tracking-widest uppercase">Created By</p>
+      <div className="pb-10 px-6 flex flex-col items-center gap-4">
+        <p className="font-groove-label text-[10px] opacity-70 tracking-widest uppercase">Created By</p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           <a
             href={`https://wa.me/${normalizeWaNumber(CREATOR.whatsappNumber)}`}
@@ -85,7 +95,7 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
             <span className="font-groove-label text-xs tracking-wide uppercase">{CREATOR.website}</span>
           </a>
         </div>
-        <p className="font-groove-label text-[10px] opacity-45 tracking-widest uppercase">
+        <p className="font-groove-label text-[10px] opacity-70 tracking-widest uppercase">
           © All rights reserved by BaliInvitation
         </p>
       </div>

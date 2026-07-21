@@ -48,6 +48,7 @@ const defaultValues: InvitationFormValues = {
   heroVideoUrl: "",
   reverieGateImage: "",
   reverieSaveTheDateImage: "",
+  reverieFooterImage: "",
   hiddenSections: [],
   eventDate: "",
   galleryImages: [],
@@ -256,6 +257,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             </Field>
             <Field label="URL Foto Section Save the Date (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieSaveTheDateImage")} className="input" placeholder="https://..." />
+            </Field>
+            <Field label="URL Foto Footer/Penutup (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+              <input {...register("reverieFooterImage")} className="input" placeholder="https://..." />
             </Field>
           </>
         )}
