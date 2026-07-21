@@ -35,7 +35,7 @@ function InstagramIcon({ className }: { className?: string }) {
 export default function ClosingFooter({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   return (
-    <footer className="relative min-h-[130svh] flex flex-col justify-between text-groove-bg text-center">
+    <footer className="relative h-[100svh] snap-start flex flex-col justify-between text-groove-bg text-center">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={data.reverieFooterImage || DEFAULT_PHOTO}
@@ -44,21 +44,21 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
       />
       <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-black/70 -z-10" />
 
-      <div className="pt-20 px-6">
+      <div className="pt-12 px-6">
         <div className="max-w-2xl mx-auto">
-          <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 400 }}>
+          <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-4" style={{ fontWeight: 400 }}>
             {t.thankYou}
             <br />
             {t.forYourAttendance}
           </h2>
-          <p className="font-groove-body text-sm md:text-base text-groove-bg/85 mb-6">{t.honorText}</p>
+          <p className="font-groove-body text-sm md:text-base text-groove-bg/85 mb-4">{t.honorText}</p>
           <h3 className="font-reverie-display italic text-2xl" style={{ fontWeight: 400 }}>
             {data.groomNickname} &amp; {data.brideNickname}
           </h3>
         </div>
       </div>
 
-      <div className="pb-10 px-6 flex flex-col items-center gap-4">
+      <div className="pb-8 px-6 flex flex-col items-center gap-3">
         <p className="font-groove-label text-[10px] opacity-70 tracking-widest uppercase">Created By</p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           <a
