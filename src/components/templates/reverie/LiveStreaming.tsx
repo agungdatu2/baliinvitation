@@ -4,7 +4,7 @@ export default function LiveStreaming({ url, note, lang }: { url?: string; note?
   if (!url) return null;
   const t = getDict(lang);
   return (
-    <section className="groove-overlay text-groove-bg py-12 px-6 text-center">
+    <section className="groove-overlay min-h-[100lvh] flex flex-col justify-center text-groove-bg py-12 px-6 text-center">
       <div className="max-w-5xl mx-auto">
       <div className="max-w-md mx-auto">
         <p className="font-groove-label uppercase tracking-widest text-xs text-groove-bg/70 mb-2">{t.liveStreamingTitle}</p>

@@ -41,7 +41,7 @@ export default function EventDetails({ events, lang }: { events: EventItem[]; la
   });
 
   return (
-    <section className="relative z-10 text-groove-bg px-6 md:px-14 py-24">
+    <section className="relative z-10 min-h-[100lvh] flex flex-col justify-center text-groove-bg px-6 md:px-14 py-24">
       <div className="max-w-md">
         <p className="font-reverie-display italic text-3xl md:text-4xl leading-tight mb-8">{heading}</p>
         <div className="h-px bg-groove-bg/40 mb-10" />
