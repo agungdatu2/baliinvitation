@@ -5,10 +5,10 @@ import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 import { WishItem } from "@/types/invitation";
 
-// 1 kolom, maksimal 3 baris per halaman — supaya section tetap muat dalam satu
-// layar (100lvh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
-// terus memanjang ke bawah.
-const PAGE_SIZE = 3;
+// 1 ucapan ditampilkan per giliran (tombol "Next" buat lihat berikutnya) —
+// section ini sekarang digabung ke dalam satu layar bersama RSVPForm (lihat
+// RSVPForm.tsx), jadi tidak ada ruang untuk daftar panjang.
+const PAGE_SIZE = 1;
 
 // 9 ucapan contoh — cuma dipakai theme-preview (invitationId "preview" tidak
 // terhubung ke undangan asli di DB, jadi fetch API selalu balik array kosong)
@@ -47,16 +47,14 @@ function demoWishes(lang?: Lang): WishItem[] {
   }));
 }
 
-// Section terpisah dari RSVPForm — sengaja dipisah karena daftar ucapan bisa
-// tumbuh panjang dan akan merusak feel "satu section per scroll-snap" kalau
-// digabung di kolom form yang sama. State awal diisi dari `initialWishes` (SSR,
-// lihat src/app/[slug]/page.tsx) atau demo (theme-preview) supaya section ini
-// TIDAK mulai kosong lalu tiba-tiba melompat jadi penuh setelah fetch client
-// selesai — lompatan tinggi section persis di bawah RSVP itu penyebab utama
-// keluhan "halaman kayak scroll sendiri" di sekitar RSVP. Fetch client tetap
-// jalan untuk refresh diam-diam, lalu refetch lagi saat RSVPForm broadcast
-// event "rsvp-submitted" (custom event, bukan lifting state, supaya dua
-// section ini tetap independen).
+// Widget inline (bukan <section> sendiri) — dirender DI DALAM section RSVPForm
+// supaya form + ucapan yang sudah masuk jadi satu layar, bukan dua section
+// snap terpisah. State awal diisi dari `initialWishes` (SSR, lihat
+// src/app/[slug]/page.tsx) atau demo (theme-preview) supaya tidak mulai kosong
+// lalu tiba-tiba melompat jadi penuh setelah fetch client selesai. Fetch
+// client tetap jalan untuk refresh diam-diam, lalu refetch lagi saat
+// RSVPForm broadcast event "rsvp-submitted" (custom event, bukan lifting
+// state, supaya keduanya tetap independen).
 export default function WishesSection({
   invitationId,
   lang,
@@ -99,43 +97,41 @@ export default function WishesSection({
   const hasNext = totalPages > 1;
 
   return (
-    <section className="relative min-h-[100lvh] flex flex-col justify-center text-groove-bg px-6 py-20">
-      <div className="max-w-2xl mx-auto w-full">
-        <h2 className="font-reverie-display text-3xl md:text-4xl leading-tight mb-10 text-center" style={{ fontWeight: 400 }}>
-          {t.wishesHeading}
-        </h2>
+    <div>
+      <h3 className="font-reverie-display text-lg leading-tight mb-3" style={{ fontWeight: 400 }}>
+        {t.wishesHeading}
+      </h3>
 
-        <div className="grid grid-cols-1 gap-4">
-          {visibleWishes.map((w) => (
-            <div key={w.id} className="border border-groove-bg/30 p-5 bg-black/25">
-              <p className="font-groove-body text-sm text-groove-bg mb-1" style={{ fontWeight: 600 }}>
-                {w.guestName}
-              </p>
-              <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed mb-4">{w.message}</p>
-              <p className="font-groove-label text-[0.65rem] uppercase tracking-wide text-groove-bg/60">
-                {new Date(w.createdAt).toLocaleDateString(t.dateLocale, { day: "2-digit", month: "short", year: "numeric" })}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Loop balik ke halaman pertama setelah halaman terakhir, supaya tombol
-            ini tetap konsisten "Next" (bukan berubah jadi "kembali"/disabled). */}
-        {hasNext && (
-          <div className="mt-8 flex flex-col items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setPage((p) => (p + 1) % totalPages)}
-              className="flex items-center gap-2 font-groove-label text-xs uppercase tracking-[0.25em] text-groove-bg/90 border border-groove-bg/40 px-6 py-2.5 rounded-full hover:border-groove-bg transition"
-            >
-              {t.rsvpNext} <ArrowRight className="h-3.5 w-3.5" />
-            </button>
-            <p className="font-groove-label text-[0.65rem] uppercase tracking-widest text-groove-bg/50">
-              {page + 1} / {totalPages}
+      <div className="grid grid-cols-1 gap-2">
+        {visibleWishes.map((w) => (
+          <div key={w.id} className="border border-groove-bg/30 p-3 bg-black/25">
+            <p className="font-groove-body text-xs text-groove-bg mb-0.5" style={{ fontWeight: 600 }}>
+              {w.guestName}
+            </p>
+            <p className="font-groove-body text-xs text-groove-bg/85 leading-relaxed mb-1.5">{w.message}</p>
+            <p className="font-groove-label text-[0.6rem] uppercase tracking-wide text-groove-bg/60">
+              {new Date(w.createdAt).toLocaleDateString(t.dateLocale, { day: "2-digit", month: "short", year: "numeric" })}
             </p>
           </div>
-        )}
+        ))}
       </div>
-    </section>
+
+      {/* Loop balik ke halaman pertama setelah halaman terakhir, supaya tombol
+          ini tetap konsisten "Next" (bukan berubah jadi "kembali"/disabled). */}
+      {hasNext && (
+        <div className="mt-2.5 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setPage((p) => (p + 1) % totalPages)}
+            className="flex items-center gap-1.5 font-groove-label text-[0.65rem] uppercase tracking-[0.2em] text-groove-bg/90 border border-groove-bg/40 px-4 py-1.5 rounded-full hover:border-groove-bg transition"
+          >
+            {t.rsvpNext} <ArrowRight className="h-3 w-3" />
+          </button>
+          <p className="font-groove-label text-[0.6rem] uppercase tracking-widest text-groove-bg/50">
+            {page + 1} / {totalPages}
+          </p>
+        </div>
+      )}
+    </div>
   );
 }

@@ -20,7 +20,6 @@ import EventDetails from "./EventDetails";
 import LiveStreaming from "./LiveStreaming";
 import DressCode from "./DressCode";
 import RSVPForm from "./RSVPForm";
-import WishesSection from "./WishesSection";
 import WeddingGift from "./WeddingGift";
 import ClosingFooter from "./ClosingFooter";
 import Reveal from "./Reveal";
@@ -252,24 +251,15 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                     )}
 
                     {!hidden.has("rsvp") && (
-                      <>
-                        <Reveal id="rsvp">
-                          <RSVPForm
-                            invitationId={data.id ?? data.slug}
-                            guestName={guestName}
-                            guestId={guestId}
-                            lang={data.language}
-                          />
-                        </Reveal>
-
-                        <Reveal>
-                          <WishesSection
-                            invitationId={data.id ?? data.slug}
-                            lang={data.language}
-                            initialWishes={data.initialWishes}
-                          />
-                        </Reveal>
-                      </>
+                      <Reveal id="rsvp">
+                        <RSVPForm
+                          invitationId={data.id ?? data.slug}
+                          guestName={guestName}
+                          guestId={guestId}
+                          lang={data.language}
+                          initialWishes={data.initialWishes}
+                        />
+                      </Reveal>
                     )}
 
                     {!hidden.has("gallery") && (
