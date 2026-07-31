@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, Palette, Wallet, Package, LogOut } from "lucide-react";
+import { LayoutDashboard, Palette, Wallet, Package, LogOut, ShieldCheck } from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Undangan Berjalan", icon: LayoutDashboard },
   { href: "/admin/themes", label: "Tema", icon: Palette },
   { href: "/admin/income", label: "Income", icon: Wallet },
   { href: "/admin/packages", label: "Paket", icon: Package },
+  { href: "/admin/admins", label: "Admin", icon: ShieldCheck },
 ];
 
 function isActive(pathname: string, href: string) {
