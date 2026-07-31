@@ -250,15 +250,6 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                         <LiveStreaming url={data.livestreamUrl} note={data.livestreamNote} lang={data.language} />
                       </Reveal>
                     )}
-                    {!hidden.has("dressCode") && (
-                      <Reveal>
-                        <DressCode
-                          items={data.dressCode}
-                          image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
-                          lang={data.language}
-                        />
-                      </Reveal>
-                    )}
 
                     {!hidden.has("rsvp") && (
                       <>
@@ -283,6 +274,16 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                           <Gallery images={visibleGalleryImages} lang={data.language} />
                         </Reveal>
                       </div>
+                    )}
+
+                    {!hidden.has("dressCode") && (
+                      <Reveal>
+                        <DressCode
+                          items={data.dressCode}
+                          image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                          lang={data.language}
+                        />
+                      </Reveal>
                     )}
 
                     {!hidden.has("gift") && (
