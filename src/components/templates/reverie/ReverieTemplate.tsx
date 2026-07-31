@@ -250,18 +250,6 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                       </Reveal>
                     )}
 
-                    {!hidden.has("rsvp") && (
-                      <Reveal id="rsvp">
-                        <RSVPForm
-                          invitationId={data.id ?? data.slug}
-                          guestName={guestName}
-                          guestId={guestId}
-                          lang={data.language}
-                          initialWishes={data.initialWishes}
-                        />
-                      </Reveal>
-                    )}
-
                     {!hidden.has("gallery") && (
                       <div id="gallery">
                         <Reveal>
@@ -286,6 +274,18 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                           accounts={data.bankAccounts}
                           image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
                           lang={data.language}
+                        />
+                      </Reveal>
+                    )}
+
+                    {!hidden.has("rsvp") && (
+                      <Reveal id="rsvp">
+                        <RSVPForm
+                          invitationId={data.id ?? data.slug}
+                          guestName={guestName}
+                          guestId={guestId}
+                          lang={data.language}
+                          initialWishes={data.initialWishes}
                         />
                       </Reveal>
                     )}
