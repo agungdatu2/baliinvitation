@@ -25,6 +25,13 @@ export interface DressCodeItem {
   hex: string; // "#fbf9f5"
 }
 
+export interface WishItem {
+  id: string;
+  guestName: string;
+  message?: string | null;
+  createdAt: string;
+}
+
 // Bentuk data lengkap 1 undangan — dipakai form admin & semua komponen template
 export interface InvitationData {
   id?: string;
@@ -73,6 +80,13 @@ export interface InvitationData {
   // true/unlimited kalau undangan tidak punya package terkait.
   hasIntro: boolean;
   maxGalleryImages: number | null;
+
+  // Wishes hasil SSR (lihat src/app/[slug]/page.tsx) — dipakai WishesSection
+  // Reverie sebagai state awal supaya section itu tidak mulai dari kosong lalu
+  // "meletup" jadi penuh sesaat setelah fetch client selesai (lompatan tinggi
+  // section itu persis di bawah RSVP terasa seperti halaman scroll sendiri).
+  // Client tetap fetch ulang untuk update real-time setelah RSVP baru masuk.
+  initialWishes?: WishItem[];
 }
 
 // Props standar yang wajib diterima SETIAP komponen template

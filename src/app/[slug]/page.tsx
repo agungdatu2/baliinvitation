@@ -79,6 +79,18 @@ export default async function InvitationPage({
     );
   }
 
+  // Diambil di server supaya WishesSection (Reverie) tidak render kosong lalu
+  // "meletup" jadi penuh begitu fetch client selesai — lihat komentar
+  // InvitationData.initialWishes.
+  const wishRsvps = await prisma.rSVP.findMany({
+    where: { invitationId: inv.id, message: { not: null } },
+    orderBy: { createdAt: "desc" },
+    select: { id: true, guestName: true, message: true, createdAt: true },
+  });
+  const initialWishes = wishRsvps
+    .filter((w) => w.message?.trim())
+    .map((w) => ({ ...w, createdAt: w.createdAt.toISOString() }));
+
   const guest = await resolveGuest(inv.id, searchParams.g);
   const viaParam: ViaParam = guest ? "guest" : searchParams.to ? "to" : "direct";
   if (!isPortalPreview) {
@@ -130,6 +142,7 @@ export default async function InvitationPage({
     dressCode: (inv.dressCode as unknown as InvitationData["dressCode"]) ?? [],
     hasIntro: inv.package?.hasIntro ?? true,
     maxGalleryImages: inv.package?.maxGalleryImages ?? null,
+    initialWishes,
   };
 
   return <Template data={data} guestName={guestName} guestId={guest?.id} />;

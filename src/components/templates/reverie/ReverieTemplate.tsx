@@ -263,7 +263,11 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                         </Reveal>
 
                         <Reveal>
-                          <WishesSection invitationId={data.id ?? data.slug} lang={data.language} />
+                          <WishesSection
+                            invitationId={data.id ?? data.slug}
+                            lang={data.language}
+                            initialWishes={data.initialWishes}
+                          />
                         </Reveal>
                       </>
                     )}

@@ -3,18 +3,12 @@
 import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
+import { WishItem } from "@/types/invitation";
 
 // 1 kolom, maksimal 3 baris per halaman — supaya section tetap muat dalam satu
 // layar (100lvh) berapa pun banyaknya ucapan yang masuk, alih-alih daftar yang
 // terus memanjang ke bawah.
 const PAGE_SIZE = 3;
-
-interface WishItem {
-  id: string;
-  guestName: string;
-  message?: string | null;
-  createdAt: string;
-}
 
 // 9 ucapan contoh — cuma dipakai theme-preview (invitationId "preview" tidak
 // terhubung ke undangan asli di DB, jadi fetch API selalu balik array kosong)
@@ -45,14 +39,37 @@ const DEMO_WISHES: Record<"id" | "en", { guestName: string; message: string }[]>
   ],
 };
 
+function demoWishes(lang?: Lang): WishItem[] {
+  return DEMO_WISHES[lang === "en" ? "en" : "id"].map((w, i) => ({
+    id: `demo-${i}`,
+    ...w,
+    createdAt: new Date().toISOString(),
+  }));
+}
+
 // Section terpisah dari RSVPForm — sengaja dipisah karena daftar ucapan bisa
 // tumbuh panjang dan akan merusak feel "satu section per scroll-snap" kalau
-// digabung di kolom form yang sama. Fetch sendiri saat mount, lalu refetch saat
-// RSVPForm broadcast event "rsvp-submitted" (custom event, bukan lifting state,
-// supaya dua section ini tetap independen).
-export default function WishesSection({ invitationId, lang }: { invitationId: string; lang?: Lang }) {
+// digabung di kolom form yang sama. State awal diisi dari `initialWishes` (SSR,
+// lihat src/app/[slug]/page.tsx) atau demo (theme-preview) supaya section ini
+// TIDAK mulai kosong lalu tiba-tiba melompat jadi penuh setelah fetch client
+// selesai — lompatan tinggi section persis di bawah RSVP itu penyebab utama
+// keluhan "halaman kayak scroll sendiri" di sekitar RSVP. Fetch client tetap
+// jalan untuk refresh diam-diam, lalu refetch lagi saat RSVPForm broadcast
+// event "rsvp-submitted" (custom event, bukan lifting state, supaya dua
+// section ini tetap independen).
+export default function WishesSection({
+  invitationId,
+  lang,
+  initialWishes,
+}: {
+  invitationId: string;
+  lang?: Lang;
+  initialWishes?: WishItem[];
+}) {
   const t = getDict(lang);
-  const [wishes, setWishes] = useState<WishItem[]>([]);
+  const [wishes, setWishes] = useState<WishItem[]>(
+    () => initialWishes ?? (invitationId === "preview" ? demoWishes(lang) : [])
+  );
   const [page, setPage] = useState(0);
 
   useEffect(() => {
@@ -62,8 +79,7 @@ export default function WishesSection({ invitationId, lang }: { invitationId: st
         .then((data: WishItem[]) => {
           const real = Array.isArray(data) ? data.filter((w) => w.message?.trim()) : [];
           if (real.length === 0 && invitationId === "preview") {
-            const demo = DEMO_WISHES[lang === "en" ? "en" : "id"];
-            setWishes(demo.map((w, i) => ({ id: `demo-${i}`, ...w, createdAt: new Date().toISOString() })));
+            setWishes(demoWishes(lang));
           } else {
             setWishes(real);
           }
