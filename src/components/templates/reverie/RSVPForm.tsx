@@ -57,10 +57,9 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
   return (
     <section className="relative min-h-[100lvh] flex flex-col justify-center text-groove-bg px-6 py-20">
       <div className="max-w-md">
-        <h2 className="font-reverie-display text-3xl md:text-4xl leading-tight mb-5" style={{ fontWeight: 400 }}>
+        <h2 className="font-reverie-display text-2xl md:text-3xl leading-tight mb-10" style={{ fontWeight: 400 }}>
           {t.rsvpHeading}
         </h2>
-        <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-10">{t.rsvpSubtext}</p>
 
         {sent ? (
           <p className="font-groove-body text-sm text-groove-bg/90">{t.rsvpSuccess}</p>
