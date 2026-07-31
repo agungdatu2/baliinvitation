@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Palette, Wallet, Package } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { LayoutDashboard, Palette, Wallet, Package, LogOut } from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Undangan Berjalan", icon: LayoutDashboard },
@@ -26,7 +27,7 @@ export default function AdminNav() {
           <p className="font-serif text-lg text-lume-ink">BaliInvitation</p>
           <p className="text-xs text-gray-400 mt-0.5">Admin</p>
         </div>
-        <nav className="p-3 space-y-1">
+        <nav className="p-3 space-y-1 flex-1">
           {TABS.map(({ href, label, icon: Icon }) => {
             const active = isActive(pathname, href);
             return (
@@ -45,12 +46,28 @@ export default function AdminNav() {
             );
           })}
         </nav>
+        <div className="p-3 border-t border-lume-line">
+          <button
+            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-lume-ink transition w-full"
+          >
+            <LogOut size={17} strokeWidth={1.75} />
+            Keluar
+          </button>
+        </div>
       </aside>
 
       {/* Top bar + horizontal tabs (mobile) */}
       <div className="md:hidden border-b border-lume-line bg-white">
-        <div className="px-4 py-4">
+        <div className="px-4 py-4 flex items-center justify-between">
           <p className="font-serif text-lg text-lume-ink">BaliInvitation — Admin</p>
+          <button
+            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            aria-label="Keluar"
+            className="text-gray-400 hover:text-lume-ink transition"
+          >
+            <LogOut size={18} strokeWidth={1.75} />
+          </button>
         </div>
         <nav className="flex gap-1 px-4 overflow-x-auto">
           {TABS.map(({ href, label }) => {
