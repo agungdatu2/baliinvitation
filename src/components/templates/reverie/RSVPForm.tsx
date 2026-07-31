@@ -12,25 +12,20 @@ interface RSVPFormProps {
 
 // Section RSVP — TANPA foto background sendiri (sama pola dengan LoveStory/
 // EventDetails/SaveTheDateSection), transparan supaya FixedVideoBackground yang
-// sudah nge-blur (.groove-page-blur) tetap kelihatan di belakangnya. Form
-// dua-langkah: Step 1 (nama, kehadiran, jumlah tamu) -> tombol NEXT -> Step 2
-// (ucapan + kirim). Daftar ucapan yang masuk ditampilkan di WishesSection
-// terpisah (bukan di sini) — lihat WishesSection.tsx.
+// sudah nge-blur (.groove-page-blur) tetap kelihatan di belakangnya. Satu
+// langkah (nama, kehadiran, ucapan) -> kirim; guestCount dikirim tetap 1
+// (default API) karena field jumlah tamu sengaja dihilangkan dari UI. Daftar
+// ucapan yang masuk ditampilkan di WishesSection terpisah (bukan di sini) —
+// lihat WishesSection.tsx.
 export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSVPFormProps) {
   const t = getDict(lang);
   const ATTEND_OPTIONS = [
     { value: "hadir", label: t.attendYes },
     { value: "tidak_hadir", label: t.attendNo },
   ];
-  const [step, setStep] = useState<1 | 2>(1);
   const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  const goNext = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStep(2);
-  };
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,8 +58,8 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
 
         {sent ? (
           <p className="font-groove-body text-sm text-groove-bg/90">{t.rsvpSuccess}</p>
-        ) : step === 1 ? (
-          <form onSubmit={goNext} className="space-y-6 text-left">
+        ) : (
+          <form onSubmit={submit} className="space-y-6 text-left">
             <div>
               <label className={labelClass}>{t.nameLabel}</label>
               <input
@@ -97,22 +92,6 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
             </div>
 
             <div>
-              <label className={labelClass}>{t.guestCountLabel}</label>
-              <input
-                type="number"
-                min={1}
-                max={5}
-                className={fieldClass}
-                value={form.guestCount}
-                onChange={(e) => setForm({ ...form, guestCount: Number(e.target.value) })}
-              />
-            </div>
-
-            <button className={solidButtonClass}>{t.rsvpNext}</button>
-          </form>
-        ) : (
-          <form onSubmit={submit} className="space-y-6 text-left">
-            <div>
               <label className={labelClass}>{t.wishesLabel}</label>
               <textarea
                 className={fieldClass}
@@ -122,18 +101,9 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang }: RSV
               />
             </div>
 
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setStep(1)}
-                className="flex-1 py-3.5 border border-groove-bg/40 text-groove-bg text-xs tracking-[0.25em] uppercase transition hover:border-groove-bg"
-              >
-                {t.rsvpBack}
-              </button>
-              <button disabled={loading} className={`flex-1 ${solidButtonClass}`}>
-                {loading ? t.sending : t.send}
-              </button>
-            </div>
+            <button disabled={loading} className={solidButtonClass}>
+              {loading ? t.sending : t.send}
+            </button>
           </form>
         )}
       </div>
