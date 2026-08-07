@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 import { getDict, Lang } from "@/lib/i18n/lume";
@@ -30,9 +30,9 @@ interface NavMenuProps {
   hiddenSections?: string[];
 }
 
-// Hamburger polos (tanpa background) di semua ukuran layar — warnanya berganti
-// terang/gelap tergantung sedang di atas video hero (gelap) atau section konten
-// (terang). Klik membuka panel penuh di sisi kanan (solid, bukan glass-blur).
+// Hamburger polos (tanpa background) di semua ukuran layar — garisnya selalu
+// putih (drop-shadow supaya tetap kebaca di atas section terang), sama seperti
+// tema Reverie. Klik membuka panel penuh di sisi kanan (solid, bukan glass-blur).
 export default function NavMenu({
   groomNickname,
   brideNickname,
@@ -48,17 +48,9 @@ export default function NavMenu({
   const hidden = new Set(hiddenSections ?? []);
   const visibleLinks = LINK_HREFS.filter((l) => !l.section || !hidden.has(l.section));
   const [open, setOpen] = useState(false);
-  const [overHero, setOverHero] = useState(true);
 
-  useEffect(() => {
-    const onScroll = () => setOverHero(window.scrollY < window.innerHeight * 0.7);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const lineColor = overHero && !open ? "bg-groove-bg" : "bg-groove-ink";
-  const iconShadow = overHero && !open ? "drop-shadow-md" : "";
+  const lineColor = "bg-white";
+  const iconShadow = "drop-shadow-md";
 
   const start = new Date(eventDate);
   const calendarUrl = buildGoogleCalendarUrl({
