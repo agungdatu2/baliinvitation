@@ -23,14 +23,16 @@ export default function WeddingGift({
   return (
     <section className="groove-overlay text-groove-bg">
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center px-6 py-16">
+        {/* Mobile: judul & teks dulu, foto di bawahnya (order-2). Desktop: kembali
+            ke urutan DOM asli (foto kiri, teks kanan) lewat md:order-none. */}
         {image && (
-          <div className="w-full aspect-[4/5] overflow-hidden">
+          <div className="order-2 md:order-none w-full aspect-[4/5] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={image} alt={t.weddingGiftHeading} className="w-full h-full object-cover" />
           </div>
         )}
 
-        <div className={image ? "" : "md:col-span-2 max-w-md"}>
+        <div className={`order-1 md:order-none ${image ? "" : "md:col-span-2 max-w-md"}`}>
           <h2 className="font-reverie-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 300 }}>
             {t.weddingGiftHeading}
           </h2>
