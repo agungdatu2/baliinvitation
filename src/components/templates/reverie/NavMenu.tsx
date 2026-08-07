@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Play, Pause } from "lucide-react";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 import { getDict, Lang } from "@/lib/i18n/lume";
@@ -30,9 +30,9 @@ interface NavMenuProps {
   hiddenSections?: string[];
 }
 
-// Hamburger polos (tanpa background) di semua ukuran layar — warnanya berganti
-// terang/gelap tergantung sedang di atas video hero (gelap) atau section konten
-// (terang). Klik membuka panel penuh di sisi kanan (solid, bukan glass-blur).
+// Hamburger polos (tanpa background) di semua ukuran layar — garisnya selalu
+// putih (drop-shadow supaya tetap kebaca di atas section terang). Klik membuka
+// panel penuh di sisi kanan bergaya glassmorphism (blur + transparan, teks putih).
 export default function NavMenu({
   groomNickname,
   brideNickname,
@@ -48,17 +48,9 @@ export default function NavMenu({
   const hidden = new Set(hiddenSections ?? []);
   const visibleLinks = LINK_HREFS.filter((l) => !l.section || !hidden.has(l.section));
   const [open, setOpen] = useState(false);
-  const [overHero, setOverHero] = useState(true);
 
-  useEffect(() => {
-    const onScroll = () => setOverHero(window.scrollY < window.innerHeight * 0.7);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const lineColor = overHero && !open ? "bg-groove-bg" : "bg-groove-ink";
-  const iconShadow = overHero && !open ? "drop-shadow-md" : "";
+  const lineColor = "bg-white";
+  const iconShadow = "drop-shadow-md";
 
   const start = new Date(eventDate);
   const calendarUrl = buildGoogleCalendarUrl({
@@ -77,7 +69,7 @@ export default function NavMenu({
         className={`fixed top-6 right-6 md:top-8 md:right-8 z-50 ${open ? "" : `w-8 h-6 ${iconShadow}`}`}
       >
         {open ? (
-          <span className="bg-groove-stone text-groove-bg font-groove-label text-xs uppercase tracking-widest px-5 py-2.5 rounded-full">
+          <span className="bg-white/10 backdrop-blur-md border border-white/30 text-white font-groove-label text-xs uppercase tracking-widest px-5 py-2.5 rounded-full">
             {t.close}
           </span>
         ) : (
@@ -97,7 +89,8 @@ export default function NavMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 z-40 h-full w-full sm:w-[380px] bg-groove-bg shadow-2xl transition-transform duration-500 ease-out flex flex-col justify-between p-8 md:p-10 ${
+        style={{ backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}
+        className={`fixed top-0 right-0 z-40 h-full w-full sm:w-[380px] bg-groove-stone/40 border-l border-white/10 shadow-2xl transition-transform duration-500 ease-out flex flex-col justify-between p-8 md:p-10 ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -107,20 +100,20 @@ export default function NavMenu({
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-reverie-display text-2xl md:text-3xl text-groove-ink hover:text-groove-secondary transition-colors"
+              className="font-reverie-display text-2xl md:text-3xl text-white hover:text-white/70 transition-colors"
             >
               {t[l.key]}
             </a>
           ))}
-          <p className="font-groove-body text-xs text-groove-ink/50 mt-4 max-w-[26ch]">{t.navHint}</p>
+          <p className="font-groove-body text-xs text-white/60 mt-4 max-w-[26ch]">{t.navHint}</p>
         </nav>
 
-        <div className="flex items-stretch gap-2 rounded-xl border border-groove-line bg-groove-bg/60 p-1.5">
+        <div className="flex items-stretch gap-2 rounded-xl border border-white/20 bg-white/10 p-1.5">
           <a
             href={calendarUrl}
             target="_blank"
             rel="noreferrer"
-            className="flex-1 flex items-center justify-center text-center font-groove-label text-[10px] uppercase tracking-wider text-groove-ink/80 hover:text-groove-secondary transition-colors px-2 py-3"
+            className="flex-1 flex items-center justify-center text-center font-groove-label text-[10px] uppercase tracking-wider text-white/80 hover:text-white transition-colors px-2 py-3"
           >
             {t.saveDateShort1}
             <br />
@@ -128,16 +121,16 @@ export default function NavMenu({
           </a>
           {hasMusic && (
             <>
-              <div className="w-px bg-groove-line" aria-hidden="true" />
+              <div className="w-px bg-white/20" aria-hidden="true" />
               <button
                 onClick={onToggleMusic}
                 aria-label={musicPlaying ? t.pauseMusic : t.playMusic}
-                className="w-14 flex items-center justify-center rounded-lg hover:bg-groove-line/40 transition-colors"
+                className="w-14 flex items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
               >
                 {musicPlaying ? (
-                  <Pause className="h-4 w-4 text-groove-ink/80" />
+                  <Pause className="h-4 w-4 text-white/80" />
                 ) : (
-                  <Play className="h-4 w-4 text-groove-ink/80 fill-current" />
+                  <Play className="h-4 w-4 text-white/80 fill-current" />
                 )}
               </button>
             </>
