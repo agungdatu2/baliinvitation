@@ -22,21 +22,13 @@ export default function WeddingGift({
 
   return (
     <section className="groove-overlay text-groove-bg">
-      <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center px-6 py-16">
-        {/* Mobile: judul & teks dulu, foto di bawahnya (order-2). Desktop: kembali
-            ke urutan DOM asli (foto kiri, teks kanan) lewat md:order-none. */}
-        {image && (
-          <div className="order-2 md:order-none w-full aspect-[4/5] overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image} alt={t.weddingGiftHeading} className="w-full h-full object-cover" />
-          </div>
-        )}
-
-        <div className={`order-1 md:order-none ${image ? "" : "md:col-span-2 max-w-md"}`}>
+      <div className="max-w-xl mx-auto flex flex-col items-center text-center gap-10 px-6 py-16">
+        {/* Judul & teks dulu, foto di bawahnya — berlaku di semua ukuran layar. */}
+        <div className="max-w-md">
           <h2 className="font-reverie-display italic text-4xl md:text-5xl mb-5" style={{ fontWeight: 300 }}>
             {t.weddingGiftHeading}
           </h2>
-          <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm">
+          <p className="font-groove-body text-sm text-groove-bg/80 leading-relaxed mb-6 max-w-sm mx-auto">
             {t.weddingGiftDescription}
           </p>
           <button
@@ -46,6 +38,13 @@ export default function WeddingGift({
             {t.clickHere}
           </button>
         </div>
+
+        {image && (
+          <div className="w-full max-w-sm aspect-[4/5] overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={image} alt={t.weddingGiftHeading} className="w-full h-full object-cover" />
+          </div>
+        )}
       </div>
 
       {typeof document !== "undefined" &&
