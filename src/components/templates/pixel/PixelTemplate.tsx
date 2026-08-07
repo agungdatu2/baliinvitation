@@ -20,7 +20,12 @@ export default function PixelTemplate({ data, guestName, guestId }: TemplateProp
   return (
     <main className="bg-pixel-bg text-pixel-ink font-pixel-body">
       {phase === "loading" && (
-        <LoadingScreen label={t.weddingInvitationLabel} onComplete={() => setPhase("characterSelect")} />
+        <LoadingScreen
+          label={t.weddingInvitationLabel}
+          groomNickname={data.groomNickname}
+          brideNickname={data.brideNickname}
+          onComplete={() => setPhase("characterSelect")}
+        />
       )}
 
       {phase === "characterSelect" && (
