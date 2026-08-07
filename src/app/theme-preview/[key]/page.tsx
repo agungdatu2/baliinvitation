@@ -109,7 +109,10 @@ export default function ThemePreviewPage({
         mapsUrl: "https://maps.google.com",
       },
     ],
-    bankAccounts: [],
+    bankAccounts: [
+      { bank: "BCA", accountNumber: "1234567890", accountName: "I Made Wirawan" },
+      { bank: "Mandiri", accountNumber: "0987654321", accountName: "Ni Ayu Kirana" },
+    ],
     dressCode: [
       { label: "Ivory", hex: "#f2ede4" },
       { label: "Espresso", hex: "#2b2420" },
