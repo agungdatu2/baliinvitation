@@ -49,6 +49,16 @@ const config: Config = {
           purple: "#9b4de0",
           line: "#2f2f4a",
           "line-light": "#4a4a6a",
+          // Dunia siang cerah (langit/rumput) — dipakai GameWorld & scenery
+          // checkpoint, terpisah dari "pixel-bg/panel" gelap yang tetap
+          // dipakai untuk chrome UI (modal, nav, dialog box).
+          sky: "#8fd3f4",
+          "sky-light": "#c9ecff",
+          cloud: "#ffffff",
+          grass: "#5fc76a",
+          "grass-dark": "#3fa84a",
+          dirt: "#8a5a3b",
+          "dirt-dark": "#6b4128",
         },
       },
       keyframes: {

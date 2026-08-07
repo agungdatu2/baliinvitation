@@ -1,15 +1,28 @@
-// Sprite avatar 8x10 grid (SVG rects, bukan file gambar) — badan/kepala tetap,
-// kaki punya 2 varian frame (walkFrame 0/1) untuk ilusi jalan, warna outfit
-// beda per karakter (male=biru, female=merah muda).
+// Sprite avatar 8x10 grid (SVG rects, bukan file gambar) — badan tetap, kepala
+// pakai topi beda per karakter (male="explorer" fedora coklat, female="pilot"
+// cap bulat), kaki punya 2 varian frame (walkFrame 0/1) untuk ilusi jalan.
 const SKIN = "#f1c27d";
-const HAIR = "#2b2722";
+const HAT_MALE = "#8a5a3b";
+const HAT_FEMALE = "#3b2f2f";
 
-const HEAD_CELLS: [number, number, string][] = [
-  [3, 0, HAIR], [4, 0, HAIR],
-  [2, 1, HAIR], [3, 1, HAIR], [4, 1, HAIR], [5, 1, HAIR],
-  [2, 2, SKIN], [3, 2, SKIN], [4, 2, SKIN], [5, 2, SKIN],
-  [2, 3, SKIN], [3, 3, SKIN], [4, 3, SKIN], [5, 3, SKIN],
-];
+function headCells(character: "male" | "female"): [number, number, string][] {
+  const hat = character === "male" ? HAT_MALE : HAT_FEMALE;
+  const brim: [number, number, string][] =
+    character === "male"
+      ? [
+          [3, 0, hat], [4, 0, hat],
+          [1, 1, hat], [2, 1, hat], [3, 1, hat], [4, 1, hat], [5, 1, hat], [6, 1, hat],
+        ]
+      : [
+          [3, 0, hat], [4, 0, hat],
+          [2, 1, hat], [3, 1, hat], [4, 1, hat], [5, 1, hat],
+        ];
+  return [
+    ...brim,
+    [2, 2, SKIN], [3, 2, SKIN], [4, 2, SKIN], [5, 2, SKIN],
+    [2, 3, SKIN], [3, 3, SKIN], [4, 3, SKIN], [5, 3, SKIN],
+  ];
+}
 
 function torsoCells(outfit: string): [number, number, string][] {
   return [
@@ -51,7 +64,7 @@ export default function AvatarSprite({
   className?: string;
 }) {
   const outfit = OUTFIT_COLOR[character];
-  const cells = [...HEAD_CELLS, ...torsoCells(outfit), ...legCells(outfit, walking ? walkFrame : 0)];
+  const cells = [...headCells(character), ...torsoCells(outfit), ...legCells(outfit, walking ? walkFrame : 0)];
 
   return (
     <svg

@@ -62,6 +62,24 @@ export default function LoveStoryTrack({
 
   return (
     <div className="absolute bottom-16" style={{ left: zone.x, width: zone.width }}>
+      {/* Kafe dekoratif kecil di titik pertama — flavor scenery, non-interaktif */}
+      {items.length > 0 && (
+        <div className="absolute bottom-0 flex flex-col items-center" style={{ left: itemWidth / 2 - 90 }}>
+          <div className="w-16 h-14 bg-pixel-panel pixel-border relative">
+            <div
+              className="absolute -top-3 left-1/2 -translate-x-1/2 w-0 h-0"
+              style={{
+                borderLeft: "36px solid transparent",
+                borderRight: "36px solid transparent",
+                borderBottom: "14px solid #e4364a",
+              }}
+            />
+            <div className="absolute inset-x-3 bottom-0 top-6 bg-pixel-sky-light" />
+          </div>
+          <p className="font-pixel-display text-[6px] text-pixel-ink/70 uppercase mt-1">CAFE</p>
+        </div>
+      )}
+
       {items.map((_, i) => {
         const isCollected = collected.has(i);
         return (

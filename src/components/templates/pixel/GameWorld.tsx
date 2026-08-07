@@ -40,6 +40,24 @@ export interface Zone {
   width: number;
 }
 
+// Awan pixel dekoratif — dibangun dari beberapa blok putih bertumpuk (bukan
+// file gambar), meniru siluet awan chunky ala referensi.
+function PixelCloud({ x, y, scale }: { x: number; y: number; scale: number }) {
+  return (
+    <div
+      className="absolute"
+      style={{ left: x, top: y, transform: `scale(${scale})`, transformOrigin: "top left" }}
+    >
+      <div className="relative w-24 h-10">
+        <div className="absolute left-2 top-3 w-20 h-5 bg-pixel-cloud" />
+        <div className="absolute left-6 top-0 w-10 h-5 bg-pixel-cloud" />
+        <div className="absolute left-0 top-4 w-6 h-4 bg-pixel-cloud" />
+        <div className="absolute right-0 top-4 w-8 h-4 bg-pixel-cloud" />
+      </div>
+    </div>
+  );
+}
+
 // Menyusun daftar zona secara berurutan (posisi x kumulatif) sesuai section
 // yang tidak disembunyikan (hiddenSections) — dipakai baik untuk render
 // checkpoint maupun target teleport NavMenu "Quick Info".
@@ -211,14 +229,43 @@ export default function GameWorld({
     onPointerCancel: () => setDir(dir, false),
   });
 
+  const cloudCount = Math.max(4, Math.round(worldWidth / 700));
+  const clouds = useMemo(
+    () =>
+      Array.from({ length: cloudCount }, (_, i) => ({
+        x: (i * 700 + (i % 3) * 180) % (worldWidth + 400),
+        y: 40 + ((i * 53) % 160),
+        scale: 0.7 + ((i * 37) % 6) / 10,
+      })),
+    [cloudCount, worldWidth]
+  );
+
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-pixel-bg pixel-crt select-none">
-      {/* Langit parallax jauh */}
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-pixel-sky select-none">
+      {/* Langit cerah siang — gradient biru + awan pixel parallax */}
       <div
         className="absolute inset-0"
+        style={{ background: "linear-gradient(180deg, #6bb8e8 0%, #8fd3f4 55%, #c9ecff 100%)" }}
+      />
+      <div
+        className="absolute inset-0"
+        style={{ transform: `translateX(${-cameraX * 0.25}px)` }}
+      >
+        {clouds.map((c, i) => (
+          <PixelCloud key={i} x={c.x} y={c.y} scale={c.scale} />
+        ))}
+      </div>
+      {/* Bukit hijau jauh — parallax lebih cepat dari awan, lebih lambat dari dunia */}
+      <div
+        className="absolute bottom-16 left-0 right-0 h-24 opacity-70"
         style={{
-          background: "linear-gradient(180deg, #0d0221 0%, #1a1a3e 60%, #241b4a 100%)",
-          transform: `translateX(${-cameraX * 0.2}px)`,
+          background: "radial-gradient(ellipse 140px 90px at 10% 100%, #6fce78 0%, transparent 70%)," +
+            "radial-gradient(ellipse 180px 110px at 35% 100%, #6fce78 0%, transparent 70%)," +
+            "radial-gradient(ellipse 160px 100px at 62% 100%, #6fce78 0%, transparent 70%)," +
+            "radial-gradient(ellipse 200px 120px at 88% 100%, #6fce78 0%, transparent 70%)",
+          backgroundRepeat: "repeat-x",
+          backgroundSize: "900px 100%",
+          transform: `translateX(${-cameraX * 0.5}px)`,
         }}
       />
 
@@ -240,38 +287,49 @@ export default function GameWorld({
           className="absolute top-0 bottom-0"
           style={{ width: worldWidth, transform: `translateX(${-cameraX}px)` }}
         >
-          {/* Tanah — strip pixel repeating di dasar dunia */}
+          {/* Tanah — rumput hijau di atas, tanah cokelat di bawah, motif pixel */}
           <div
             className="absolute bottom-0 left-0 h-16"
             style={{
               width: worldWidth,
               backgroundImage:
-                "repeating-linear-gradient(90deg, #3ac162 0 24px, #2f9d4f 24px 28px), linear-gradient(180deg, #1a1a2e 0%, #0d0221 100%)",
-              backgroundSize: "28px 100%, 100% 100%",
-              backgroundPosition: "0 0, 0 16px",
-              backgroundRepeat: "repeat-x, no-repeat",
+                "repeating-linear-gradient(90deg, #5fc76a 0 24px, #4fb85c 24px 28px)," +
+                "repeating-linear-gradient(90deg, #8a5a3b 0 24px, #7a4d30 24px 28px)," +
+                "linear-gradient(180deg, #8a5a3b 0%, #6b4128 100%)",
+              backgroundSize: "28px 10px, 28px 100%, 100% 100%",
+              backgroundPosition: "0 0, 0 10px, 0 0",
+              backgroundRepeat: "repeat-x, repeat-x, no-repeat",
             }}
           />
 
           {zoneByKey.hero && (
             <div
-              className="absolute bottom-16 flex flex-col items-center gap-4 text-center px-6"
+              className="absolute bottom-16 flex flex-col items-center gap-3 text-center px-6"
               style={{ left: zoneByKey.hero.x, width: zoneByKey.hero.width }}
             >
-              <p className="font-pixel-display text-[9px] md:text-[10px] text-pixel-yellow uppercase tracking-widest">
-                We invite you to celebrate
-              </p>
-              <h1 className="font-pixel-display text-lg md:text-2xl text-pixel-ink">
-                {data.groomNickname} &amp; {data.brideNickname}
-              </h1>
-              <p className="font-pixel-body text-base text-pixel-ink/80">
-                {new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
-                  weekday: "long",
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
+              <div className="flex items-end gap-1 mb-1">
+                <AvatarSprite character="male" facing="right" walking={false} walkFrame={0} className="w-8 h-11" />
+                <span className="text-pixel-red text-lg -mb-2">♥</span>
+                <AvatarSprite character="female" facing="left" walking={false} walkFrame={0} className="w-8 h-11" />
+              </div>
+
+              <div className="pixel-border-thick bg-pixel-panel/90 px-5 py-4">
+                <p className="font-pixel-display text-[9px] md:text-[10px] text-pixel-yellow uppercase tracking-widest mb-2">
+                  We invite you to celebrate
+                </p>
+                <h1 className="font-pixel-display text-lg md:text-2xl text-pixel-ink mb-2">
+                  {data.groomNickname} &amp; {data.brideNickname}
+                </h1>
+                <p className="font-pixel-body text-base text-pixel-ink/80">
+                  {new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+
               {!started && (
                 <button
                   onClick={() => {
@@ -279,13 +337,13 @@ export default function GameWorld({
                     setStarted(true);
                     audioRef.current?.play().then(() => setMusicPlaying(true)).catch(() => {});
                   }}
-                  className="mt-2 pixel-border bg-pixel-red text-pixel-ink font-pixel-display text-xs uppercase tracking-widest px-8 py-3.5 animate-pulse"
+                  className="mt-1 pixel-border bg-pixel-red text-pixel-ink font-pixel-display text-xs uppercase tracking-widest px-8 py-3.5 animate-pulse"
                 >
                   {t.pixelPressStart}
                 </button>
               )}
               {started && (
-                <p className="font-pixel-display text-[8px] text-pixel-ink/60 uppercase tracking-widest">
+                <p className="font-pixel-display text-[8px] text-pixel-panel bg-pixel-ink/70 px-2 py-1 uppercase tracking-widest">
                   {t.pixelWalkHint}
                 </p>
               )}

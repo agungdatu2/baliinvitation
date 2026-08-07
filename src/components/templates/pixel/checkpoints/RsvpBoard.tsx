@@ -49,6 +49,11 @@ export default function RsvpBoard({
         }}
         className="flex flex-col items-center gap-1"
       >
+        <div className="pixel-border bg-pixel-panel text-pixel-ink px-2 py-1 mb-1">
+          <p className="font-pixel-display text-[7px] uppercase tracking-wide whitespace-nowrap">
+            {t.attendanceLabel}
+          </p>
+        </div>
         <div className="w-24 h-20 pixel-border bg-pixel-panel flex items-center justify-center">
           <span className="font-pixel-display text-lg text-pixel-yellow">?</span>
         </div>

@@ -50,6 +50,11 @@ export default function GiftChest({
         }}
         className="flex flex-col items-center gap-1"
       >
+        <div className="pixel-border bg-pixel-panel text-pixel-ink px-2 py-1 mb-1">
+          <p className="font-pixel-display text-[7px] uppercase tracking-wide whitespace-nowrap">
+            {t.copy} {t.weddingGiftHeading}
+          </p>
+        </div>
         <div className="w-16 h-12 pixel-border bg-pixel-yellow relative">
           <div className="absolute inset-x-0 top-0 h-3 bg-pixel-panel" />
         </div>

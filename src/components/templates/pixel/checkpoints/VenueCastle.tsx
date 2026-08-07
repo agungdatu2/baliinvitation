@@ -51,20 +51,54 @@ export default function VenueCastle({
             setOpenIndex(i);
           }}
           className="absolute bottom-0 flex flex-col items-center"
-          style={{ left: itemWidth * i + itemWidth / 2 - 40 }}
+          style={{ left: itemWidth * i + itemWidth / 2 - 56 }}
         >
-          <div className="w-20 h-24 bg-pixel-panel pixel-border relative">
-            <div className="absolute -top-3 left-1 w-3 h-3 bg-pixel-panel pixel-border" />
-            <div className="absolute -top-3 right-1 w-3 h-3 bg-pixel-panel pixel-border" />
-            <div className="absolute inset-x-4 bottom-0 top-10 bg-pixel-bg" />
+          {/* Banner "CHECKPOINT REACHED!" di atas castle */}
+          <div className="mb-1 pixel-border bg-pixel-red text-pixel-ink px-2 py-1">
+            <p className="font-pixel-display text-[7px] uppercase tracking-wide whitespace-nowrap">CHECKPOINT</p>
           </div>
-          <p className="font-pixel-display text-[7px] text-pixel-ink/80 uppercase mt-1 max-w-[90px]">{ev.name}</p>
+          <div className="w-1 h-6 bg-pixel-line-light" />
+
+          {/* Castle — dua menara samping + tembok tengah dengan gerbang */}
+          <div className="relative flex items-end">
+            <Tower />
+            <div className="w-16 h-24 bg-pixel-panel pixel-border relative mx-[-2px]">
+              <div className="absolute inset-x-0 top-0 h-2 flex justify-around">
+                {[0, 1, 2].map((k) => (
+                  <div key={k} className="w-2 h-2 bg-pixel-panel pixel-border" />
+                ))}
+              </div>
+              <div className="absolute inset-x-3 bottom-0 top-8 bg-pixel-dirt" />
+            </div>
+            <Tower />
+          </div>
+          <p className="font-pixel-display text-[7px] text-pixel-ink/80 uppercase mt-1 max-w-[110px]">{ev.name}</p>
         </button>
       ))}
 
       {openIndex !== null && events[openIndex] && (
         <VenueModal event={events[openIndex]} title={`${data.groomNickname} & ${data.brideNickname}`} lang={data.language} onClose={() => setOpenIndex(null)} />
       )}
+    </div>
+  );
+}
+
+function Tower() {
+  return (
+    <div className="w-9 h-20 bg-pixel-panel pixel-border relative shrink-0">
+      <div
+        className="absolute -top-4 left-1/2 -translate-x-1/2 w-0 h-0"
+        style={{
+          borderLeft: "20px solid transparent",
+          borderRight: "20px solid transparent",
+          borderBottom: "16px solid #e4364a",
+        }}
+      />
+      <div className="absolute inset-x-0 top-1 h-1.5 flex justify-around px-0.5">
+        {[0, 1].map((k) => (
+          <div key={k} className="w-1.5 h-1.5 bg-pixel-panel pixel-border" />
+        ))}
+      </div>
     </div>
   );
 }
