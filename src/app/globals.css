@@ -146,3 +146,49 @@ html.reverie-snap-scroll {
     rgba(255, 255, 255, 0.55) 100%
   );
 }
+
+/* Pixel theme utilities — src/components/templates/pixel/* saja. */
+
+/* Bingkai pixel-art ala panel NES: tanpa border-radius, tanpa blur, cuma
+   step box-shadow keras supaya terasa "chunky". Hex hardcode (bukan var
+   Tailwind) karena plain CSS di sini tidak bisa baca token tailwind.config. */
+.pixel-border {
+  box-shadow:
+    0 0 0 4px #0d0221,
+    4px 4px 0 0 #000;
+}
+.pixel-border-thick {
+  box-shadow:
+    0 0 0 4px #0d0221,
+    0 0 0 8px #2f2f4a,
+    8px 8px 0 0 #000;
+}
+
+/* Overlay scanline dekoratif ala layar CRT — elemen host HARUS sudah
+   positioned sendiri (fixed/absolute/relative via class Tailwind), class ini
+   sengaja TIDAK menyertakan `position` supaya tidak menimpa "fixed" milik
+   host (plain CSS di sini menang cascade atas utility Tailwind kalau sama-sama
+   set `position`, pernah bikin NavMenu/FixedVideoBackground yang "fixed"
+   berubah jadi "relative" dan salah posisi). Non-interactive (pointer-events: none). */
+.pixel-crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+/* Cuma untuk sprite/ikon pixel kecil (SVG grid), JANGAN dipakai di foto asli
+   pengantin — foto asli cukup dibingkai .pixel-border, tetap legible. */
+.pixel-img {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}

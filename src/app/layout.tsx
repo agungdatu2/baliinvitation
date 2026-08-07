@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Hanken_Grotesk } from "next/font/google";
+import { Cormorant, Hanken_Grotesk, Press_Start_2P, VT323 } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -37,6 +37,19 @@ const vogue = localFont({
   src: "./fonts/Vogue.otf",
   variable: "--font-reverie-display",
 });
+// Dipakai khusus tema "Pixel" (8-bit/retro game) — Press Start 2P untuk
+// judul/label (blocky, cuma weight 400), VT323 untuk body text (pixel-ish
+// tapi jauh lebih terbaca di ukuran paragraf dibanding Press Start 2P).
+const pressStart2P = Press_Start_2P({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-pixel-display",
+});
+const vt323 = VT323({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-pixel-body",
+});
 
 export const metadata: Metadata = {
   title: "BaliInvitation - Undangan Digital",
@@ -47,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${pressStart2P.variable} ${vt323.variable}`}
     >
       <body>{children}</body>
     </html>
