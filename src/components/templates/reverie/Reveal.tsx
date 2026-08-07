@@ -2,9 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Fade + blur + slide-up on scroll-into-view, staggered by `delay` — same motion
-// language as most modern invitation templates, with a soft blur-to-sharp settle
-// on top of the usual fade + translateY.
+// Fade + blur on scroll-into-view, staggered by `delay`. Sengaja TANPA
+// translateY (slide-up) — section-section ini juga snap-start di dalam
+// scroll-snap-type: y mandatory (lihat globals.css), dan translateY yang
+// animasi bareng waktu browser lagi animasi snap-scroll bikin dua gerakan
+// beda arah kejadian hampir bersamaan, kerasa seperti "halaman ngebug/
+// scroll sendiri". Fade+blur saja tidak menggeser posisi konten sama sekali,
+// jadi tidak lagi bentrok dengan animasi snap.
 export default function Reveal({
   children,
   delay = 0,
@@ -35,7 +39,7 @@ export default function Reveal({
     <div
       ref={ref}
       id={id}
-      className={`snap-start transition-all duration-[1400ms] ease-out ${visible ? "opacity-100 translate-y-0 blur-none" : "opacity-0 translate-y-6 blur-sm"} ${className}`}
+      className={`snap-start transition-all duration-[1400ms] ease-out ${visible ? "opacity-100 blur-none" : "opacity-0 blur-sm"} ${className}`}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >
       {children}
