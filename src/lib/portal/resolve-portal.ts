@@ -9,12 +9,14 @@ export const PORTAL_EXPIRY_GRACE_DAYS = 30;
 
 export interface PortalInvitationLike {
   portalEnabled: boolean;
+  portalNeverExpires: boolean;
   eventDate: Date;
 }
 
 export function evaluatePortalAccess(invitation: PortalInvitationLike | null): PortalAccessResult {
   if (!invitation) return "invalid";
   if (!invitation.portalEnabled) return "disabled";
+  if (invitation.portalNeverExpires) return "ok";
 
   const expiresAt = new Date(invitation.eventDate);
   expiresAt.setDate(expiresAt.getDate() + PORTAL_EXPIRY_GRACE_DAYS);

@@ -5,9 +5,11 @@ import { prisma } from "@/lib/prisma";
 const portalSettingsSchema = z.object({
   portalEnabled: z.boolean().optional(),
   clientCanEditEvents: z.boolean().optional(),
+  portalNeverExpires: z.boolean().optional(),
 });
 
-// PATCH /api/invitations/[id]/portal -> toggle portal on/off atau izin edit acara client
+// PATCH /api/invitations/[id]/portal -> toggle portal on/off, izin edit acara
+// client, atau override manual "tidak pernah expired"
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   const body = await req.json();
   const parsed = portalSettingsSchema.safeParse(body);

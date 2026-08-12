@@ -63,6 +63,10 @@ model Invitation {
   portalToken          String  @unique
   portalEnabled        Boolean @default(true)
   clientCanEditEvents  Boolean @default(true)
+  // Override manual dari admin — kalau true, link portal TIDAK PERNAH expired
+  // otomatis (skip aturan PORTAL_EXPIRY_GRACE_DAYS di resolve-portal.ts),
+  // dipakai saat client butuh akses lebih lama dari 30 hari pasca-acara.
+  portalNeverExpires   Boolean @default(false)
 
   // Data client (internal, admin only)
   clientName    String

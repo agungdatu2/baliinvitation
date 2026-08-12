@@ -12,6 +12,7 @@ export default function PortalSettingsPanel({
   portalToken,
   portalEnabled,
   clientCanEditEvents,
+  portalNeverExpires,
 }: {
   invitationId: string;
   slug: string;
@@ -20,6 +21,7 @@ export default function PortalSettingsPanel({
   portalToken: string;
   portalEnabled: boolean;
   clientCanEditEvents: boolean;
+  portalNeverExpires: boolean;
 }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
@@ -33,7 +35,7 @@ export default function PortalSettingsPanel({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const togglePortal = async (field: "portalEnabled" | "clientCanEditEvents", value: boolean) => {
+  const togglePortal = async (field: "portalEnabled" | "clientCanEditEvents" | "portalNeverExpires", value: boolean) => {
     setBusy(true);
     await fetch(`/api/invitations/${invitationId}/portal`, {
       method: "PATCH",
@@ -93,6 +95,15 @@ export default function PortalSettingsPanel({
         <div className="flex items-center justify-between text-sm">
           <span>Client boleh edit jadwal acara</span>
           <ToggleSwitch checked={clientCanEditEvents} disabled={busy} onChange={(v) => togglePortal("clientCanEditEvents", v)} />
+        </div>
+        <div className="flex items-center justify-between text-sm">
+          <div>
+            <p>Link portal tidak pernah expired</p>
+            <p className="text-xs text-gray-400">
+              {portalNeverExpires ? "Aktif — link berlaku selamanya" : "Nonaktif — link otomatis expired 30 hari setelah hari-H"}
+            </p>
+          </div>
+          <ToggleSwitch checked={portalNeverExpires} disabled={busy} onChange={(v) => togglePortal("portalNeverExpires", v)} />
         </div>
       </div>
     </div>

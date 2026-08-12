@@ -30,6 +30,7 @@ export default async function InvitationRingkasanPage({ params }: { params: { id
         portalToken={invitation.portalToken}
         portalEnabled={invitation.portalEnabled}
         clientCanEditEvents={invitation.clientCanEditEvents}
+        portalNeverExpires={invitation.portalNeverExpires}
       />
 
       <div>
