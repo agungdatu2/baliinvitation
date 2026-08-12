@@ -2,7 +2,6 @@ import { ComponentType } from "react";
 import { TemplateProps } from "@/types/invitation";
 import LumeTemplate from "./lume/LumeTemplate";
 import ReverieTemplate from "./reverie/ReverieTemplate";
-import PixelTemplate from "./pixel/PixelTemplate";
 
 // Daftar semua template yang tersedia. Tambah template baru cukup:
 // 1. buat folder src/components/templates/<key>/
@@ -10,5 +9,4 @@ import PixelTemplate from "./pixel/PixelTemplate";
 export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   lume: LumeTemplate,
   reverie: ReverieTemplate,
-  pixel: PixelTemplate,
 };
