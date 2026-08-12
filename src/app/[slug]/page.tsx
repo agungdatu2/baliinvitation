@@ -1,5 +1,7 @@
 import { notFound } from "next/navigation";
 import { headers } from "next/headers";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { TEMPLATE_REGISTRY } from "@/components/templates/registry";
 import { InvitationData } from "@/types/invitation";
@@ -7,9 +9,9 @@ import { recordInvitationView, ViaParam } from "@/lib/portal/track-view";
 
 export const dynamic = "force-dynamic";
 
-// status ("draft" | "published") is only an internal completeness flag for the
-// admin dashboard — it does not gate public access, so admins can preview a
-// draft via its slug before flipping it to published.
+// status ("draft" | "published") gates PUBLIC access — draft is only visible
+// to a logged-in admin (preview before publishing) or via ?portal_preview.
+// Guests hitting a draft/unpublished slug see the "not published" screen below.
 async function getInvitation(slug: string) {
   return prisma.invitation.findUnique({
     where: { slug },
@@ -62,6 +64,26 @@ export default async function InvitationPage({
   // so the client can see their draft without it counting as a real guest view.
   const isPortalPreview = Boolean(searchParams.portal_preview) && searchParams.portal_preview === inv.portalToken;
 
+  // Admin yang login boleh preview draft/unpublished lewat slug langsung
+  // (tombol "Lihat" di /admin) tanpa perlu portal_preview token.
+  const session = await getServerSession(authOptions);
+  const isAdminPreview = Boolean(session);
+
+  if (inv.status !== "published" && !isPortalPreview && !isAdminPreview) {
+    return (
+      <div className="min-h-screen bg-groove-bg flex items-center justify-center px-6 text-center">
+        <div>
+          <p className="font-groove-label uppercase tracking-widest text-xs text-groove-secondary mb-3">
+            BaliInvitation
+          </p>
+          <p className="font-groove-body text-groove-ink">
+            Undangan ini belum dipublikasikan. Silakan hubungi mempelai untuk informasi lebih lanjut.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   // Expired check dilewati untuk portal preview supaya admin/client tetap bisa
   // lihat isinya walau masa aktif paketnya sudah lewat.
   if (!isPortalPreview && isExpired(inv.eventDate, inv.package?.activeMonths)) {
@@ -93,7 +115,7 @@ export default async function InvitationPage({
 
   const guest = await resolveGuest(inv.id, searchParams.g);
   const viaParam: ViaParam = guest ? "guest" : searchParams.to ? "to" : "direct";
-  if (!isPortalPreview) {
+  if (!isPortalPreview && !isAdminPreview) {
     await recordInvitationView({
       invitationId: inv.id,
       guest,

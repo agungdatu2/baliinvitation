@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatRupiah, daysUntil } from "@/lib/utils/format";
 import { getPaymentStatus, PAYMENT_STATUS_LABEL, PAYMENT_STATUS_CLASS } from "@/lib/utils/payment-status";
+import InvitationRowActions from "@/components/admin/InvitationRowActions";
 
 export const dynamic = "force-dynamic";
 
@@ -167,6 +168,7 @@ export default async function AdminDashboard({
                     <Link href={`/admin/invitations/${inv.id}`} className="text-gray-600">
                       Kelola
                     </Link>
+                    <InvitationRowActions id={inv.id} status={inv.status} />
                   </td>
                 </tr>
               );
