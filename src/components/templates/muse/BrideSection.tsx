@@ -15,46 +15,43 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
-// Section "The Bride" — kembaran GroomSection.tsx (foto pengantin wanita sendiri
-// sebagai background full-viewport, z-index sama).
+// Section "The Bride" — kembaran GroomSection.tsx (kartu foto terkontain
+// aspect-square, TANPA background full-viewport sendiri, sisanya transparan
+// mengikuti FixedBackground milik MuseTemplate).
 export default function BrideSection({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
 
   return (
-    <section className="relative z-10 h-[100lvh] overflow-hidden flex items-end text-groove-bg">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={data.bridePhoto || DEFAULT_PHOTO}
-        alt={data.brideFullName}
-        className="absolute inset-0 h-full w-full object-cover -z-10"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent -z-10" />
-
-      <div className="relative px-6 md:px-14 pb-24 md:pb-28 max-w-md">
-        <p className="font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/70 mb-4">
-          {t.theBride}
-        </p>
-        <h2 className="font-reverie-display text-4xl md:text-5xl mb-6" style={{ fontWeight: 400 }}>
-          {data.brideFullName}
-        </h2>
-        <div className="flex items-center gap-4 mb-4">
-          <p className="font-reverie-display italic text-lg shrink-0">{t.daughterOf}</p>
-          <div className="h-px flex-1 bg-groove-bg/40" />
-        </div>
-        <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed mb-8">
-          {data.brideParents}
-        </p>
+    <section className="relative py-20 md:py-28 px-6 flex flex-col items-center text-center text-groove-bg">
+      <div className="relative w-full max-w-sm aspect-square overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={data.bridePhoto || DEFAULT_PHOTO}
+          alt={data.brideFullName}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
         {data.brideInstagram && (
-          <a
-            href={`https://instagram.com/${data.brideInstagram.replace("@", "")}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 font-groove-label text-xs uppercase tracking-wide text-groove-bg/90"
-          >
-            <InstagramIcon className="h-4 w-4" /> {data.brideNickname}
-          </a>
+          <div className="absolute inset-x-0 bottom-0 pt-10 pb-4 px-4 bg-gradient-to-t from-black/55 to-transparent">
+            <a
+              href={`https://instagram.com/${data.brideInstagram.replace("@", "")}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 font-groove-label text-sm text-white"
+            >
+              <InstagramIcon className="h-5 w-5" /> {data.brideNickname}
+            </a>
+          </div>
         )}
       </div>
+
+      <p className="font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/70 mt-10 mb-3">
+        {t.theBride}
+      </p>
+      <h2 className="font-reverie-display text-3xl md:text-4xl mb-6" style={{ fontWeight: 500 }}>
+        {data.brideFullName}
+      </h2>
+      <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed">{t.daughterOf}</p>
+      <p className="font-groove-body text-sm text-groove-bg/85 leading-relaxed max-w-xs">{data.brideParents}</p>
     </section>
   );
 }
