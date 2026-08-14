@@ -247,18 +247,18 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
-        {selectedTemplateKey === "reverie" && (
+        {(selectedTemplateKey === "reverie" || selectedTemplateKey === "muse") && (
           <>
-            <Field label="URL Foto Background Gate (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Background Gate (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
             </Field>
-            <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie, opsional — kosongkan untuk pakai kutipan default)">
+            <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai kutipan default)">
               <textarea {...register("quote")} className="input" rows={3} placeholder="mis. kutipan ayat, doa, atau kata-kata pernikahan" />
             </Field>
-            <Field label="URL Foto Section Save the Date (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Section Save the Date (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieSaveTheDateImage")} className="input" placeholder="https://..." />
             </Field>
-            <Field label="URL Foto Footer/Penutup (khusus tema Reverie, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Footer/Penutup (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieFooterImage")} className="input" placeholder="https://..." />
             </Field>
           </>

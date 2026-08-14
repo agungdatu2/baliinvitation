@@ -13,6 +13,11 @@ async function main() {
     update: {},
     create: { key: "reverie", name: "Reverie - Editorial Split" },
   });
+  await prisma.template.upsert({
+    where: { key: "muse" },
+    update: {},
+    create: { key: "muse", name: "Muse - Editorial Free Scroll" },
+  });
 
   // Bootstrap akun admin pertama dari ADMIN_EMAIL/ADMIN_PASSWORD di .env — cuma
   // jalan kalau keduanya di-set, supaya seed tetap aman dijalankan berkali-kali

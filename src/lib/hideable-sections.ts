@@ -15,6 +15,18 @@ export const HIDEABLE_SECTIONS_BY_TEMPLATE: Record<string, { key: string; label:
     { key: "gallery", label: "Gallery" },
     { key: "gift", label: "Wedding Gift" },
   ],
+  muse: [
+    { key: "prayer", label: "Doa" },
+    { key: "couple", label: "Groom & Bride" },
+    { key: "saveTheDate", label: "Save the Date" },
+    { key: "loveStory", label: "Love Story" },
+    { key: "events", label: "Jadwal Acara" },
+    { key: "liveStreaming", label: "Live Streaming" },
+    { key: "dressCode", label: "Dress Code" },
+    { key: "rsvp", label: "RSVP & Ucapan" },
+    { key: "gallery", label: "Gallery" },
+    { key: "gift", label: "Wedding Gift" },
+  ],
   lume: [
     { key: "couple", label: "Couple Profile" },
     { key: "loveStory", label: "Love Story" },
