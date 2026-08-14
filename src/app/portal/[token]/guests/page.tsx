@@ -30,6 +30,8 @@ export default async function PortalGuestsPage({ params }: { params: { token: st
         category: g.category,
         guestCode: g.guestCode,
         status: g.status,
+        firstOpenedAt: g.firstOpenedAt ? g.firstOpenedAt.toISOString() : null,
+        viewCount: g._count.views,
       }))}
     />
   );

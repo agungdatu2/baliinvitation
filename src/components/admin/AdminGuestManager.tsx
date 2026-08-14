@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GUEST_STATUS_LABEL, GUEST_STATUS_CLASS, GUEST_CATEGORY_LABEL, GuestStatus } from "@/lib/utils/guest-status";
 import { GUEST_CATEGORIES, GuestCategory, parseGuestBulkImport } from "@/lib/utils/bulk-import";
+import { formatDate } from "@/lib/utils/format";
 
 interface GuestRow {
   id: string;
@@ -12,6 +13,8 @@ interface GuestRow {
   category: string;
   guestCode: string;
   status: string;
+  firstOpenedAt: string | null;
+  viewCount: number;
 }
 
 const emptyForm = { name: "", waNumber: "", category: "lainnya" as GuestCategory };
@@ -194,6 +197,8 @@ export default function AdminGuestManager({
               <th className="p-3">Nama</th>
               <th className="p-3">Kategori</th>
               <th className="p-3">Status</th>
+              <th className="p-3">Dibuka Pertama Kali</th>
+              <th className="p-3">Kunjungan</th>
               <th className="p-3"></th>
             </tr>
           </thead>
@@ -210,6 +215,10 @@ export default function AdminGuestManager({
                     {GUEST_STATUS_LABEL[g.status as GuestStatus] ?? g.status}
                   </span>
                 </td>
+                <td className="p-3 text-gray-500 whitespace-nowrap">
+                  {g.firstOpenedAt ? formatDate(g.firstOpenedAt) : <span className="text-gray-300">Belum dibuka</span>}
+                </td>
+                <td className="p-3 text-gray-500">{g.viewCount}</td>
                 <td className="p-3 text-right space-x-2 whitespace-nowrap">
                   <button onClick={() => copyLink(g)} className="text-blue-600">
                     {copiedId === g.id ? "Tersalin!" : "Salin Link"}
@@ -222,7 +231,7 @@ export default function AdminGuestManager({
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-gray-400">
+                <td colSpan={6} className="p-6 text-center text-gray-400">
                   Belum ada tamu.
                 </td>
               </tr>

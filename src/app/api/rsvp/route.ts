@@ -10,6 +10,7 @@ const rsvpSchema = z.object({
   attendance: z.enum(["hadir", "tidak_hadir", "belum_tahu"]),
   guestCount: z.number().int().min(1).default(1),
   message: z.string().optional(),
+  sendingGift: z.boolean().optional().default(false),
 });
 
 // Dipanggil dari komponen RSVPForm di halaman publik undangan

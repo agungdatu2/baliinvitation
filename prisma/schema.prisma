@@ -126,6 +126,7 @@ model RSVP {
   attendance   String     // hadir | tidak_hadir | belum_tahu
   guestCount   Int        @default(1)
   message      String?
+  sendingGift  Boolean    @default(false) // tamu konfirmasi akan mengirim wedding gift, diisi bersamaan dengan form RSVP
   createdAt    DateTime   @default(now())
 
   guestId      String?    @unique

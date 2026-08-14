@@ -1,6 +1,7 @@
 import { resolvePortalByToken } from "@/lib/portal/resolve-portal";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils/format";
+import PortalRsvpActions from "@/components/portal/PortalRsvpActions";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,7 @@ export default async function PortalRsvpPage({ params }: { params: { token: stri
 
   const total = rsvps.length;
   const estimasiOrang = rsvps.filter((r) => r.attendance === "hadir").reduce((s, r) => s + r.guestCount, 0);
+  const giftCount = rsvps.filter((r) => r.sendingGift).length;
   const breakdown = ["hadir", "tidak_hadir", "belum_tahu"].map((key) => ({
     key,
     count: rsvps.filter((r) => r.attendance === key).length,
@@ -34,9 +36,24 @@ export default async function PortalRsvpPage({ params }: { params: { token: stri
 
   return (
     <div className="space-y-6">
-      <div className="border border-lume-line rounded-lg bg-white p-4 text-center">
-        <p className="text-xs text-gray-500">Estimasi Tamu Hadir</p>
-        <p className="text-3xl font-serif text-lume-gold mt-1">{estimasiOrang} orang</p>
+      <div className="flex justify-end">
+        <a
+          href={`/api/portal/${params.token}/rsvp/export`}
+          className="px-3 py-1.5 rounded-lg bg-lume-ink text-white text-xs"
+        >
+          Download CSV
+        </a>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div className="border border-lume-line rounded-lg bg-white p-4 text-center">
+          <p className="text-xs text-gray-500">Estimasi Tamu Hadir</p>
+          <p className="text-3xl font-serif text-lume-gold mt-1">{estimasiOrang} orang</p>
+        </div>
+        <div className="border border-lume-line rounded-lg bg-white p-4 text-center">
+          <p className="text-xs text-gray-500">Konfirmasi Kirim Gift</p>
+          <p className="text-3xl font-serif text-lume-gold mt-1">{giftCount} tamu</p>
+        </div>
       </div>
 
       <div className="border border-lume-line rounded-lg bg-white p-4 space-y-3" role="img" aria-label="Breakdown RSVP berdasarkan kehadiran">
@@ -75,8 +92,12 @@ export default async function PortalRsvpPage({ params }: { params: { token: stri
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
               {r.guestCount} orang · {formatDate(r.createdAt)}
+              {r.sendingGift && <span className="text-blue-600"> · Konfirmasi kirim gift</span>}
             </p>
             {r.message && <p className="text-sm text-gray-700 mt-2 italic">&ldquo;{r.message}&rdquo;</p>}
+            <div className="flex justify-end mt-2">
+              <PortalRsvpActions token={params.token} rsvpId={r.id} />
+            </div>
           </div>
         ))}
         {rsvps.length === 0 && <p className="text-center text-gray-400 text-sm py-6">Belum ada RSVP masuk.</p>}

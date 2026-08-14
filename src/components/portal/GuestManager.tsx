@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { GUEST_STATUS_LABEL, GUEST_STATUS_CLASS, GUEST_CATEGORY_LABEL, GuestStatus } from "@/lib/utils/guest-status";
 import { GUEST_CATEGORIES, GuestCategory, parseGuestBulkImport } from "@/lib/utils/bulk-import";
 import { buildWaLink, buildGuestInvitationMessage } from "@/lib/utils/whatsapp";
+import { formatDate } from "@/lib/utils/format";
 
 interface GuestRow {
   id: string;
@@ -13,6 +14,8 @@ interface GuestRow {
   category: string;
   guestCode: string;
   status: string;
+  firstOpenedAt: string | null;
+  viewCount: number;
 }
 
 const emptyForm = { name: "", waNumber: "", category: "lainnya" as GuestCategory };
@@ -295,6 +298,9 @@ export default function GuestManager({
                   <span className={`inline-block mt-1 px-2 py-0.5 rounded-full text-xs ${GUEST_STATUS_CLASS[g.status as GuestStatus] ?? ""}`}>
                     {GUEST_STATUS_LABEL[g.status as GuestStatus] ?? g.status}
                   </span>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {g.firstOpenedAt ? `Dibuka ${formatDate(g.firstOpenedAt)}` : "Belum dibuka"} · {g.viewCount} kunjungan
+                  </p>
                 </div>
                 <div className="flex flex-col gap-1 text-xs items-end shrink-0">
                   <button onClick={() => copyLink(g)} className="text-blue-600">

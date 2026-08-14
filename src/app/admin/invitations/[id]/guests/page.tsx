@@ -22,6 +22,8 @@ export default async function AdminInvitationGuestsPage({ params }: { params: { 
         category: g.category,
         guestCode: g.guestCode,
         status: g.status,
+        firstOpenedAt: g.firstOpenedAt ? g.firstOpenedAt.toISOString() : null,
+        viewCount: g._count.views,
       }))}
     />
   );

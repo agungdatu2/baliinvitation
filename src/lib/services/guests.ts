@@ -4,7 +4,11 @@ import { nextStatus } from "@/lib/utils/guest-status";
 import { parseGuestBulkImport } from "@/lib/utils/bulk-import";
 
 export function listGuests(invitationId: string) {
-  return prisma.guest.findMany({ where: { invitationId }, orderBy: { createdAt: "asc" } });
+  return prisma.guest.findMany({
+    where: { invitationId },
+    orderBy: { createdAt: "asc" },
+    include: { _count: { select: { views: true } } },
+  });
 }
 
 // guestCode uniqueness collisions are astronomically unlikely (31^8 combinations)

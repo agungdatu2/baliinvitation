@@ -26,7 +26,7 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang, initi
     { value: "hadir", label: t.attendYes },
     { value: "tidak_hadir", label: t.attendNo },
   ];
-  const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "" });
+  const [form, setForm] = useState({ guestName: guestName ?? "", attendance: "hadir", guestCount: 1, message: "", sendingGift: false });
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -103,6 +103,16 @@ export default function RSVPForm({ invitationId, guestName, guestId, lang, initi
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
               />
             </div>
+
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.sendingGift}
+                onChange={(e) => setForm({ ...form, sendingGift: e.target.checked })}
+                className="w-3.5 h-3.5 accent-groove-bg"
+              />
+              <span className="font-groove-body text-[0.7rem] text-groove-bg/80">{t.sendingGiftLabel}</span>
+            </label>
 
             <button disabled={loading} className={solidButtonClass}>
               {loading ? t.sending : t.send}
