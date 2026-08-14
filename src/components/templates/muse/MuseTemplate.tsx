@@ -117,6 +117,8 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
           <LoadingScreen
             label={t.weddingInvitationLabel}
             loadingText={t.loadingLabel}
+            groomNickname={data.groomNickname}
+            brideNickname={data.brideNickname}
             images={visibleGalleryImages}
             onComplete={() => setShowLoading(false)}
           />
