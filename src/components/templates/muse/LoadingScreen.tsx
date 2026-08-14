@@ -9,29 +9,24 @@ interface LoadingScreenProps {
   loadingText: string; // teks "Loading" / "Memuat" di pojok kanan bawah
   groomNickname: string;
   brideNickname: string;
-  images?: string[]; // foto galeri — di-mask ke dalam teks nama, crossfade tiap PHOTO_INTERVAL_MS
+  images?: string[]; // foto galeri — kartu foto di belakang teks, crossfade tiap PHOTO_INTERVAL_MS
 }
 
 const DURATION_MS = 3600;
 const COMPLETE_DELAY_MS = 500;
 const PHOTO_INTERVAL_MS = 1300;
 const PHOTO_COUNT = 4;
-const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const DEFAULT_PHOTOS = Array.from(
   { length: PHOTO_COUNT },
   (_, i) => `https://picsum.photos/seed/muse-loading-${i}/800/1000`
 );
 
-function randomChar() {
-  return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-}
-
-// Terinspirasi preloader fbridoux.com: nama pasangan raksasa dengan foto
-// di-mask ke dalam huruf (bg-clip-text), huruf yang belum "terungkap" terus
-// diacak sampai progress melewati posisinya (kiri ke kanan), persen di pojok
-// kanan-bawah. Spasi & "&" sengaja tidak diacak supaya bentuk kata tetap
-// terbaca sejak awal.
+// Terinspirasi preloader fbridoux.com: kartu foto persegi di tengah yang
+// crossfade, dengan nama pasangan raksasa warna solid menimpa di atasnya
+// (bukan teks ter-mask foto) — reveal teksnya polos (fade+scale sekali saat
+// mount), TANPA efek acak/glitch huruf. Persen loading tetap di pojok
+// kanan-bawah.
 export default function LoadingScreen({
   onComplete,
   label,
@@ -47,18 +42,8 @@ export default function LoadingScreen({
 
   const [progress, setProgress] = useState(0);
   const [photoIndex, setPhotoIndex] = useState(0);
-  // Math.random() dalam displayText di bawah harus tidak pernah dipakai di render
-  // pertama (SSR & first client paint) — kalau dipakai, teks acaknya beda antara
-  // HTML dari server dan hasil render client pertama, jadi hydration mismatch
-  // (React buang seluruh SSR output & full client re-render). Baru "start" scramble
-  // setelah mount (useEffect = client-only, dijamin sama dengan first paint).
-  const [started, setStarted] = useState(false);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
-
-  useEffect(() => {
-    setStarted(true);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -67,9 +52,6 @@ export default function LoadingScreen({
     return () => clearInterval(interval);
   }, [photos.length]);
 
-  // Counter 0 -> 100 via requestAnimationFrame — dipakai sekaligus untuk progress
-  // bar (persen) dan untuk menentukan berapa huruf yang sudah "terkunci" (tidak
-  // diacak lagi), jadi keduanya selalu sinkron.
   useEffect(() => {
     const start = performance.now();
     let rafId: number;
@@ -90,13 +72,6 @@ export default function LoadingScreen({
   }, []);
 
   const pctRounded = Math.round(progress);
-  const revealCount = Math.floor((progress / 100) * targetText.length);
-  const displayText = !started
-    ? targetText
-    : targetText
-        .split("")
-        .map((ch, i) => (ch === " " || ch === "&" || i < revealCount ? ch : randomChar()))
-        .join("");
 
   return (
     <motion.div
@@ -114,35 +89,31 @@ export default function LoadingScreen({
       </motion.div>
 
       <div className="relative flex h-full w-full items-center justify-center px-4">
-        <h1
-          className="relative select-none whitespace-pre text-center font-groove-label font-semibold uppercase leading-[0.95] tracking-tight text-[12vw] md:text-[8vw] lg:text-[7vw]"
-          aria-label={targetText}
-        >
+        {/* Kartu foto — ukuran tetap (bukan selebar teks), di belakang teks */}
+        <div className="relative w-[220px] sm:w-[280px] md:w-[340px] aspect-[3/4] overflow-hidden">
           <AnimatePresence initial={false}>
-            <motion.span
+            <motion.img
               key={photoIndex}
-              className="absolute inset-0 bg-clip-text text-transparent"
-              style={{
-                backgroundImage: `url(${photos[photoIndex]})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                filter: "brightness(1.7) contrast(1.1) saturate(1.15)",
-                // Garis tepi tipis krem supaya bentuk huruf tetap kebaca walau
-                // foto yang jadi isinya kebetulan gelap/low-contrast.
-                WebkitTextStroke: "1.5px rgba(250,247,240,0.4)",
-              }}
+              src={photos[photoIndex]}
+              alt=""
+              className="absolute inset-0 h-full w-full object-cover"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.9, ease: [0.4, 0, 0.2, 1] }}
-            >
-              {displayText}
-            </motion.span>
+            />
           </AnimatePresence>
-          {/* Placeholder tak terlihat supaya <h1> punya tinggi/lebar sesuai teks
-              (span di atas absolute, tidak ikut menentukan ukuran parent). */}
-          <span className="opacity-0">{targetText}</span>
-        </h1>
+        </div>
+
+        {/* Teks nama — warna solid, menimpa kartu foto, reveal polos sekali saat mount */}
+        <motion.h1
+          className="absolute select-none whitespace-pre text-center font-groove-label font-semibold uppercase leading-[0.95] tracking-tight text-groove-bg text-[13vw] md:text-[9vw] lg:text-[7vw]"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
+        >
+          {targetText}
+        </motion.h1>
       </div>
 
       <motion.div
