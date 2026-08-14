@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Hanken_Grotesk, EB_Garamond } from "next/font/google";
+import { Cormorant, Hanken_Grotesk, Cormorant_Garamond } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -38,10 +38,12 @@ const vogue = localFont({
   variable: "--font-reverie-display",
 });
 // Dipakai khusus LoadingScreen tema "Muse" (nama pasangan raksasa) — serif klasik,
-// terpisah dari --font-loading-display (Cormorant, dipakai Lume & Reverie).
-const ebGaramond = EB_Garamond({
+// terpisah dari --font-loading-display (Cormorant, dipakai Lume & Reverie). Bukan
+// EB Garamond (weight-nya mentok 400, tidak ada versi lebih tipis) — Cormorant
+// Garamond dipilih karena tetap satu keluarga visual Garamond tapi punya weight 300.
+const museLoadingFont = Cormorant_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: ["300", "400"],
   style: ["italic", "normal"],
   variable: "--font-muse-loading",
 });
@@ -54,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${ebGaramond.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable}`}
     >
       <body>{children}</body>
     </html>

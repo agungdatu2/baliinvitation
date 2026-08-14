@@ -12,9 +12,9 @@ interface LoadingScreenProps {
   images?: string[]; // foto galeri — kartu foto di belakang teks, crossfade tiap PHOTO_INTERVAL_MS
 }
 
-const DURATION_MS = 3600;
+const DURATION_MS = 7000;
 const COMPLETE_DELAY_MS = 500;
-const PHOTO_INTERVAL_MS = 1300;
+const PHOTO_INTERVAL_MS = 1800;
 const PHOTO_COUNT = 4;
 
 const DEFAULT_PHOTOS = Array.from(
@@ -107,7 +107,7 @@ export default function LoadingScreen({
 
         {/* Teks nama — warna solid, menimpa kartu foto, reveal polos sekali saat mount */}
         <motion.h1
-          className="absolute select-none whitespace-pre text-center font-muse-loading font-normal uppercase leading-[0.95] tracking-tight text-groove-bg text-[13vw] md:text-[9vw] lg:text-[7vw]"
+          className="absolute select-none whitespace-pre text-center font-muse-loading font-light uppercase leading-[0.95] tracking-tight text-groove-bg text-[13vw] md:text-[9vw] lg:text-[7vw]"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.4, 0, 0.2, 1] }}
@@ -123,7 +123,7 @@ export default function LoadingScreen({
         transition={{ duration: 0.6, delay: 0.15 }}
       >
         <span className="font-muse-loading text-xs uppercase tracking-[0.25em] text-groove-bg/50">{loadingText}</span>
-        <span className="font-muse-loading text-2xl md:text-3xl font-normal tabular-nums text-groove-bg">
+        <span className="font-muse-loading text-2xl md:text-3xl font-light tabular-nums text-groove-bg">
           {pctRounded}%
         </span>
       </motion.div>
