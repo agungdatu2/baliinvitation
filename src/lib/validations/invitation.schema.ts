@@ -65,6 +65,9 @@ export const invitationSchema = z.object({
   reverieGateImage: z.string().optional(),
   reverieSaveTheDateImage: z.string().optional(),
   reverieFooterImage: z.string().optional(),
+  backgroundType: z.enum(["video", "image", "slideshow"]).default("video"),
+  backgroundImage: z.string().optional(),
+  backgroundSlideshowImages: z.array(z.string()).default([]),
   hiddenSections: z.array(z.string()).default([]),
 
   eventDate: z.string().min(1, "Tanggal acara utama wajib diisi"),

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 import { TemplateProps } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
-import FixedVideoBackground from "./FixedVideoBackground";
+import FixedBackground from "./FixedBackground";
 import LoadingScreen from "./LoadingScreen";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
@@ -111,7 +111,12 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
 
   return (
     <main className="text-groove-ink font-groove-body">
-      <FixedVideoBackground src={data.heroVideoUrl} />
+      <FixedBackground
+        type={data.backgroundType}
+        videoSrc={data.heroVideoUrl}
+        imageSrc={data.backgroundImage}
+        slideshowImages={data.backgroundSlideshowImages}
+      />
 
       {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru
           setelah ini selesai, layout split sticky+scrollable mulai tampil,
@@ -188,7 +193,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                     <HeroGreeting data={data} />
                   </Reveal>
 
-                  {/* Section "Doa" — foto background sendiri (bukan FixedVideoBackground),
+                  {/* Section "Doa" — foto background sendiri (bukan FixedBackground),
                       full-viewport, sengaja DI LUAR .groove-page-blur karena sudah punya
                       foto opaque sendiri (tidak butuh video di belakangnya blur-blur lagi). */}
                   {!hidden.has("prayer") && (

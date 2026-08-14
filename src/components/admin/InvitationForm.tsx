@@ -49,6 +49,9 @@ const defaultValues: InvitationFormValues = {
   reverieGateImage: "",
   reverieSaveTheDateImage: "",
   reverieFooterImage: "",
+  backgroundType: "video",
+  backgroundImage: "",
+  backgroundSlideshowImages: [],
   hiddenSections: [],
   eventDate: "",
   galleryImages: [],
@@ -111,6 +114,8 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const events = useFieldArray({ control, name: "events" });
   const bankAccounts = useFieldArray({ control, name: "bankAccounts" });
   const gallery = useFieldArray({ control, name: "galleryImages" as never });
+  const backgroundSlideshow = useFieldArray({ control, name: "backgroundSlideshowImages" as never });
+  const backgroundType = watch("backgroundType");
   const dressCode = useFieldArray({ control, name: "dressCode" });
 
   const onSubmit = async (values: InvitationFormValues) => {
@@ -249,6 +254,46 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         </Field>
         {(selectedTemplateKey === "reverie" || selectedTemplateKey === "muse") && (
           <>
+            <Field label="Tipe Background Section Scrollable (khusus tema Reverie/Muse)">
+              <select {...register("backgroundType")} className="input">
+                <option value="video">Video</option>
+                <option value="image">Foto Tunggal</option>
+                <option value="slideshow">Slideshow Foto</option>
+              </select>
+            </Field>
+            {backgroundType === "video" && (
+              <p className="text-xs text-gray-500 -mt-1">Pakai URL Video Hero di atas.</p>
+            )}
+            {backgroundType === "image" && (
+              <Field label="URL Foto Background (opsional — kosongkan untuk pakai placeholder)">
+                <input {...register("backgroundImage")} className="input" placeholder="https://..." />
+              </Field>
+            )}
+            {backgroundType === "slideshow" && (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-sm font-medium">Foto Slideshow Background</label>
+                  <button type="button" onClick={() => backgroundSlideshow.append("" as never)} className="btn-add">
+                    + Tambah Foto
+                  </button>
+                </div>
+                {backgroundSlideshow.fields.map((f, i) => (
+                  <div key={f.id} className="flex gap-2">
+                    <input
+                      {...register(`backgroundSlideshowImages.${i}` as const)}
+                      className="input flex-1"
+                      placeholder="https://..."
+                    />
+                    <button type="button" onClick={() => backgroundSlideshow.remove(i)} className="btn-remove">
+                      X
+                    </button>
+                  </div>
+                ))}
+                {backgroundSlideshow.fields.length === 0 && (
+                  <p className="text-xs text-gray-500">Belum ada foto — tambahkan minimal 2 foto.</p>
+                )}
+              </div>
+            )}
             <Field label="URL Foto Background Gate (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
             </Field>

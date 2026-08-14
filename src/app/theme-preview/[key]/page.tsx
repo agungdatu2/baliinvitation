@@ -12,7 +12,7 @@ export default function ThemePreviewPage({
   searchParams,
 }: {
   params: { key: string };
-  searchParams: { lang?: string; intro?: string; hidden?: string };
+  searchParams: { lang?: string; intro?: string; hidden?: string; bg?: string };
 }) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
@@ -26,6 +26,10 @@ export default function ThemePreviewPage({
   // ?hidden=gift,dressCode — test-only, buat coba fitur "hide section" (lihat
   // REVERIE_SECTION_KEYS) tanpa perlu bikin undangan asli.
   const hiddenSections = searchParams.hidden ? searchParams.hidden.split(",") : [];
+  // ?bg=image / ?bg=slideshow — test-only, coba tipe background Reverie/Muse
+  // (default "video" kalau tidak di-set, sama seperti perilaku lama).
+  const backgroundType: "video" | "image" | "slideshow" =
+    searchParams.bg === "image" ? "image" : searchParams.bg === "slideshow" ? "slideshow" : "video";
 
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
@@ -122,6 +126,13 @@ export default function ThemePreviewPage({
     hasIntro,
     maxGalleryImages: null,
     hiddenSections,
+    backgroundType,
+    backgroundImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1600&q=85",
+    backgroundSlideshowImages: [
+      "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=85",
+      "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1600&q=85",
+    ],
   };
 
   return <Template data={data} guestName={content.guestName} />;

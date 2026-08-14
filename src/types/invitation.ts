@@ -66,6 +66,13 @@ export interface InvitationData {
   reverieGateImage?: string; // foto background layar gate — khusus tema Reverie
   reverieSaveTheDateImage?: string; // foto kecil di section Save the Date/countdown — khusus tema Reverie
   reverieFooterImage?: string; // foto background footer/penutup — khusus tema Reverie
+
+  // Background fixed di belakang seluruh section scrollable — khusus tema Reverie & Muse.
+  // "video" pakai heroVideoUrl (default), "image" pakai backgroundImage, "slideshow"
+  // pakai backgroundSlideshowImages (crossfade bergantian) — lihat FixedBackground.tsx.
+  backgroundType?: "video" | "image" | "slideshow";
+  backgroundImage?: string;
+  backgroundSlideshowImages?: string[];
   hiddenSections?: string[]; // key section yang disembunyikan client — berlaku semua tema, lihat HIDEABLE_SECTIONS_BY_TEMPLATE
 
   eventDate: string; // ISO

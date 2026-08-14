@@ -94,6 +94,14 @@ model Invitation {
   livestreamUrl  String? // link YouTube/Instagram Live
   livestreamNote String? // jadwal bebas, mis. "11 April 2026, 11:00-13:00 WIB"
   heroVideoUrl   String? // video background hero (mp4) — kalau kosong pakai placeholder
+
+  // Background fixed di belakang seluruh section scrollable — khusus tema Reverie
+  // & Muse (lihat FixedBackground.tsx di masing-masing folder tema). "video" pakai
+  // heroVideoUrl di atas (default, backward-compatible); "image" pakai backgroundImage;
+  // "slideshow" pakai backgroundSlideshowImages (crossfade bergantian).
+  backgroundType             String  @default("video") // video | image | slideshow
+  backgroundImage            String? // dipakai kalau backgroundType = "image"
+  backgroundSlideshowImages  Json    @default("[]") // string[] — dipakai kalau backgroundType = "slideshow"
   reverieGateImage String? // foto background layar gate/pembuka — khusus tema Reverie, kalau kosong pakai placeholder
   reverieSaveTheDateImage String? // foto kecil di section Save the Date/countdown — khusus tema Reverie, kalau kosong pakai placeholder
   reverieFooterImage String? // foto background footer/penutup — khusus tema Reverie, kalau kosong pakai placeholder
