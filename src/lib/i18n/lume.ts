@@ -15,6 +15,7 @@ export const LUME_DICT = {
     defaultGuestName: "Tamu Undangan",
     misspellingApology: "We apologize if there is any misspelling of name or title",
     letsOpen: "Let's Open",
+    openShort: "Open",
     heroInviteLabel: "Kami mengundang Anda untuk merayakan",
 
     // HeroGreeting
@@ -126,6 +127,7 @@ export const LUME_DICT = {
     defaultGuestName: "Guest",
     misspellingApology: "We apologize if there is any misspelling of name or title",
     letsOpen: "Let's Open",
+    openShort: "Open",
     heroInviteLabel: "We invite you to celebrate",
 
     defaultGreeting: "With heartfelt gratitude, we invite you to celebrate our special day with us.",

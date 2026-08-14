@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Mail } from "lucide-react";
 import { getDict, Lang } from "@/lib/i18n/lume";
 
 interface Props {
@@ -15,14 +14,13 @@ interface Props {
 }
 
 const EXIT_DURATION_MS = 600;
-const DEFAULT_BACKGROUND = "https://picsum.photos/seed/reverie-gate/900/1600";
+const DEFAULT_BACKGROUND = "https://picsum.photos/seed/muse-gate/1600/1000";
 
-// Gate "Dear, [nama tamu]" + tombol buka. Dulu fullscreen fixed overlay
-// terpisah; sekarang dirender DI DALAM kolom scrollable (lihat
-// MuseTemplate) supaya panel foto sticky sudah kelihatan sejak tahap ini
-// juga, bukan cuma setelah tombol "Let's Open" ditekan. LoadingScreen (tahap
-// sebelum ini) dipindah ke MuseTemplate karena dia tetap harus fullscreen,
-// bukan bagian dari kolom split.
+// Gate "Dear, [nama tamu]" — TRUE fullscreen overlay (beda dari Reverie yang
+// dirender di dalam kolom 30%): foto/latar menutupi seluruh viewport termasuk
+// kolom foto sticky di baliknya, sampai lingkaran "Open" ditekan. Layout &
+// tipografi meniru referensi: eyebrow italic kecil -> nama pasangan besar ->
+// jeda -> "Dear"/nama tamu -> tombol lingkaran.
 export default function SplashGate({
   groomNickname,
   brideNickname,
@@ -42,7 +40,7 @@ export default function SplashGate({
 
   return (
     <div
-      className={`relative min-h-[100lvh] flex flex-col items-center justify-between text-center px-6 pt-16 pb-32 md:pb-36 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
+      className={`fixed inset-0 z-[9000] flex flex-col items-center justify-center text-center px-6 text-groove-bg transition-all duration-500 ease-in animate-fadeIn ${
         closing ? "opacity-0 scale-105" : "opacity-100 scale-100"
       }`}
     >
@@ -52,32 +50,37 @@ export default function SplashGate({
         alt=""
         className="absolute inset-0 h-full w-full object-cover -z-10"
       />
-      <div className="absolute inset-0 bg-groove-stone/35" />
+      <div className="absolute inset-0 bg-black/40 -z-10" />
 
-      <div className="relative z-10 px-4 max-w-sm w-full">
-        <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-bg/60 mb-4">
+      <div className="relative z-10 max-w-lg w-full px-4">
+        <p className="font-reverie-display italic text-base md:text-lg text-groove-bg/80" style={{ fontWeight: 400 }}>
           {t.theWeddingOf}
         </p>
-        <h1 className="font-reverie-display italic text-5xl mb-2" style={{ fontWeight: 300 }}>
-          {groomNickname} <span className="not-italic text-groove-bg/60">&amp;</span> {brideNickname}
+        <h1
+          className="mt-3 font-groove-display uppercase text-3xl md:text-5xl tracking-[0.04em]"
+          style={{ fontWeight: 600 }}
+        >
+          {groomNickname} <span className="normal-case text-groove-bg/70">&amp;</span> {brideNickname}
         </h1>
-        <p className="font-groove-body text-sm text-groove-bg/80">{eventDateLabel}</p>
+        <p className="mt-3 font-groove-body text-sm text-groove-bg/70">{eventDateLabel}</p>
       </div>
 
-      <div className="relative z-10 px-4 max-w-sm w-full space-y-3">
-        <p className="font-groove-body text-sm text-groove-bg/70">{t.dear}</p>
-        <p className="font-reverie-display text-xl" style={{ fontWeight: 500 }}>
+      <div className="relative z-10 mt-16 md:mt-20 max-w-sm w-full px-4 space-y-2">
+        <p className="font-reverie-display italic text-base text-groove-bg/80" style={{ fontWeight: 400 }}>
+          {t.dear}
+        </p>
+        <p className="font-groove-display text-xl md:text-2xl" style={{ fontWeight: 500 }}>
           {guestName || t.defaultGuestName}
         </p>
-        <p className="font-groove-label text-[10px] text-groove-bg/50 tracking-wide">{t.misspellingApology}</p>
-        <button
-          onClick={handleOpen}
-          className="mt-4 w-4/5 mx-auto py-3.5 rounded-full bg-white text-black font-groove-label text-xs tracking-widest uppercase hover:opacity-90 transition inline-flex items-center justify-center gap-2"
-        >
-          <Mail size={14} strokeWidth={2} />
-          {t.letsOpen}
-        </button>
+        <p className="font-groove-label text-[11px] text-groove-bg/55 tracking-wide pt-1">{t.misspellingApology}</p>
       </div>
+
+      <button
+        onClick={handleOpen}
+        className="relative z-10 mt-12 w-24 h-24 md:w-28 md:h-28 rounded-full border border-groove-bg/70 flex items-center justify-center font-groove-label text-xs tracking-widest uppercase hover:bg-groove-bg/10 transition"
+      >
+        {t.openShort}
+      </button>
     </div>
   );
 }

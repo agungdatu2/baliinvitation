@@ -127,27 +127,39 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
 
       {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
 
-      {!showLoading && (
+      {/* Gate "Dear, [nama tamu]" — fullscreen, TIDAK terkurung kolom 30% (beda
+          dari Reverie), menutupi seluruh viewport termasuk kolom foto sticky
+          di baliknya sampai tombol "Open" ditekan. */}
+      <AnimatePresence>
+        {!showLoading && !opened && (
+          <SplashGate
+            groomNickname={data.groomNickname}
+            brideNickname={data.brideNickname}
+            eventDateLabel={eventDateLabel}
+            guestName={guestName}
+            backgroundImage={data.reverieGateImage}
+            lang={data.language}
+            onOpen={handleOpen}
+          />
+        )}
+      </AnimatePresence>
+
+      {!showLoading && opened && (
         <div className="animate-fadeIn">
-          {opened && (
-            <NavMenu
-              groomNickname={data.groomNickname}
-              brideNickname={data.brideNickname}
-              eventDate={data.eventDate}
-              eventLocation={data.events?.[0]?.location}
-              hasMusic={Boolean(data.musicUrl)}
-              musicPlaying={musicPlaying}
-              onToggleMusic={toggleMusic}
-              lang={data.language}
-              hiddenSections={data.hiddenSections}
-            />
-          )}
+          <NavMenu
+            groomNickname={data.groomNickname}
+            brideNickname={data.brideNickname}
+            eventDate={data.eventDate}
+            eventLocation={data.events?.[0]?.location}
+            hasMusic={Boolean(data.musicUrl)}
+            musicPlaying={musicPlaying}
+            onToggleMusic={toggleMusic}
+            lang={data.language}
+            hiddenSections={data.hiddenSections}
+          />
 
           {/* Layout desktop dibagi kolom kiri 70% (foto besar sticky mengikuti
-              scroll) dan kolom kanan 30% (scroll normal). Berlaku dari tahap
-              gate (sebelum dibuka) sampai footer — bukan cuma setelah dibuka —
-              supaya panel sticky sudah kelihatan sejak awal. Mobile tetap satu
-              kolom penuh (panel sticky disembunyikan). */}
+              scroll) dan kolom kanan 30% (scroll normal). */}
           {/* items-stretch (default) sengaja TIDAK dioverride ke items-start: kolom
               sticky harus ikut meregang setinggi kolom scrollable supaya panel
               sticky di dalamnya (h-screen) punya ruang scroll untuk benar-benar
@@ -170,18 +182,6 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
             </div>
 
             <div className="md:w-[30%]">
-              {!opened ? (
-                <SplashGate
-                  groomNickname={data.groomNickname}
-                  brideNickname={data.brideNickname}
-                  eventDateLabel={eventDateLabel}
-                  guestName={guestName}
-                  backgroundImage={data.reverieGateImage}
-                  lang={data.language}
-                  onOpen={handleOpen}
-                />
-              ) : (
-                <>
                   <Reveal id="hero">
                     <HeroGreeting data={data} />
                   </Reveal>
@@ -279,8 +279,6 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
 
                     <ClosingFooter data={data} />
                   </div>
-                </>
-              )}
             </div>
           </div>
         </div>
