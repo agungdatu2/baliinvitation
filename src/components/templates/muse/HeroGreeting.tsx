@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Flower2 } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 import BlurText from "./BlurText";
@@ -14,47 +13,52 @@ const fadeUp = {
   viewport: { once: false, amount: 0.4 },
 };
 
+// Layout hero terinspirasi referensi: eyebrow "the wedding of" italic kecil,
+// nama pasangan besar (bold, tidak italic), jeda vertikal lega, lalu tanggal
+// acara dua baris (hari & tanggal lengkap) dengan bobot yang sama besarnya,
+// ditutup kalimat pembuka/kutipan client di bawahnya. Background masih pakai
+// FixedVideoBackground global (lihat MuseTemplate) — pilihan video/foto/
+// slideshow khusus section ini menyusul terpisah.
 export default function HeroGreeting({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
-  const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const weekdayLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, { weekday: "long" });
+  const dayMonthYearLabel = new Date(data.eventDate)
+    .toLocaleDateString(t.dateLocale, { day: "numeric", month: "long", year: "numeric" })
+    .toUpperCase();
 
   return (
-    <section className="relative h-[100lvh] overflow-hidden flex flex-col items-center justify-start pt-28 md:pt-32 text-center px-4 text-groove-bg">
+    <section className="relative h-[100lvh] overflow-hidden flex flex-col items-center justify-center text-center px-6 text-groove-bg">
       {/* Overlay flat (bukan gradient), sama seperti section lain — cuma supaya teks tetap terbaca */}
       <div className="absolute inset-0 bg-groove-stone/35" />
 
-      <div className="relative z-10">
-        <motion.div {...fadeUp} transition={{ duration: 0.6 }} className="flex justify-center mb-4">
-          <Flower2 className="h-7 w-7 text-groove-bg/80" strokeWidth={1.25} />
-        </motion.div>
-
-        <motion.p {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="font-groove-label text-xs md:text-sm uppercase tracking-[0.35em] text-groove-bg/80 mb-3">
-          {t.heroInviteLabel}
+      <div className="relative z-10 max-w-lg">
+        <motion.p
+          {...fadeUp}
+          transition={{ duration: 0.6 }}
+          className="font-muse-loading italic text-base md:text-lg text-groove-bg/80"
+        >
+          {t.theWeddingOf}
         </motion.p>
 
         <BlurText
           text={`${data.groomNickname} & ${data.brideNickname}`}
-          className="font-reverie-display text-groove-bg leading-[0.95] text-[36px] max-w-3xl mx-auto justify-center tracking-tight"
+          className="mt-3 font-muse-loading font-semibold uppercase leading-[0.95] text-3xl md:text-5xl tracking-[0.04em]"
           delay={100}
         />
+
+        <motion.div
+          {...fadeUp}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-16 md:mt-20 font-muse-loading font-semibold uppercase leading-tight text-2xl md:text-3xl"
+        >
+          <p>{weekdayLabel},</p>
+          <p>{dayMonthYearLabel}</p>
+        </motion.div>
 
         <motion.p
           {...fadeUp}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="font-groove-label text-xs md:text-sm uppercase tracking-[0.35em] text-groove-bg/70 mt-8"
-        >
-          {eventDateLabel}
-        </motion.p>
-
-        <motion.p
-          {...fadeUp}
-          transition={{ duration: 0.6, delay: 0.9 }}
-          className="mt-8 text-sm md:text-base text-groove-bg/85 max-w-md mx-auto font-groove-body font-light leading-relaxed whitespace-pre-line"
+          className="mt-6 text-sm md:text-base text-groove-bg/85 max-w-md mx-auto font-groove-body font-light leading-relaxed whitespace-pre-line"
         >
           {data.greeting || t.defaultGreeting}
         </motion.p>
@@ -64,7 +68,7 @@ export default function HeroGreeting({ data }: { data: InvitationData }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 1.3 }}
-        className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-groove-bg/70"
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 text-groove-bg/70"
       >
         <span className="font-groove-label text-[10px] uppercase tracking-[0.35em]">{t.scroll}</span>
         <motion.div
