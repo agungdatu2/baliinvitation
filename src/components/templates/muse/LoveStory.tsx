@@ -21,25 +21,29 @@ export default function LoveStory({ data }: { data: InvitationData }) {
 
   return (
     <section className="relative py-20 md:py-28 px-6 text-center text-groove-bg">
-      <div className="relative w-64 h-64 mx-auto mb-12">
-        <div className="absolute -top-6 -left-6 w-56 h-56 rounded-full border border-groove-bg/40" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-44 h-56 -rotate-3 overflow-hidden shadow-xl">
-            {collagePhotos.map((src, i) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={src}
-                alt=""
-                className="w-full object-cover"
-                style={{ height: `${100 / collagePhotos.length}%` }}
-              />
-            ))}
-          </div>
+      {/* Wrapper konsentris: lingkaran (w-80/h-80) lebih besar dari kartu foto
+          (w-64/h-80) di semua sisi supaya tetap "mengintip" di sekeliling foto,
+          bukan lagi offset ke pojok seperti sebelumnya. */}
+      <div className="relative w-80 h-80 mx-auto">
+        <div className="absolute inset-0 rounded-full border border-groove-bg/40" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-80 -rotate-3 overflow-hidden shadow-xl">
+          {collagePhotos.map((src, i) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={i}
+              src={src}
+              alt=""
+              className="w-full object-cover"
+              style={{ height: `${100 / collagePhotos.length}%` }}
+            />
+          ))}
+          {/* Gradient bawah supaya judul yang menumpuk di atasnya tetap terbaca */}
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/70 to-transparent" />
         </div>
       </div>
 
-      <h2 className="font-reverie-display text-4xl md:text-5xl leading-tight mb-10 max-w-sm mx-auto" style={{ fontWeight: 400 }}>
+      {/* Margin negatif menarik judul naik, menumpuk di atas sepertiga bawah foto. */}
+      <h2 className="relative z-10 -mt-24 font-reverie-display text-4xl md:text-5xl leading-tight mb-10 max-w-sm mx-auto" style={{ fontWeight: 400 }}>
         {t.loveStoryHeading}
       </h2>
 
