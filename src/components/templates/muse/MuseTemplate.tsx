@@ -174,7 +174,7 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
                     TIDAK diduplikat di sini; satu-satunya kontrol musik ada di
                     NavMenu (drawer hamburger), sama seperti tema Lume. */}
                 <div className="absolute inset-x-0 bottom-0 pt-24 pb-10 px-6 flex flex-col items-center gap-4 bg-gradient-to-t from-black/55 via-black/10 to-transparent">
-                  <p className="font-groove-label text-sm uppercase tracking-[0.35em] text-white">
+                  <p className="font-muse-loading text-sm uppercase tracking-[5px] text-white">
                     {data.groomNickname} &amp; {data.brideNickname}
                   </p>
                 </div>
