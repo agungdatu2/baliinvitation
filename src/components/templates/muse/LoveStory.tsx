@@ -21,12 +21,13 @@ export default function LoveStory({ data }: { data: InvitationData }) {
 
   return (
     <section className="relative py-20 md:py-28 px-6 text-center text-groove-bg">
-      {/* Wrapper konsentris: lingkaran (w-80/h-80) lebih besar dari kartu foto
-          (w-64/h-80) di semua sisi supaya tetap "mengintip" di sekeliling foto,
-          bukan lagi offset ke pojok seperti sebelumnya. */}
-      <div className="relative w-80 h-80 mx-auto">
-        <div className="absolute inset-0 rounded-full border border-groove-bg/40" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-80 -rotate-3 overflow-hidden shadow-xl">
+      {/* Lingkaran diposisikan menempel di atas kartu foto (bukan konsentris) —
+          diameter sedikit lebih lebar dari foto & digeser ke atas, meniru posisi
+          di referensi: lingkaran "mengintip" di atas & samping foto, foto sendiri
+          menjulur jauh lebih ke bawah melewati tepi bawah lingkaran. */}
+      <div className="relative w-64 mx-auto">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-72 h-72 rounded-full border border-groove-bg/40" />
+        <div className="relative w-64 h-80 -rotate-3 overflow-hidden shadow-xl">
           {collagePhotos.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
