@@ -44,7 +44,7 @@ export default function LoveStory({ data }: { data: InvitationData }) {
       </div>
 
       {/* Margin negatif menarik judul naik, menumpuk di atas sepertiga bawah foto. */}
-      <h2 className="relative z-10 -mt-24 font-reverie-display text-4xl md:text-5xl leading-tight mb-10 max-w-sm mx-auto" style={{ fontWeight: 400 }}>
+      <h2 className="relative z-10 -mt-24 font-reverie-display text-5xl md:text-6xl leading-tight mb-10 max-w-sm mx-auto" style={{ fontWeight: 400 }}>
         {t.loveStoryHeading}
       </h2>
 
