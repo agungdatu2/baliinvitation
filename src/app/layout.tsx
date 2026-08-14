@@ -41,7 +41,7 @@ const vogue = localFont({
 // terpisah dari --font-loading-display (Cormorant, dipakai Lume & Reverie).
 const ebGaramond = EB_Garamond({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500"],
   style: ["italic", "normal"],
   variable: "--font-muse-loading",
 });
