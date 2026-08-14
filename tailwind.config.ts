@@ -12,6 +12,7 @@ const config: Config = {
         "groove-label": ["var(--font-groove-label)", "system-ui", "sans-serif"],
         "loading-display": ["var(--font-loading-display)", "Georgia", "serif"],
         "reverie-display": ["var(--font-reverie-display)", "Georgia", "serif"],
+        "muse-loading": ["var(--font-muse-loading)", "Georgia", "serif"],
       },
       colors: {
         // Dipakai admin dashboard (jangan ganti nilainya untuk redesign tema publik)
