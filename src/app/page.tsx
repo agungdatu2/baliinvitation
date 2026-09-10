@@ -223,45 +223,78 @@ export default async function HomePage() {
             </h2>
           </ScrollReveal>
           <div className="grid sm:grid-cols-2 gap-8">
-            {THEMES.map((theme, i) => (
-              <ScrollReveal key={theme.key} delay={i * 120}>
-                <div className="flex flex-col items-center text-center border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-xl shadow-[0_8px_32px_rgba(139,109,47,0.08)] p-8 sm:p-10 transition-all duration-500 hover:bg-white/60 hover:border-groove-primary/40 hover:-translate-y-2">
-                  <div className="flex items-end justify-center gap-3 mb-4">
-                    <LaptopFrame
-                      src={`/landing/thumbnails/${theme.key}-laptop.png`}
-                      width={LAPTOP_WIDTH}
+            {THEMES.map((theme, i) => {
+              const bg = `/landing/thumbnails/${theme.key}-laptop.png`;
+              return (
+                <ScrollReveal key={theme.key} delay={i * 120}>
+                  <div className="relative flex flex-col items-center text-center rounded-[2.5rem] overflow-hidden transition-all duration-500 hover:-translate-y-2">
+                    {/* Blob blur — screenshot tema sendiri di-blur berat jadi background bertekstur */}
+                    <div
+                      aria-hidden
+                      className="absolute inset-0 bg-cover bg-center scale-125"
+                      style={{ backgroundImage: `url(${bg})`, filter: "blur(40px) brightness(0.75)" }}
                     />
-                    <PhoneFrame
-                      src={`/landing/thumbnails/${theme.key}-phone.png`}
-                      width={PHONE_WIDTH}
-                    />
+                    <div className="absolute inset-0 bg-groove-ink/10" />
+
+                    <div className="relative z-10 flex flex-col items-center w-full p-8 sm:p-10">
+                      {/* Nama tema — teks jadi "jendela" menampilkan screenshot tajam di
+                          dalam bentuk hurufnya, kontras sama background yang blur di sekitarnya. */}
+                      <h3
+                        className="font-groove-display uppercase text-6xl sm:text-7xl leading-none mb-6 bg-cover bg-center"
+                        style={{
+                          fontWeight: 800,
+                          backgroundImage: `url(${bg})`,
+                          WebkitBackgroundClip: "text",
+                          backgroundClip: "text",
+                          color: "transparent",
+                          WebkitTextFillColor: "transparent",
+                        }}
+                      >
+                        {theme.name}
+                      </h3>
+
+                      <div className="flex items-end justify-center gap-3 mb-6">
+                        <LaptopFrame
+                          src={`/landing/thumbnails/${theme.key}-laptop.png`}
+                          width={LAPTOP_WIDTH}
+                        />
+                        <PhoneFrame
+                          src={`/landing/thumbnails/${theme.key}-phone.png`}
+                          width={PHONE_WIDTH}
+                        />
+                      </div>
+
+                      {/* Panel kaca — nampung teks & tombol supaya tetap gampang dibaca
+                          di atas background yang ramai */}
+                      <div className="w-full border border-white/60 rounded-[2rem] bg-white/55 backdrop-blur-xl p-6 sm:p-8">
+                        <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
+                        <p className="text-sm text-groove-ink/60 mb-6 min-h-[2.5em]">{theme.desc}</p>
+                        <ul className="w-full space-y-3 mb-8 text-left">
+                          {theme.features.map((f) => (
+                            <li key={f} className="flex items-center gap-3 text-sm text-groove-ink/75">
+                              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-primary/10 flex items-center justify-center">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary">
+                                  <path d="M20 6L9 17l-5-5" />
+                                </svg>
+                              </span>
+                              <span>{f}</span>
+                            </li>
+                          ))}
+                        </ul>
+                        <a
+                          href={`/theme-preview/${theme.key}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block w-full px-8 py-3 rounded-full bg-groove-ink text-groove-bg text-sm font-semibold hover:opacity-90 transition"
+                        >
+                          Lihat Preview
+                        </a>
+                      </div>
+                    </div>
                   </div>
-                  <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
-                  <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
-                  <p className="text-sm text-groove-ink/60 mb-6 min-h-[2.5em]">{theme.desc}</p>
-                  <ul className="w-full space-y-3 mb-8 text-left">
-                    {theme.features.map((f) => (
-                      <li key={f} className="flex items-center gap-3 text-sm text-groove-ink/75">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-primary/10 flex items-center justify-center">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary">
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                        </span>
-                        <span>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <a
-                    href={`/theme-preview/${theme.key}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-auto px-8 py-3 rounded-full bg-groove-ink text-groove-bg text-sm font-semibold hover:opacity-90 transition"
-                  >
-                    Lihat Preview
-                  </a>
-                </div>
-              </ScrollReveal>
-            ))}
+                </ScrollReveal>
+              );
+            })}
           </div>
         </div>
       </section>
