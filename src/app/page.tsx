@@ -186,6 +186,19 @@ export default async function HomePage() {
           sekaligus — cukup regenerate lewat scripts/capture-screenshots.js
           tiap kali desain tema berubah. */}
       <section id="tema" className="relative overflow-hidden bg-groove-bg py-24">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_83c8f212-88f1-442c-a2cc-3b25355f12c6.mp4"
+        />
+        {/* Overlay terang (bukan gelap) — video tetap kelihatan supaya blur di
+            kartu glass beneran nge-blur sesuatu, tapi ini nge-lighten videonya
+            biar teks & watermark di luar kartu tetap gampang dibaca. */}
+        <div className="absolute inset-0 bg-groove-bg/55" />
+
         {/* Watermark raksasa "TEMA" di belakang kartu — subtle di atas bg terang */}
         <p
           aria-hidden
