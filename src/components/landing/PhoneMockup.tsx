@@ -12,10 +12,15 @@ export default function PhoneMockup({
   src,
   width,
   className = "",
+  interactive = true,
 }: {
   src: string;
   width: number;
   className?: string;
+  // false = iframe tidak menerima pointer event (dipakai di dalam marquee yang
+  // bisa di-drag — kalau iframe tetap interactive, drag di atasnya "kemakan"
+  // oleh iframe dan tidak sampai ke handler drag milik marquee).
+  interactive?: boolean;
 }) {
   const scale = width / NATIVE_WIDTH;
   const height = width * (NATIVE_HEIGHT / NATIVE_WIDTH);
@@ -38,6 +43,7 @@ export default function PhoneMockup({
           transform: `scale(${scale})`,
           transformOrigin: "top left",
           border: 0,
+          pointerEvents: interactive ? "auto" : "none",
         }}
       />
     </div>
