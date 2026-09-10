@@ -25,7 +25,16 @@ export default function PhoneFrame({ src, width, className = "" }: { src: string
       >
         <Image src={src} alt="" fill sizes={`${width}px`} className="object-cover" />
       </div>
-      <Image src={FRAME_SRC} alt="" fill sizes={`${width}px`} className="pointer-events-none" />
+      {/* Unit foto aslinya warna copper/orange — di-grayscale supaya netral
+          (hitam/silver) biar konsisten sama tema brand, tapi screenshot di
+          dalamnya (di atas) TIDAK ikut kena filter ini. */}
+      <Image
+        src={FRAME_SRC}
+        alt=""
+        fill
+        sizes={`${width}px`}
+        className="pointer-events-none grayscale"
+      />
     </div>
   );
 }

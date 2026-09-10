@@ -19,15 +19,10 @@ const THEMES = [
   { key: "muse", name: "Muse", tagline: "Editorial Free Scroll", desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih." },
 ];
 
-// Ukuran stack laptop+HP di section Tema — dihitung eksplisit (bukan angka
-// kira-kira) supaya tinggi wadahnya cukup menampung dua device sekaligus
-// tanpa salah satunya "lepas"/tumpang tindih ke card berikutnya.
+// Ukuran mockup laptop+HP di section Tema — ditampilkan berdampingan
+// (bukan tumpang tindih) supaya kedua device kelihatan utuh.
 const LAPTOP_WIDTH = 220;
 const PHONE_WIDTH = 65;
-const LAPTOP_HEIGHT = LAPTOP_WIDTH * (460 / 800); // rasio asli frame MacBook Air
-const PHONE_HEIGHT = PHONE_WIDTH * (800 / 389); // rasio asli frame iPhone 17 Pro
-const DEVICE_OVERLAP = 35; // px tumpang tindih HP ke laptop
-const DEVICE_STACK_HEIGHT = LAPTOP_HEIGHT + PHONE_HEIGHT - DEVICE_OVERLAP;
 
 const FEATURES = [
   "Slug URL personal — baliinvitation.com/(nama-kalian)",
@@ -175,16 +170,14 @@ export default async function HomePage() {
           {THEMES.map((theme, i) => (
             <ScrollReveal key={theme.key} delay={i * 120}>
               <div className="flex flex-col items-center text-center">
-                <div className="relative" style={{ width: 230, height: DEVICE_STACK_HEIGHT }}>
+                <div className="flex items-end justify-center gap-3 mb-2">
                   <LaptopFrame
                     src={`/landing/thumbnails/${theme.key}-laptop.png`}
                     width={LAPTOP_WIDTH}
-                    className="absolute top-0 left-0"
                   />
                   <PhoneFrame
                     src={`/landing/thumbnails/${theme.key}-phone.png`}
                     width={PHONE_WIDTH}
-                    className="absolute bottom-0 right-0"
                   />
                 </div>
                 <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
