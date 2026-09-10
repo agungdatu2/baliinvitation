@@ -185,25 +185,15 @@ export default async function HomePage() {
           iframe live) supaya landing page tidak nge-load 3+ halaman penuh
           sekaligus — cukup regenerate lewat scripts/capture-screenshots.js
           tiap kali desain tema berubah. */}
-      <section id="tema" className="relative overflow-hidden bg-groove-ink py-24">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_83c8f212-88f1-442c-a2cc-3b25355f12c6.mp4"
-        />
-        <div className="absolute inset-0 bg-groove-ink/70" />
-
-        {/* Watermark raksasa "TEMA" di belakang kartu */}
+      <section id="tema" className="relative overflow-hidden bg-groove-bg py-24">
+        {/* Watermark raksasa "TEMA" di belakang kartu — subtle di atas bg terang */}
         <p
           aria-hidden
           className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
           style={{
             fontSize: "clamp(6rem, 22vw, 14rem)",
             fontWeight: 700,
-            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.9), rgba(201,164,92,0.15))",
+            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
             WebkitBackgroundClip: "text",
             backgroundClip: "text",
             color: "transparent",
@@ -214,15 +204,15 @@ export default async function HomePage() {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6">
           <ScrollReveal className="text-center mb-12">
-            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Pilihan Tema</p>
-            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-bg" style={{ fontWeight: 500 }}>
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
               Jelajahi Semua Tema
             </h2>
           </ScrollReveal>
           <div className="grid sm:grid-cols-2 gap-8">
             {THEMES.map((theme, i) => (
               <ScrollReveal key={theme.key} delay={i * 120}>
-                <div className="flex flex-col items-center text-center border border-groove-bg/15 rounded-[2.5rem] bg-groove-bg/5 backdrop-blur-md p-8 sm:p-10 transition-all duration-500 hover:bg-groove-bg/10 hover:border-groove-primary-light/60 hover:-translate-y-2">
+                <div className="flex flex-col items-center text-center border border-white/60 rounded-[2.5rem] bg-white/40 backdrop-blur-xl shadow-[0_8px_32px_rgba(139,109,47,0.08)] p-8 sm:p-10 transition-all duration-500 hover:bg-white/60 hover:border-groove-primary/40 hover:-translate-y-2">
                   <div className="flex items-end justify-center gap-3 mb-4">
                     <LaptopFrame
                       src={`/landing/thumbnails/${theme.key}-laptop.png`}
@@ -233,14 +223,14 @@ export default async function HomePage() {
                       width={PHONE_WIDTH}
                     />
                   </div>
-                  <h3 className="font-groove-display text-2xl mb-1 text-groove-bg" style={{ fontWeight: 500 }}>{theme.name}</h3>
-                  <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-3">{theme.tagline}</p>
-                  <p className="text-sm text-groove-bg/60 mb-6 min-h-[2.5em]">{theme.desc}</p>
+                  <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
+                  <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
+                  <p className="text-sm text-groove-ink/60 mb-6 min-h-[2.5em]">{theme.desc}</p>
                   <ul className="w-full space-y-3 mb-8 text-left">
                     {theme.features.map((f) => (
-                      <li key={f} className="flex items-center gap-3 text-sm text-groove-bg/80">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-bg/10 flex items-center justify-center">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary-light">
+                      <li key={f} className="flex items-center gap-3 text-sm text-groove-ink/75">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-primary/10 flex items-center justify-center">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary">
                             <path d="M20 6L9 17l-5-5" />
                           </svg>
                         </span>
@@ -252,7 +242,7 @@ export default async function HomePage() {
                     href={`/theme-preview/${theme.key}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-auto px-8 py-3 rounded-full bg-groove-bg text-groove-ink text-sm font-semibold hover:bg-groove-bg/90 transition"
+                    className="mt-auto px-8 py-3 rounded-full bg-groove-ink text-groove-bg text-sm font-semibold hover:opacity-90 transition"
                   >
                     Lihat Preview
                   </a>
