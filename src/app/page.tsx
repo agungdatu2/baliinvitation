@@ -1,10 +1,18 @@
 import Link from "next/link";
+import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import PhoneFrame from "@/components/landing/PhoneFrame";
 import LaptopFrame from "@/components/landing/LaptopFrame";
+import PageLoader from "@/components/landing/PageLoader";
+import FullscreenNav from "@/components/landing/FullscreenNav";
+
+const NAV_LINKS = [
+  { label: "Tema", href: "#tema" },
+  { label: "Paket", href: "#paket" },
+];
 
 const CREATOR = {
   whatsappNumber: "085190090902",
@@ -79,6 +87,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-groove-bg text-groove-ink font-groove-body">
+      <PageLoader />
       <FloatingWhatsApp href={heroWaLink} />
 
       {/* Hero — video full-screen, nav mengambang transparan di atasnya */}
@@ -95,24 +104,23 @@ export default async function HomePage() {
 
         <div className="relative z-10 flex h-full flex-col">
           <header className="px-6 sm:px-10 py-5 sm:py-6 flex items-center justify-between">
-            <p className="font-groove-display text-lg sm:text-xl text-white tracking-wide" style={{ fontWeight: 600 }}>
-              BaliInvitation
-            </p>
-            <nav className="flex items-center gap-6 text-sm">
-              <a href="#tema" className="hidden sm:inline text-white/80 hover:text-white transition-colors">Tema</a>
-              <a href="#paket" className="hidden sm:inline text-white/80 hover:text-white transition-colors">Paket</a>
-              <Link href="/admin" className="hidden sm:inline text-white/50 hover:text-white transition-colors text-xs">
-                Admin
-              </Link>
-              <a
-                href={heroWaLink}
-                target="_blank"
-                rel="noreferrer"
-                className="groove-glass-dark rounded-full px-5 py-2.5 text-white text-sm tracking-wide"
-              >
-                Buat Undangan
-              </a>
-            </nav>
+            <Image
+              src="/brand/logo.webp"
+              alt="BaliInvitation"
+              width={160}
+              height={47}
+              priority
+              className="w-28 sm:w-36 h-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
+            <FullscreenNav
+              links={NAV_LINKS}
+              ctaHref={heroWaLink}
+              ctaLabel="Buat Undangan"
+              contactPhoneLabel={CREATOR.whatsappLabel}
+              contactPhoneHref={heroWaLink}
+              instagramHref={`https://instagram.com/${CREATOR.instagramHandle}`}
+            />
           </header>
 
           <div className="flex-1 flex items-start justify-center pt-16 sm:pt-20 md:pt-24 px-6">
