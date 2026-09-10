@@ -4,8 +4,8 @@ import { buildWaLink } from "@/lib/utils/whatsapp";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import PhoneMockup from "@/components/landing/PhoneMockup";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
-import ThemeMarquee from "@/components/landing/ThemeMarquee";
-import CurvedMask from "@/components/landing/CurvedMask";
+import PhoneFrame from "@/components/landing/PhoneFrame";
+import LaptopFrame from "@/components/landing/LaptopFrame";
 
 const CREATOR = {
   whatsappNumber: "085190090902",
@@ -18,6 +18,16 @@ const THEMES = [
   { key: "reverie", name: "Reverie", tagline: "Editorial Split", desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern." },
   { key: "muse", name: "Muse", tagline: "Editorial Free Scroll", desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih." },
 ];
+
+// Ukuran stack laptop+HP di section Tema — dihitung eksplisit (bukan angka
+// kira-kira) supaya tinggi wadahnya cukup menampung dua device sekaligus
+// tanpa salah satunya "lepas"/tumpang tindih ke card berikutnya.
+const LAPTOP_WIDTH = 200;
+const PHONE_WIDTH = 70;
+const LAPTOP_HEIGHT = LAPTOP_WIDTH * (900 / 1440) + 10; // layar + dek keyboard
+const PHONE_HEIGHT = PHONE_WIDTH * (844 / 390);
+const DEVICE_OVERLAP = 40; // px tumpang tindih HP ke laptop
+const DEVICE_STACK_HEIGHT = LAPTOP_HEIGHT + PHONE_HEIGHT - DEVICE_OVERLAP;
 
 const FEATURES = [
   "Slug URL personal — baliinvitation.com/(nama-kalian)",
@@ -149,8 +159,11 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Themes — infinite drag carousel, judul sengaja tidak menyebut angka
-          ("Tiga Gaya") karena daftar tema akan terus bertambah */}
+      {/* Themes — judul sengaja tidak menyebut angka ("Tiga Gaya") karena
+          daftar tema akan terus bertambah. Thumbnail pakai screenshot statis
+          (bukan iframe live) supaya landing page tidak nge-load 3+ halaman
+          penuh sekaligus — cukup regenerate lewat scripts/capture-screenshots.js
+          tiap kali desain tema berubah. */}
       <section id="tema" className="max-w-5xl mx-auto px-6 py-24">
         <ScrollReveal className="text-center mb-12">
           <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
@@ -158,37 +171,37 @@ export default async function HomePage() {
             Jelajahi Semua Tema
           </h2>
         </ScrollReveal>
-
-        <div className="relative bg-white rounded-[2.5rem] overflow-hidden">
-          <CurvedMask position="top" />
-          <ThemeMarquee
-            items={THEMES.map((theme) => ({
-              key: theme.key,
-              content: (
-                <div className="flex flex-col items-center text-center w-40">
-                  <PhoneMockup
-                    src={`/theme-preview/${theme.key}?intro=0`}
-                    width={150}
-                    interactive={false}
-                    className="mb-4"
+        <div className="grid sm:grid-cols-3 gap-10">
+          {THEMES.map((theme, i) => (
+            <ScrollReveal key={theme.key} delay={i * 120}>
+              <div className="flex flex-col items-center text-center">
+                <div className="relative mb-8" style={{ width: 230, height: DEVICE_STACK_HEIGHT }}>
+                  <LaptopFrame
+                    src={`/landing/thumbnails/${theme.key}-laptop.png`}
+                    width={LAPTOP_WIDTH}
+                    className="absolute top-0 left-0"
                   />
-                  <h3 className="font-groove-display text-lg mb-0.5" style={{ fontWeight: 500 }}>{theme.name}</h3>
-                  <p className="text-[10px] uppercase tracking-widest text-groove-primary">{theme.tagline}</p>
+                  <PhoneFrame
+                    src={`/landing/thumbnails/${theme.key}-phone.png`}
+                    width={PHONE_WIDTH}
+                    className="absolute bottom-0 right-0"
+                  />
                 </div>
-              ),
-            }))}
-          />
-          <CurvedMask position="bottom" />
+                <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
+                <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
+                <p className="text-sm text-groove-ink/70 mb-4">{theme.desc}</p>
+                <a
+                  href={`/theme-preview/${theme.key}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm text-groove-ink underline underline-offset-4 hover:text-groove-primary transition-colors"
+                >
+                  Lihat Preview →
+                </a>
+              </div>
+            </ScrollReveal>
+          ))}
         </div>
-
-        <p className="text-center mt-8">
-          <a
-            href="/contoh-undangan"
-            className="text-sm text-groove-ink underline underline-offset-4 hover:text-groove-primary transition-colors"
-          >
-            Lihat semua contoh undangan →
-          </a>
-        </p>
       </section>
 
       {/* Packages */}
