@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
-import { DEFAULT_HERO_VIDEO_URL } from "@/components/templates/lume/PlaceholderPhoto";
 import ScrollReveal from "@/components/landing/ScrollReveal";
+import PhoneMockup from "@/components/landing/PhoneMockup";
+import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 
 const CREATOR = {
   whatsappNumber: "085190090902",
@@ -14,6 +15,15 @@ const THEMES = [
   { key: "lume", name: "Lume", tagline: "Elegant Minimalist", desc: "Kertas hangat & emas pudar — clean, timeless, cocok untuk gaya formal-klasik." },
   { key: "reverie", name: "Reverie", tagline: "Editorial Split", desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern." },
   { key: "muse", name: "Muse", tagline: "Editorial Free Scroll", desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih." },
+];
+
+const FEATURES = [
+  "Slug URL personal — baliinvitation.com/(nama-kalian)",
+  "Dikerjakan langsung oleh tim, bukan generate otomatis",
+  "Bisa custom sesuai kebutuhan acara",
+  "Dashboard admin: kelola tamu, RSVP, dan ucapan dari satu tempat",
+  "Portal khusus client untuk kirim link ke tamu & pantau RSVP",
+  "Dukungan langsung via WhatsApp",
 ];
 
 const ADDONS = [
@@ -44,91 +54,109 @@ export default async function HomePage() {
   );
 
   return (
-    <main className="min-h-screen bg-groove-ink text-groove-bg font-groove-body">
-      {/* Hero — video full-bleed + nav overlay + tipografi raksasa */}
-      <section className="relative min-h-screen flex flex-col overflow-hidden">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          src={DEFAULT_HERO_VIDEO_URL}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/55 to-black/85" />
+    <main className="min-h-screen bg-groove-bg text-groove-ink font-groove-body">
+      <FloatingWhatsApp href={heroWaLink} />
 
-        <header className="relative z-10 max-w-6xl mx-auto w-full px-6 py-6 flex items-center justify-between">
-          <p className="font-groove-display text-lg tracking-wide" style={{ fontWeight: 600 }}>
-            BaliInvitation
-          </p>
-          <nav className="flex items-center gap-6 text-sm">
-            <a href="#tema" className="hidden sm:inline text-groove-bg/70 hover:text-groove-bg transition-colors">Tema</a>
-            <a href="#paket" className="hidden sm:inline text-groove-bg/70 hover:text-groove-bg transition-colors">Paket</a>
-            <Link href="/admin" className="text-groove-bg/50 hover:text-groove-bg transition-colors">
-              Admin
-            </Link>
-          </nav>
-        </header>
-
-        <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-6">
-          <p className="uppercase tracking-[0.35em] text-xs text-groove-primary-light mb-6">
-            Undangan Pernikahan Digital
-          </p>
-          <h1
-            className="font-groove-display uppercase leading-[0.92] mb-8 text-6xl sm:text-8xl md:text-9xl"
-            style={{ fontWeight: 500 }}
+      {/* Nav */}
+      <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <p className="font-groove-display text-lg tracking-wide" style={{ fontWeight: 600 }}>
+          BaliInvitation
+        </p>
+        <nav className="flex items-center gap-6 text-sm">
+          <a href="#tema" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Tema</a>
+          <a href="#paket" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Paket</a>
+          <Link href="/admin" className="hidden sm:inline text-groove-ink/40 hover:text-groove-ink transition-colors text-xs">
+            Admin
+          </Link>
+          <a
+            href={heroWaLink}
+            target="_blank"
+            rel="noreferrer"
+            className="px-5 py-2.5 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
           >
-            Undangan
-            <br />
-            Digital
+            Buat Undangan
+          </a>
+        </nav>
+      </header>
+
+      {/* Hero */}
+      <section className="max-w-6xl mx-auto px-6 pt-8 pb-24 grid md:grid-cols-2 gap-12 items-center">
+        <div className="text-center md:text-left order-2 md:order-1">
+          <p className="uppercase tracking-[0.3em] text-xs text-groove-primary mb-5">Undangan Online Premium</p>
+          <h1 className="font-groove-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 500 }}>
+            Bagikan momen bahagiamu lebih mudah{" "}
+            <span className="font-script text-5xl md:text-6xl text-groove-primary" style={{ fontWeight: 600 }}>
+              bersama
+            </span>{" "}
+            BaliInvitation
           </h1>
-          <p className="text-groove-bg/75 max-w-xl mx-auto mb-10 text-base md:text-lg">
-            Elegan &amp; berkesan — buat undangan, kelola tamu &amp; RSVP, semuanya dari satu tempat.
+          <p className="text-groove-ink/70 max-w-md mx-auto md:mx-0 mb-8 text-base">
+            Buat undangan pernikahan digital, kelola tamu &amp; RSVP, semuanya dari satu tempat.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-4">
             <a
               href={heroWaLink}
               target="_blank"
               rel="noreferrer"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-groove-bg text-groove-ink text-sm tracking-wide hover:opacity-90 transition"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
             >
-              Pesan via WhatsApp
+              Buat Undangan
             </a>
             <Link
               href="/contoh-undangan"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-groove-bg/40 text-groove-bg text-sm tracking-wide hover:bg-groove-bg/10 transition"
+              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-groove-line text-groove-ink text-sm tracking-wide hover:bg-groove-line/30 transition text-center"
             >
               Lihat Contoh Undangan
             </Link>
           </div>
         </div>
+        <div className="order-1 md:order-2 flex justify-center">
+          <PhoneMockup src="/theme-preview/lume?intro=0" width={260} />
+        </div>
+      </section>
 
-        <div className="relative z-10 pb-8 flex flex-col items-center gap-2 text-groove-bg/50">
-          <span className="text-[10px] uppercase tracking-[0.3em]">Scroll</span>
-          <span className="w-px h-8 bg-groove-bg/30 animate-pulse" />
+      {/* Trust / features */}
+      <section className="bg-white/50 border-y border-groove-line">
+        <div className="max-w-3xl mx-auto px-6 py-16">
+          <ScrollReveal className="text-center mb-10">
+            <h2 className="font-groove-display text-2xl md:text-3xl" style={{ fontWeight: 500 }}>
+              Kenapa Pilih BaliInvitation
+            </h2>
+          </ScrollReveal>
+          <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
+            {FEATURES.map((f, i) => (
+              <ScrollReveal key={f} delay={i * 60}>
+                <li className="flex items-start gap-3 text-sm text-groove-ink/75">
+                  <span className="text-groove-primary mt-0.5">✓</span>
+                  <span>{f}</span>
+                </li>
+              </ScrollReveal>
+            ))}
+          </ul>
         </div>
       </section>
 
       {/* Themes */}
       <section id="tema" className="max-w-5xl mx-auto px-6 py-24">
         <ScrollReveal className="text-center mb-12">
-          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Pilihan Tema</p>
+          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
           <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
             Tiga Gaya, Satu Standar Elegan
           </h2>
         </ScrollReveal>
-        <div className="grid sm:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-3 gap-8">
           {THEMES.map((theme, i) => (
             <ScrollReveal key={theme.key} delay={i * 120}>
-              <div className="border border-groove-line-dark rounded-2xl p-6 bg-groove-bg/5 flex flex-col h-full">
+              <div className="flex flex-col items-center text-center">
+                <PhoneMockup src={`/theme-preview/${theme.key}?intro=0`} width={180} className="mb-6" />
                 <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
-                <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-4">{theme.tagline}</p>
-                <p className="text-sm text-groove-bg/70 mb-6 flex-1">{theme.desc}</p>
+                <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
+                <p className="text-sm text-groove-ink/70 mb-4">{theme.desc}</p>
                 <a
                   href={`/theme-preview/${theme.key}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm text-groove-bg underline underline-offset-4 hover:text-groove-primary-light transition-colors"
+                  className="text-sm text-groove-ink underline underline-offset-4 hover:text-groove-primary transition-colors"
                 >
                   Lihat Preview →
                 </a>
@@ -141,7 +169,7 @@ export default async function HomePage() {
       {/* Packages */}
       <section id="paket" className="max-w-5xl mx-auto px-6 py-24">
         <ScrollReveal className="text-center mb-12">
-          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Paket Harga</p>
+          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Paket Harga</p>
           <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
             Pilih Paket Sesuai Kebutuhan
           </h2>
@@ -149,13 +177,13 @@ export default async function HomePage() {
         <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {packages.map((pkg, i) => (
             <ScrollReveal key={pkg.id} delay={i * 120}>
-              <div className="border border-groove-line-dark rounded-2xl p-8 bg-groove-bg/5 flex flex-col h-full">
+              <div className="border border-groove-line rounded-2xl p-8 bg-white/50 flex flex-col h-full">
                 <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{pkg.name}</h3>
                 <p className="font-groove-display text-3xl mb-6" style={{ fontWeight: 600 }}>{formatRupiah(pkg.price)}</p>
                 <ul className="space-y-2.5 mb-8 flex-1">
                   {(pkg.features as string[]).map((f) => (
-                    <li key={f} className="text-sm text-groove-bg/70 flex items-start gap-2">
-                      <span className="text-groove-primary-light mt-0.5">✓</span>
+                    <li key={f} className="text-sm text-groove-ink/75 flex items-start gap-2">
+                      <span className="text-groove-primary mt-0.5">✓</span>
                       <span>{f}</span>
                     </li>
                   ))}
@@ -167,7 +195,7 @@ export default async function HomePage() {
                   )}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-center px-6 py-3 rounded-full bg-groove-bg text-groove-ink text-sm tracking-wide hover:opacity-90 transition"
+                  className="text-center px-6 py-3 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
                 >
                   Pilih Paket Ini
                 </a>
@@ -178,13 +206,13 @@ export default async function HomePage() {
 
         {/* Add-ons */}
         <ScrollReveal delay={240} className="max-w-3xl mx-auto mt-10">
-          <div className="border border-groove-line-dark rounded-2xl p-6 bg-groove-bg/5">
-            <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-4">Fitur Tambahan (Add-On)</p>
+          <div className="border border-groove-line rounded-2xl p-6 bg-white/40">
+            <p className="text-xs uppercase tracking-widest text-groove-primary mb-4">Fitur Tambahan (Add-On)</p>
             <ul className="space-y-2">
               {ADDONS.map((a) => (
                 <li key={a.label} className="flex items-center justify-between text-sm gap-4">
-                  <span className="text-groove-bg/70">{a.label}</span>
-                  <span className="text-groove-bg/40 whitespace-nowrap">{a.price}</span>
+                  <span className="text-groove-ink/75">{a.label}</span>
+                  <span className="text-groove-ink/50 whitespace-nowrap">{a.price}</span>
                 </li>
               ))}
             </ul>
@@ -193,7 +221,7 @@ export default async function HomePage() {
       </section>
 
       {/* Footer / contact */}
-      <footer className="border-t border-groove-line-dark">
+      <footer className="border-t border-groove-line">
         <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center gap-5 text-center">
           <p className="font-groove-display text-lg" style={{ fontWeight: 500 }}>Punya pertanyaan?</p>
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
@@ -201,7 +229,7 @@ export default async function HomePage() {
               href={heroWaLink}
               target="_blank"
               rel="noreferrer"
-              className="text-groove-bg/70 hover:text-groove-bg transition-colors"
+              className="text-groove-ink/75 hover:text-groove-ink transition-colors"
             >
               WhatsApp {CREATOR.whatsappLabel}
             </a>
@@ -209,12 +237,12 @@ export default async function HomePage() {
               href={`https://instagram.com/${CREATOR.instagramHandle}`}
               target="_blank"
               rel="noreferrer"
-              className="text-groove-bg/70 hover:text-groove-bg transition-colors"
+              className="text-groove-ink/75 hover:text-groove-ink transition-colors"
             >
               @{CREATOR.instagramHandle}
             </a>
           </div>
-          <p className="text-xs text-groove-bg/40">© {new Date().getFullYear()} BaliInvitation — All rights reserved</p>
+          <p className="text-xs text-groove-ink/40">© {new Date().getFullYear()} BaliInvitation — All rights reserved</p>
         </div>
       </footer>
     </main>

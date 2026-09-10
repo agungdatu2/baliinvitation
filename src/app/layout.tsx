@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Hanken_Grotesk, Cormorant_Garamond } from "next/font/google";
+import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -47,6 +47,14 @@ const museLoadingFont = Cormorant_Garamond({
   style: ["italic", "normal"],
   variable: "--font-muse-loading",
 });
+// Aksen 1 kata di headline landing page (mis. "with") — cursive, dipakai
+// bersama --font-groove-display, bukan pengganti heading utama.
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-script",
+});
+
 export const metadata: Metadata = {
   title: "BaliInvitation - Undangan Digital",
   description: "Admin dashboard & undangan digital BaliInvitation",
@@ -56,7 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable}`}
     >
       <body>{children}</body>
     </html>
