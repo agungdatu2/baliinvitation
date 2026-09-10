@@ -169,7 +169,7 @@ export default async function HomePage() {
         <div className="grid sm:grid-cols-3 gap-10">
           {THEMES.map((theme, i) => (
             <ScrollReveal key={theme.key} delay={i * 120}>
-              <div className="flex flex-col items-center text-center">
+              <div className="flex flex-col items-center text-center border border-groove-line rounded-2xl bg-white/50 p-6">
                 <div className="flex items-end justify-center gap-3 mb-2">
                   <LaptopFrame
                     src={`/landing/thumbnails/${theme.key}-laptop.png`}
