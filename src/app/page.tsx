@@ -80,7 +80,17 @@ export default async function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pt-8 pb-24 grid md:grid-cols-2 gap-12 items-center">
+      <section className="relative overflow-hidden">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_040604_43df3b7b-df84-42bf-8eeb-b8124f86a152.mp4"
+        />
+        <div className="absolute inset-0 bg-groove-bg/80" />
+        <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-24 grid md:grid-cols-2 gap-12 items-center">
         <div className="text-center md:text-left order-2 md:order-1">
           <p className="uppercase tracking-[0.3em] text-xs text-groove-primary mb-5">Undangan Online Premium</p>
           <h1 className="font-groove-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 500 }}>
@@ -112,6 +122,7 @@ export default async function HomePage() {
         </div>
         <div className="order-1 md:order-2 flex justify-center">
           <PhoneMockup src="/theme-preview/lume?intro=0" width={260} />
+        </div>
         </div>
       </section>
 
