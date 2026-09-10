@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 
 function LoginForm() {
@@ -49,7 +50,12 @@ function LoginForm() {
           className="input mb-4"
         />
 
-        <label className="block text-sm text-gray-600 mb-1.5">Password</label>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="block text-sm text-gray-600">Password</label>
+          <Link href="/admin/forgot-password" className="text-xs text-gray-400 hover:text-lume-ink">
+            Lupa password?
+          </Link>
+        </div>
         <input
           type="password"
           required

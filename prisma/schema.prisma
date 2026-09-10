@@ -8,11 +8,17 @@ generator client {
 }
 
 model AdminUser {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // hash bcrypt
-  name      String?
-  createdAt DateTime @default(now())
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String    // hash bcrypt
+  name              String?
+  createdAt         DateTime  @default(now())
+
+  // Lupa password — token dikirim via email (Resend), disimpan sebagai hash SHA-256
+  // (bukan raw) supaya kalau DB bocor, token di email yang sudah terkirim tidak
+  // langsung bisa dipakai. Expiry pendek (1 jam), sekali pakai (dihapus stelah reset).
+  resetToken        String?   @unique
+  resetTokenExpiry  DateTime?
 }
 
 // Master daftar template yang tersedia (Lume, dst) agar admin bisa pilih di form

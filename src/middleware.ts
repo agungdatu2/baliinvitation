@@ -6,6 +6,9 @@ import { getToken } from "next-auth/jwt";
 // diproteksi walau ada di bawah /api — semua /api/* lain dianggap admin-only.
 const PUBLIC_API_PREFIXES = ["/api/auth", "/api/rsvp", "/api/portal"];
 
+// Halaman /admin/* yang harus bisa diakses TANPA login (alur lupa password).
+const PUBLIC_ADMIN_PAGES = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+
 function isPublicApi(pathname: string) {
   return PUBLIC_API_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
@@ -13,7 +16,7 @@ function isPublicApi(pathname: string) {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  if (pathname === "/admin/login") return NextResponse.next();
+  if (PUBLIC_ADMIN_PAGES.includes(pathname)) return NextResponse.next();
   if (pathname.startsWith("/api/") && isPublicApi(pathname)) return NextResponse.next();
 
   const isAdminPage = pathname.startsWith("/admin");

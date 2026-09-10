@@ -1,4 +1,4 @@
-import { randomBytes } from "crypto";
+import { randomBytes, createHash } from "crypto";
 
 // Tanpa karakter ambigu (0/O, 1/I/l) supaya aman diketik ulang manual kalau perlu
 const GUEST_CODE_ALPHABET = "23456789ABCDEFGHJKMNPQRSTUVWXYZ";
@@ -20,4 +20,13 @@ export function generateGuestCode(): string {
 // 32 karakter hex, cryptographically random — satu-satunya "otentikasi" Portal Client
 export function generatePortalToken(): string {
   return randomBytes(16).toString("hex");
+}
+
+// Token lupa-password: dikirim raw ke email, hash-nya (bukan raw) yang disimpan di DB.
+export function generatePasswordResetToken(): string {
+  return randomBytes(32).toString("hex");
+}
+
+export function hashToken(rawToken: string): string {
+  return createHash("sha256").update(rawToken).digest("hex");
 }
