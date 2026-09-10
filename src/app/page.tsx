@@ -166,7 +166,7 @@ export default async function HomePage() {
             Jelajahi Semua Tema
           </h2>
         </ScrollReveal>
-        <div className="grid sm:grid-cols-3 gap-10">
+        <div className="grid sm:grid-cols-2 gap-10">
           {THEMES.map((theme, i) => (
             <ScrollReveal key={theme.key} delay={i * 120}>
               <div className="flex flex-col items-center text-center border border-groove-line rounded-2xl bg-white/50 p-8 sm:p-10">
