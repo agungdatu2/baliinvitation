@@ -1,44 +1,196 @@
 import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+import { buildWaLink } from "@/lib/utils/whatsapp";
 
-const FEATURES = [
-  { title: "Gate Personal", desc: "Sapaan \"Kepada Yth\" dengan nama tamu otomatis dari link undangan." },
-  { title: "Cerita & Galeri", desc: "Love story dan galeri foto dinamis, jumlah dan urutan bebas diatur." },
-  { title: "Countdown & Kalender", desc: "Hitung mundur hari-H plus tombol tambah ke Google Calendar." },
-  { title: "Jadwal Acara", desc: "Kartu acara (resepsi, memadik, dst) lengkap dengan link Maps." },
-  { title: "RSVP Tamu", desc: "Konfirmasi hadir, jumlah tamu, dan ucapan tersimpan otomatis." },
-  { title: "Wedding Gift", desc: "Info rekening dengan tombol salin, tanpa perlu tanya manual." },
+const CREATOR = {
+  whatsappNumber: "085190090902",
+  whatsappLabel: "+62 851-9009-0902",
+  instagramHandle: "baliinvitation",
+};
+
+const THEMES = [
+  { key: "lume", name: "Lume", tagline: "Elegant Minimalist", desc: "Kertas hangat & emas pudar — clean, timeless, cocok untuk gaya formal-klasik." },
+  { key: "reverie", name: "Reverie", tagline: "Editorial Split", desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern." },
+  { key: "muse", name: "Muse", tagline: "Editorial Free Scroll", desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih." },
 ];
 
-export default function HomePage() {
+const ADDONS = [
+  { label: "Tambahan sesi acara / 2 link jadwal berbeda", price: "Rp 100.000" },
+  { label: "Ubah cover asli jadi video", price: "Rp 30.000" },
+  { label: "Tambah kuota galeri foto", price: "Rp 35.000" },
+  { label: "Undangan multi-bahasa (ID/EN)", price: "Rp 100.000" },
+  { label: "Link aktif seumur hidup", price: "Rp 100.000" },
+];
+
+const EXAMPLE_SLUG = "agung-sintia";
+
+// Paket dikelola dari /admin/packages — revalidate tiap jam supaya perubahan
+// harga/fitur tidak nunggu deploy baru untuk muncul di landing page.
+export const revalidate = 3600;
+
+function formatRupiah(n: number) {
+  return `Rp ${n.toLocaleString("id-ID")}`;
+}
+
+export default async function HomePage() {
+  const packages = await prisma.package.findMany({
+    where: { isActive: true },
+    orderBy: { price: "asc" },
+  });
+
+  const heroWaLink = buildWaLink(
+    CREATOR.whatsappNumber,
+    "Halo, saya mau tanya-tanya soal paket undangan digital BaliInvitation 🙏"
+  );
+
   return (
-    <main className="min-h-screen bg-lume-bg text-lume-ink">
-      <section className="max-w-3xl mx-auto px-6 pt-24 pb-16 text-center">
-        <p className="uppercase tracking-[0.3em] text-xs text-lume-gold mb-4">BaliInvitation</p>
-        <h1 className="font-serif text-4xl md:text-5xl mb-4">Undangan Digital, Rapi Sejak Draft Pertama</h1>
-        <p className="text-lume-ink/70 max-w-xl mx-auto mb-8">
-          Buat, kelola, dan bagikan undangan pernikahan digital untuk tiap klien dari satu dashboard admin.
+    <main className="min-h-screen bg-groove-bg text-groove-ink font-groove-body">
+      {/* Nav */}
+      <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <p className="font-groove-display text-lg tracking-wide" style={{ fontWeight: 600 }}>
+          BaliInvitation
         </p>
-        <Link
-          href="/admin"
-          className="inline-block px-6 py-3 rounded-lg bg-lume-ink text-white text-sm hover:bg-lume-ink/90 transition"
-        >
-          Buka Dashboard Admin
-        </Link>
+        <nav className="flex items-center gap-6 text-sm">
+          <a href="#tema" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Tema</a>
+          <a href="#paket" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Paket</a>
+          <Link href="/admin" className="text-groove-ink/50 hover:text-groove-ink transition-colors">
+            Admin
+          </Link>
+        </nav>
+      </header>
+
+      {/* Hero */}
+      <section className="max-w-3xl mx-auto px-6 pt-12 pb-20 text-center">
+        <p className="uppercase tracking-[0.3em] text-xs text-groove-primary mb-5">Undangan Pernikahan Digital</p>
+        <h1 className="font-groove-display text-4xl md:text-6xl leading-tight mb-6" style={{ fontWeight: 500 }}>
+          Undangan Digital yang
+          <br />
+          Elegan &amp; Berkesan
+        </h1>
+        <p className="text-groove-ink/70 max-w-xl mx-auto mb-10 text-base md:text-lg">
+          Buat undangan pernikahan digital, kelola tamu &amp; RSVP, semuanya dari satu tempat —
+          tinggal pilih tema, kami yang urus sisanya.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href={heroWaLink}
+            target="_blank"
+            rel="noreferrer"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
+          >
+            Pesan via WhatsApp
+          </a>
+          <Link
+            href={`/${EXAMPLE_SLUG}`}
+            target="_blank"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-groove-line text-groove-ink text-sm tracking-wide hover:bg-groove-line/30 transition"
+          >
+            Lihat Contoh Undangan
+          </Link>
+        </div>
       </section>
 
-      <section className="max-w-4xl mx-auto px-6 pb-24">
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="border border-lume-line rounded-xl p-5 bg-white/50">
-              <h3 className="font-serif text-lg mb-2">{f.title}</h3>
-              <p className="text-sm text-lume-ink/70">{f.desc}</p>
+      {/* Themes */}
+      <section id="tema" className="max-w-5xl mx-auto px-6 pb-24">
+        <div className="text-center mb-12">
+          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
+          <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
+            Tiga Gaya, Satu Standar Elegan
+          </h2>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-6">
+          {THEMES.map((theme) => (
+            <div key={theme.key} className="border border-groove-line rounded-2xl p-6 bg-white/40 flex flex-col">
+              <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
+              <p className="text-xs uppercase tracking-widest text-groove-primary mb-4">{theme.tagline}</p>
+              <p className="text-sm text-groove-ink/70 mb-6 flex-1">{theme.desc}</p>
+              <a
+                href={`/theme-preview/${theme.key}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-groove-ink underline underline-offset-4 hover:text-groove-primary transition-colors"
+              >
+                Lihat Preview →
+              </a>
             </div>
           ))}
         </div>
       </section>
 
-      <footer className="text-center text-xs text-lume-ink/50 pb-10">
-        BaliInvitation — Template Undangan Digital
+      {/* Packages */}
+      <section id="paket" className="max-w-5xl mx-auto px-6 pb-24">
+        <div className="text-center mb-12">
+          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Paket Harga</p>
+          <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
+            Pilih Paket Sesuai Kebutuhan
+          </h2>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {packages.map((pkg) => (
+            <div key={pkg.id} className="border border-groove-line rounded-2xl p-8 bg-white/40 flex flex-col">
+              <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{pkg.name}</h3>
+              <p className="font-groove-display text-3xl mb-6" style={{ fontWeight: 600 }}>{formatRupiah(pkg.price)}</p>
+              <ul className="space-y-2.5 mb-8 flex-1">
+                {(pkg.features as string[]).map((f) => (
+                  <li key={f} className="text-sm text-groove-ink/75 flex items-start gap-2">
+                    <span className="text-groove-primary mt-0.5">✓</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={buildWaLink(
+                  CREATOR.whatsappNumber,
+                  `Halo, saya mau pesan undangan digital paket ${pkg.name} (${formatRupiah(pkg.price)}) 🙏`
+                )}
+                target="_blank"
+                rel="noreferrer"
+                className="text-center px-6 py-3 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
+              >
+                Pilih Paket Ini
+              </a>
+            </div>
+          ))}
+        </div>
+
+        {/* Add-ons */}
+        <div className="max-w-3xl mx-auto mt-10 border border-groove-line rounded-2xl p-6 bg-white/30">
+          <p className="text-xs uppercase tracking-widest text-groove-primary mb-4">Fitur Tambahan (Add-On)</p>
+          <ul className="space-y-2">
+            {ADDONS.map((a) => (
+              <li key={a.label} className="flex items-center justify-between text-sm gap-4">
+                <span className="text-groove-ink/75">{a.label}</span>
+                <span className="text-groove-ink/50 whitespace-nowrap">{a.price}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* Footer / contact */}
+      <footer className="border-t border-groove-line">
+        <div className="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center gap-5 text-center">
+          <p className="font-groove-display text-lg" style={{ fontWeight: 500 }}>Punya pertanyaan?</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm">
+            <a
+              href={heroWaLink}
+              target="_blank"
+              rel="noreferrer"
+              className="text-groove-ink/75 hover:text-groove-ink transition-colors"
+            >
+              WhatsApp {CREATOR.whatsappLabel}
+            </a>
+            <a
+              href={`https://instagram.com/${CREATOR.instagramHandle}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-groove-ink/75 hover:text-groove-ink transition-colors"
+            >
+              @{CREATOR.instagramHandle}
+            </a>
+          </div>
+          <p className="text-xs text-groove-ink/40">© {new Date().getFullYear()} BaliInvitation — All rights reserved</p>
+        </div>
       </footer>
     </main>
   );
