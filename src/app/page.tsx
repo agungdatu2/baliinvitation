@@ -13,9 +13,27 @@ const CREATOR = {
 };
 
 const THEMES = [
-  { key: "lume", name: "Lume", tagline: "Elegant Minimalist", desc: "Kertas hangat & emas pudar — clean, timeless, cocok untuk gaya formal-klasik." },
-  { key: "reverie", name: "Reverie", tagline: "Editorial Split", desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern." },
-  { key: "muse", name: "Muse", tagline: "Editorial Free Scroll", desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih." },
+  {
+    key: "lume",
+    name: "Lume",
+    tagline: "Elegant Minimalist",
+    desc: "Kertas hangat & emas pudar — clean, timeless, cocok untuk gaya formal-klasik.",
+    features: ["Font Cormorant + Hanken Grotesk", "Background bertekstur kertas hangat", "Cocok gaya formal & klasik"],
+  },
+  {
+    key: "reverie",
+    name: "Reverie",
+    tagline: "Editorial Split",
+    desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern.",
+    features: ["Panel foto sticky di layar desktop", "Layout split editorial", "Scroll-snap antar section"],
+  },
+  {
+    key: "muse",
+    name: "Muse",
+    tagline: "Editorial Free Scroll",
+    desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih.",
+    features: ["Scroll bebas tanpa snap", "Hero eyebrow-nama-tanggal bersih", "Nuansa lebih santai & ringan"],
+  },
 ];
 
 // Ukuran mockup laptop+HP di section Tema — ditampilkan berdampingan
@@ -152,46 +170,87 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Themes — judul sengaja tidak menyebut angka ("Tiga Gaya") karena
-          daftar tema akan terus bertambah. Thumbnail pakai screenshot statis
-          (bukan iframe live) supaya landing page tidak nge-load 3+ halaman
-          penuh sekaligus — cukup regenerate lewat scripts/capture-screenshots.js
+      {/* Themes — dark glass cards + teks watermark raksasa di belakang.
+          Judul sengaja tidak menyebut angka ("Tiga Gaya") karena daftar tema
+          akan terus bertambah. Thumbnail pakai screenshot statis (bukan
+          iframe live) supaya landing page tidak nge-load 3+ halaman penuh
+          sekaligus — cukup regenerate lewat scripts/capture-screenshots.js
           tiap kali desain tema berubah. */}
-      <section id="tema" className="max-w-5xl mx-auto px-6 py-24">
-        <ScrollReveal className="text-center mb-12">
-          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
-          <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
-            Jelajahi Semua Tema
-          </h2>
-        </ScrollReveal>
-        <div className="grid sm:grid-cols-2 gap-10">
-          {THEMES.map((theme, i) => (
-            <ScrollReveal key={theme.key} delay={i * 120}>
-              <div className="flex flex-col items-center text-center border border-groove-line rounded-2xl bg-white/50 p-8 sm:p-10">
-                <div className="flex items-end justify-center gap-3 mb-2">
-                  <LaptopFrame
-                    src={`/landing/thumbnails/${theme.key}-laptop.png`}
-                    width={LAPTOP_WIDTH}
-                  />
-                  <PhoneFrame
-                    src={`/landing/thumbnails/${theme.key}-phone.png`}
-                    width={PHONE_WIDTH}
-                  />
+      <section id="tema" className="relative overflow-hidden bg-groove-ink py-24">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_040604_43df3b7b-df84-42bf-8eeb-b8124f86a152.mp4"
+        />
+        <div className="absolute inset-0 bg-groove-ink/70" />
+
+        {/* Watermark raksasa "TEMA" di belakang kartu */}
+        <p
+          aria-hidden
+          className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
+          style={{
+            fontSize: "clamp(6rem, 22vw, 14rem)",
+            fontWeight: 700,
+            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.9), rgba(201,164,92,0.15))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          TEMA
+        </p>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6">
+          <ScrollReveal className="text-center mb-12">
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Pilihan Tema</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-bg" style={{ fontWeight: 500 }}>
+              Jelajahi Semua Tema
+            </h2>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-2 gap-8">
+            {THEMES.map((theme, i) => (
+              <ScrollReveal key={theme.key} delay={i * 120}>
+                <div className="flex flex-col items-center text-center border border-groove-bg/15 rounded-[2.5rem] bg-groove-bg/5 backdrop-blur-md p-8 sm:p-10 transition-all duration-500 hover:bg-groove-bg/10 hover:border-groove-primary-light/60 hover:-translate-y-2">
+                  <div className="flex items-end justify-center gap-3 mb-4">
+                    <LaptopFrame
+                      src={`/landing/thumbnails/${theme.key}-laptop.png`}
+                      width={LAPTOP_WIDTH}
+                    />
+                    <PhoneFrame
+                      src={`/landing/thumbnails/${theme.key}-phone.png`}
+                      width={PHONE_WIDTH}
+                    />
+                  </div>
+                  <h3 className="font-groove-display text-2xl mb-1 text-groove-bg" style={{ fontWeight: 500 }}>{theme.name}</h3>
+                  <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-3">{theme.tagline}</p>
+                  <p className="text-sm text-groove-bg/60 mb-6 min-h-[2.5em]">{theme.desc}</p>
+                  <ul className="w-full space-y-3 mb-8 text-left">
+                    {theme.features.map((f) => (
+                      <li key={f} className="flex items-center gap-3 text-sm text-groove-bg/80">
+                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-bg/10 flex items-center justify-center">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary-light">
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                        </span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href={`/theme-preview/${theme.key}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-auto px-8 py-3 rounded-full bg-groove-bg text-groove-ink text-sm font-semibold hover:bg-groove-bg/90 transition"
+                  >
+                    Lihat Preview
+                  </a>
                 </div>
-                <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{theme.name}</h3>
-                <p className="text-xs uppercase tracking-widest text-groove-primary mb-3">{theme.tagline}</p>
-                <p className="text-sm text-groove-ink/70 mb-4">{theme.desc}</p>
-                <a
-                  href={`/theme-preview/${theme.key}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-sm text-groove-ink underline underline-offset-4 hover:text-groove-primary transition-colors"
-                >
-                  Lihat Preview →
-                </a>
-              </div>
-            </ScrollReveal>
-          ))}
+              </ScrollReveal>
+            ))}
+          </div>
         </div>
       </section>
 
