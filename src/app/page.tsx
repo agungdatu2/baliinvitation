@@ -2,7 +2,6 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
 import ScrollReveal from "@/components/landing/ScrollReveal";
-import PhoneMockup from "@/components/landing/PhoneMockup";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import PhoneFrame from "@/components/landing/PhoneFrame";
 import LaptopFrame from "@/components/landing/LaptopFrame";
@@ -64,30 +63,8 @@ export default async function HomePage() {
     <main className="min-h-screen bg-groove-bg text-groove-ink font-groove-body">
       <FloatingWhatsApp href={heroWaLink} />
 
-      {/* Nav */}
-      <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <p className="font-groove-display text-lg tracking-wide" style={{ fontWeight: 600 }}>
-          BaliInvitation
-        </p>
-        <nav className="flex items-center gap-6 text-sm">
-          <a href="#tema" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Tema</a>
-          <a href="#paket" className="hidden sm:inline text-groove-ink/70 hover:text-groove-ink transition-colors">Paket</a>
-          <Link href="/admin" className="hidden sm:inline text-groove-ink/40 hover:text-groove-ink transition-colors text-xs">
-            Admin
-          </Link>
-          <a
-            href={heroWaLink}
-            target="_blank"
-            rel="noreferrer"
-            className="px-5 py-2.5 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
-          >
-            Buat Undangan
-          </a>
-        </nav>
-      </header>
-
-      {/* Hero */}
-      <section className="relative overflow-hidden">
+      {/* Hero — video full-screen, nav mengambang transparan di atasnya */}
+      <section className="relative h-screen w-full overflow-hidden">
         <video
           autoPlay
           muted
@@ -96,40 +73,61 @@ export default async function HomePage() {
           className="absolute inset-0 w-full h-full object-cover"
           src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_040604_43df3b7b-df84-42bf-8eeb-b8124f86a152.mp4"
         />
-        <div className="absolute inset-0 bg-groove-bg/80" />
-        <div className="relative max-w-6xl mx-auto px-6 pt-8 pb-24 grid md:grid-cols-2 gap-12 items-center">
-        <div className="text-center md:text-left order-2 md:order-1">
-          <p className="uppercase tracking-[0.3em] text-xs text-groove-primary mb-5">Undangan Online Premium</p>
-          <h1 className="font-groove-display text-4xl md:text-5xl leading-tight mb-6" style={{ fontWeight: 500 }}>
-            Bagikan momen bahagiamu lebih mudah{" "}
-            <span className="font-script text-5xl md:text-6xl text-groove-primary" style={{ fontWeight: 600 }}>
-              bersama
-            </span>{" "}
-            BaliInvitation
-          </h1>
-          <p className="text-groove-ink/70 max-w-md mx-auto md:mx-0 mb-8 text-base">
-            Buat undangan pernikahan digital, kelola tamu &amp; RSVP, semuanya dari satu tempat.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center md:items-start justify-center md:justify-start gap-4">
-            <a
-              href={heroWaLink}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
-            >
-              Buat Undangan
-            </a>
-            <Link
-              href="/contoh-undangan"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-groove-line text-groove-ink text-sm tracking-wide hover:bg-groove-line/30 transition text-center"
-            >
-              Lihat Contoh Undangan
-            </Link>
+        <div className="absolute inset-0 bg-black/35" />
+
+        <div className="relative z-10 flex h-full flex-col">
+          <header className="px-6 sm:px-10 py-5 sm:py-6 flex items-center justify-between">
+            <p className="font-groove-display text-lg sm:text-xl text-white tracking-wide" style={{ fontWeight: 600 }}>
+              BaliInvitation
+            </p>
+            <nav className="flex items-center gap-6 text-sm">
+              <a href="#tema" className="hidden sm:inline text-white/80 hover:text-white transition-colors">Tema</a>
+              <a href="#paket" className="hidden sm:inline text-white/80 hover:text-white transition-colors">Paket</a>
+              <Link href="/admin" className="hidden sm:inline text-white/50 hover:text-white transition-colors text-xs">
+                Admin
+              </Link>
+              <a
+                href={heroWaLink}
+                target="_blank"
+                rel="noreferrer"
+                className="groove-glass-dark rounded-full px-5 py-2.5 text-white text-sm tracking-wide"
+              >
+                Buat Undangan
+              </a>
+            </nav>
+          </header>
+
+          <div className="flex-1 flex items-start justify-center pt-16 sm:pt-20 md:pt-24 px-6">
+            <div className="text-center max-w-2xl">
+              <p className="uppercase tracking-[0.3em] text-xs text-white/70 mb-5">Undangan Online Premium</p>
+              <h1 className="text-white text-4xl sm:text-5xl md:text-6xl font-groove-display leading-[1.05]" style={{ fontWeight: 500 }}>
+                Bagikan momen bahagiamu lebih mudah{" "}
+                <span className="font-script text-5xl sm:text-6xl md:text-7xl text-white/90" style={{ fontWeight: 600 }}>
+                  bersama
+                </span>{" "}
+                BaliInvitation
+              </h1>
+              <p className="text-white/80 max-w-md mx-auto mt-6 text-base">
+                Buat undangan pernikahan digital, kelola tamu &amp; RSVP, semuanya dari satu tempat.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4 mt-8">
+                <a
+                  href={heroWaLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-3 bg-white text-groove-ink text-sm font-semibold rounded-full hover:bg-white/90 transition"
+                >
+                  Buat Undangan
+                </a>
+                <Link
+                  href="/contoh-undangan"
+                  className="px-6 py-3 groove-glass-dark rounded-full text-white text-sm font-semibold hover:bg-white/10 transition"
+                >
+                  Lihat Contoh Undangan
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="order-1 md:order-2 flex justify-center">
-          <PhoneMockup src="/theme-preview/lume?intro=0" width={260} />
-        </div>
         </div>
       </section>
 
