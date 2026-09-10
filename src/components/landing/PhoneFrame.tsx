@@ -1,22 +1,31 @@
 import Image from "next/image";
 
-// Frame HP membungkus screenshot statis (bukan iframe live) — dipakai di
-// grid "Pilihan Tema" supaya thumbnail-nya tidak ikut nge-load 3 halaman
-// penuh sekaligus tiap landing page dibuka. Pakai next/image (bukan <img>)
-// supaya PNG screenshot asli (ratusan KB-1MB+) di-resize & dikompres
-// otomatis oleh Next ke ukuran render yang jauh lebih kecil.
+// Frame foto asli (iPhone 17 Pro), bukan gambar kita — free untuk pemakaian
+// komersial tanpa atribusi wajib (sumber: webmobilefirst.com/en/mockups/apple-iphone-17-pro-2025,
+// "Personal and commercial use allowed, without mandatory attribution").
+// Layar-nya transparan by design (dibuat khusus untuk ditumpuki screenshot),
+// koordinat di bawah didapat dari analisis alpha channel file aslinya (389x800),
+// bukan angka kira-kira — kalau frame-nya diganti, koordinat ini perlu dihitung ulang.
+const FRAME_SRC = "/landing/frames/iphone-17-pro-frame.png";
+const SCREEN = { left: 4.37, top: 1.625, width: 91, height: 96.625 };
+
 export default function PhoneFrame({ src, width, className = "" }: { src: string; width: number; className?: string }) {
-  const height = width * (844 / 390);
+  const height = width * (800 / 389);
 
   return (
-    <div
-      className={`relative rounded-[1.5rem] border-[5px] border-groove-ink bg-groove-ink shadow-xl overflow-hidden ${className}`}
-      style={{ width, height }}
-    >
-      <div className="absolute top-0 inset-x-0 h-4 flex items-center justify-center z-10">
-        <div className="w-10 h-2.5 bg-groove-ink rounded-full" />
+    <div className={`relative ${className}`} style={{ width, height }}>
+      <div
+        className="absolute overflow-hidden"
+        style={{
+          left: `${SCREEN.left}%`,
+          top: `${SCREEN.top}%`,
+          width: `${SCREEN.width}%`,
+          height: `${SCREEN.height}%`,
+        }}
+      >
+        <Image src={src} alt="" fill sizes={`${width}px`} className="object-cover" />
       </div>
-      <Image src={src} alt="" fill sizes={`${width}px`} className="object-cover" />
+      <Image src={FRAME_SRC} alt="" fill sizes={`${width}px`} className="pointer-events-none" />
     </div>
   );
 }

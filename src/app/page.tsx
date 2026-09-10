@@ -22,11 +22,11 @@ const THEMES = [
 // Ukuran stack laptop+HP di section Tema — dihitung eksplisit (bukan angka
 // kira-kira) supaya tinggi wadahnya cukup menampung dua device sekaligus
 // tanpa salah satunya "lepas"/tumpang tindih ke card berikutnya.
-const LAPTOP_WIDTH = 200;
-const PHONE_WIDTH = 70;
-const LAPTOP_HEIGHT = LAPTOP_WIDTH * (900 / 1440) + 10; // layar + dek keyboard
-const PHONE_HEIGHT = PHONE_WIDTH * (844 / 390);
-const DEVICE_OVERLAP = 40; // px tumpang tindih HP ke laptop
+const LAPTOP_WIDTH = 220;
+const PHONE_WIDTH = 65;
+const LAPTOP_HEIGHT = LAPTOP_WIDTH * (460 / 800); // rasio asli frame MacBook Air
+const PHONE_HEIGHT = PHONE_WIDTH * (800 / 389); // rasio asli frame iPhone 17 Pro
+const DEVICE_OVERLAP = 35; // px tumpang tindih HP ke laptop
 const DEVICE_STACK_HEIGHT = LAPTOP_HEIGHT + PHONE_HEIGHT - DEVICE_OVERLAP;
 
 const FEATURES = [
