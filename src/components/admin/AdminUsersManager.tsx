@@ -24,6 +24,41 @@ export default function AdminUsersManager({ initialAdmins }: { initialAdmins: Ad
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const [resetId, setResetId] = useState<string | null>(null);
+  const [resetPassword, setResetPassword] = useState("");
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetSubmitting, setResetSubmitting] = useState(false);
+
+  const openReset = (a: AdminUserRow) => {
+    setResetId(a.id);
+    setResetPassword("");
+    setResetError(null);
+  };
+
+  const submitReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetId) return;
+    setResetSubmitting(true);
+    setResetError(null);
+    try {
+      const res = await fetch(`/api/admin-users/${resetId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: resetPassword }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error?.formErrors?.[0] || err.error || "Gagal reset password");
+      }
+      setResetId(null);
+      setResetPassword("");
+    } catch (e: any) {
+      setResetError(e.message);
+    } finally {
+      setResetSubmitting(false);
+    }
+  };
+
   const remove = async (a: AdminUserRow) => {
     if (!confirm(`Hapus akun admin "${a.email}"?`)) return;
     setBusyId(a.id);
@@ -69,21 +104,60 @@ export default function AdminUsersManager({ initialAdmins }: { initialAdmins: Ad
     <div className="space-y-6">
       <div className="border rounded-lg bg-white divide-y">
         {initialAdmins.map((a) => (
-          <div key={a.id} className="flex items-center justify-between px-4 py-3">
-            <div>
-              <p className="text-sm font-medium text-lume-ink">
-                {a.name || a.email}
-                {a.id === currentUserId && <span className="ml-2 text-xs text-lume-gold">(kamu)</span>}
-              </p>
-              <p className="text-xs text-gray-400">{a.email}</p>
+          <div key={a.id} className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-lume-ink">
+                  {a.name || a.email}
+                  {a.id === currentUserId && <span className="ml-2 text-xs text-lume-gold">(kamu)</span>}
+                </p>
+                <p className="text-xs text-gray-400">{a.email}</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button onClick={() => openReset(a)} className="text-xs text-lume-ink underline">
+                  Reset Password
+                </button>
+                <button
+                  onClick={() => remove(a)}
+                  disabled={busyId === a.id || a.id === currentUserId}
+                  className="text-red-600 text-xs disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Hapus
+                </button>
+              </div>
             </div>
-            <button
-              onClick={() => remove(a)}
-              disabled={busyId === a.id || a.id === currentUserId}
-              className="text-red-600 text-xs disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              Hapus
-            </button>
+
+            {resetId === a.id && (
+              <form onSubmit={submitReset} className="mt-3 flex items-start gap-2">
+                <div className="flex-1">
+                  <input
+                    type="password"
+                    autoFocus
+                    minLength={8}
+                    placeholder="Password baru (min. 8 karakter)"
+                    className="input"
+                    value={resetPassword}
+                    onChange={(e) => setResetPassword(e.target.value)}
+                    required
+                  />
+                  {resetError && <p className="text-red-600 text-xs mt-1">{resetError}</p>}
+                </div>
+                <button
+                  type="submit"
+                  disabled={resetSubmitting}
+                  className="px-3 py-2 rounded-lg bg-lume-ink text-white text-xs disabled:opacity-50"
+                >
+                  {resetSubmitting ? "Menyimpan..." : "Simpan"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setResetId(null)}
+                  className="px-3 py-2 rounded-lg bg-gray-100 text-xs"
+                >
+                  Batal
+                </button>
+              </form>
+            )}
           </div>
         ))}
         {initialAdmins.length === 0 && <p className="text-gray-400 text-sm px-4 py-3">Belum ada akun admin.</p>}
