@@ -23,6 +23,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     slug: invitation.slug,
     status: invitation.status as "draft" | "published",
     language: invitation.language as "id" | "en",
+    showAsExample: invitation.showAsExample,
     templateKey: invitation.template.key,
     packageId: invitation.packageId ?? "",
     clientName: invitation.clientName,

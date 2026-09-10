@@ -36,6 +36,7 @@ export const invitationSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug hanya boleh huruf kecil, angka, dan tanda -"),
   status: z.enum(["draft", "published"]).default("draft"),
   language: z.enum(["id", "en"]).default("id"),
+  showAsExample: z.boolean().default(false),
   templateKey: z.string().min(1, "Pilih template"),
   packageId: z.string().optional().or(z.literal("")),
 

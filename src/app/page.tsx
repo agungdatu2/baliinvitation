@@ -24,8 +24,6 @@ const ADDONS = [
   { label: "Link aktif seumur hidup", price: "Rp 100.000" },
 ];
 
-const EXAMPLE_SLUG = "agung-sintia";
-
 // Paket dikelola dari /admin/packages — revalidate tiap jam supaya perubahan
 // harga/fitur tidak nunggu deploy baru untuk muncul di landing page.
 export const revalidate = 3600;
@@ -97,8 +95,7 @@ export default async function HomePage() {
               Pesan via WhatsApp
             </a>
             <Link
-              href={`/${EXAMPLE_SLUG}`}
-              target="_blank"
+              href="/contoh-undangan"
               className="w-full sm:w-auto px-8 py-3.5 rounded-full border border-groove-bg/40 text-groove-bg text-sm tracking-wide hover:bg-groove-bg/10 transition"
             >
               Lihat Contoh Undangan

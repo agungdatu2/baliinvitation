@@ -24,6 +24,7 @@ const defaultValues: InvitationFormValues = {
   slug: "",
   status: "draft",
   language: "id",
+  showAsExample: false,
   templateKey: "lume",
   packageId: "",
   clientName: "",
@@ -197,6 +198,10 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="Catatan internal (opsional)">
           <textarea {...register("clientNotes")} className="input" rows={2} />
         </Field>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("showAsExample")} className="h-4 w-4" />
+          Tampilkan sebagai contoh publik di landing page (/contoh-undangan)
+        </label>
       </section>
 
       {/* --- Mempelai --- */}

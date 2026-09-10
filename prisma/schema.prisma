@@ -56,6 +56,11 @@ model Invitation {
   status        String   @default("draft") // draft | published
   language      String   @default("id") // id | en — bahasa tetap undangan, dipilih admin (tanpa switcher tamu)
 
+  // Ditandai admin supaya muncul di /contoh-undangan (halaman publik "Lihat Contoh
+  // Undangan" di landing page) — daftar itu murni query invitation dengan flag ini
+  // true, jadi bertambah otomatis begitu admin publish undangan contoh baru tanpa ubah kode.
+  showAsExample Boolean  @default(false)
+
   templateId    String
   template      Template @relation(fields: [templateId], references: [id])
 
