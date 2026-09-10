@@ -8,6 +8,7 @@ import PhoneFrame from "@/components/landing/PhoneFrame";
 import LaptopFrame from "@/components/landing/LaptopFrame";
 import PageLoader from "@/components/landing/PageLoader";
 import FullscreenNav from "@/components/landing/FullscreenNav";
+import RevealOnLoad from "@/components/landing/RevealOnLoad";
 
 const NAV_LINKS = [
   { label: "Tema", href: "#tema" },
@@ -102,7 +103,7 @@ export default async function HomePage() {
         />
         <div className="absolute inset-0 bg-black/35" />
 
-        <div className="relative z-10 flex h-full flex-col">
+        <RevealOnLoad className="relative z-10 flex h-full flex-col">
           <header className="px-6 sm:px-10 py-5 sm:py-6 flex items-center justify-between">
             <Image
               src="/brand/logo.webp"
@@ -154,7 +155,7 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
-        </div>
+        </RevealOnLoad>
       </section>
 
       {/* Trust / features */}
@@ -191,7 +192,7 @@ export default async function HomePage() {
           loop
           playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-30"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_040604_43df3b7b-df84-42bf-8eeb-b8124f86a152.mp4"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_83c8f212-88f1-442c-a2cc-3b25355f12c6.mp4"
         />
         <div className="absolute inset-0 bg-groove-ink/70" />
 
