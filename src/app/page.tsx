@@ -197,7 +197,7 @@ export default async function HomePage() {
         {/* Overlay terang (bukan gelap) — video tetap kelihatan supaya blur di
             kartu glass beneran nge-blur sesuatu, tapi ini nge-lighten videonya
             biar teks & watermark di luar kartu tetap gampang dibaca. */}
-        <div className="absolute inset-0 bg-groove-bg/55" />
+        <div className="absolute inset-0 bg-black/35" />
 
         {/* Watermark raksasa "TEMA" di belakang kartu — subtle di atas bg terang */}
         <p
@@ -217,8 +217,8 @@ export default async function HomePage() {
 
         <div className="relative z-10 max-w-5xl mx-auto px-6">
           <ScrollReveal className="text-center mb-12">
-            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Pilihan Tema</p>
-            <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Pilihan Tema</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-bg" style={{ fontWeight: 500 }}>
               Jelajahi Semua Tema
             </h2>
           </ScrollReveal>
