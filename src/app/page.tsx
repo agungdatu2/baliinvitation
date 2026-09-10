@@ -175,7 +175,7 @@ export default async function HomePage() {
           {THEMES.map((theme, i) => (
             <ScrollReveal key={theme.key} delay={i * 120}>
               <div className="flex flex-col items-center text-center">
-                <div className="relative mb-2" style={{ width: 230, height: DEVICE_STACK_HEIGHT }}>
+                <div className="relative" style={{ width: 230, height: DEVICE_STACK_HEIGHT }}>
                   <LaptopFrame
                     src={`/landing/thumbnails/${theme.key}-laptop.png`}
                     width={LAPTOP_WIDTH}
