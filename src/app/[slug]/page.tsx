@@ -37,16 +37,36 @@ async function resolveGuest(invitationId: string, guestCode?: string) {
   return guest;
 }
 
+// Video (.mp4/.webm/.mov) tidak valid sebagai og:image — WhatsApp/aplikasi chat
+// butuh gambar statis untuk thumbnail link preview.
+const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
+
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const inv = await getInvitation(params.slug);
   if (!inv) return {};
   const title = inv.hostName
     ? `${inv.eventTitle ?? "Undangan"} — ${inv.hostName}`
     : `The Wedding of ${inv.groomNickname} & ${inv.brideNickname}`;
+
+  // Setiap link undangan harus selalu punya thumbnail waktu di-share (WhatsApp,
+  // dst) — jangan sampai kosong hanya karena admin belum isi Cover Image.
+  // Urutan fallback: Cover Image > foto galeri pertama (bukan video) > logo
+  // brand client > foto mempelai > logo BaliInvitation (jaring pengaman terakhir).
+  const galleryImages = (inv.galleryImages as unknown as string[]) ?? [];
+  const firstGalleryPhoto = galleryImages.find((src) => !VIDEO_EXT_RE.test(src));
+  const ogImage =
+    inv.coverImage || firstGalleryPhoto || inv.hostLogo || inv.groomPhoto || inv.bridePhoto || "/brand/logo.webp";
+
   return {
     title,
     description: inv.greeting ?? undefined,
-    openGraph: { images: inv.coverImage ? [inv.coverImage] : [] },
+    openGraph: {
+      title,
+      description: inv.greeting ?? undefined,
+      images: [{ url: ogImage }],
+      siteName: "BaliInvitation",
+      type: "website",
+    },
   };
 }
 

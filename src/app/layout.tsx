@@ -56,8 +56,19 @@ const dancingScript = Dancing_Script({
 });
 
 export const metadata: Metadata = {
+  // Wajib supaya og:image dengan URL relatif (mis. "/brand/logo.webp") di-resolve
+  // jadi URL absolut — tanpa ini, WhatsApp/aplikasi chat lain gagal fetch gambar
+  // preview link (mereka butuh URL absolut, bukan relatif).
+  metadataBase: new URL("https://baliinvitation.com"),
   title: "BaliInvitation - Undangan Digital",
   description: "Admin dashboard & undangan digital BaliInvitation",
+  openGraph: {
+    title: "BaliInvitation - Undangan Digital",
+    description: "Buat undangan pernikahan digital, kelola tamu & RSVP, semuanya dari satu tempat.",
+    images: ["/brand/logo.webp"],
+    siteName: "BaliInvitation",
+    type: "website",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
