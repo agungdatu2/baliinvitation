@@ -9,6 +9,7 @@ import LaptopFrame from "@/components/landing/LaptopFrame";
 import PageLoader from "@/components/landing/PageLoader";
 import FullscreenNav from "@/components/landing/FullscreenNav";
 import RevealOnLoad from "@/components/landing/RevealOnLoad";
+import FeatureShowcase from "@/components/landing/FeatureShowcase";
 
 const NAV_LINKS = [
   { label: "Tema", href: "#tema" },
@@ -318,6 +319,18 @@ export default async function HomePage() {
             })}
           </div>
         </div>
+      </section>
+
+      {/* Fitur — mockup HP di tengah bisa di-scroll, tiap tombol fitur kiri/kanan
+          lompat ke widget yang sesuai di dalam mockup (lihat FeatureShowcase). */}
+      <section id="fitur" className="max-w-6xl mx-auto px-6 py-24">
+        <ScrollReveal className="text-center mb-16">
+          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Semua Ada di Sini</p>
+          <h2 className="font-groove-display uppercase text-5xl sm:text-6xl md:text-7xl text-groove-ink" style={{ fontWeight: 700 }}>
+            Fitur
+          </h2>
+        </ScrollReveal>
+        <FeatureShowcase waLink={heroWaLink} />
       </section>
 
       {/* Packages */}
