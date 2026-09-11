@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { templateSchema } from "@/lib/validations/template.schema";
 
@@ -29,6 +30,7 @@ export async function POST(req: NextRequest) {
   const created = await prisma.template.create({
     data: { key: d.key, name: d.name, thumbnail: d.thumbnail, isActive: d.isActive, category: d.category },
   });
+  revalidatePath("/");
 
   return NextResponse.json(created, { status: 201 });
 }
