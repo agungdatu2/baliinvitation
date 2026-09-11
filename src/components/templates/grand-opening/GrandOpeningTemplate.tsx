@@ -89,19 +89,19 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
             )}
           </section>
 
-          <Reveal>
-            <EventDetails events={data.events} title={data.hostName ?? data.eventTitle ?? ""} lang={data.language} />
-          </Reveal>
-
           {data.greeting && (
             <Reveal>
-              <section className="text-center py-16 px-6">
+              <section className="flex flex-col items-center text-center py-16 px-6">
                 <p className="font-groove-body text-sm sm:text-base text-groove-bg/80 max-w-xl mx-auto leading-relaxed">
                   {data.greeting}
                 </p>
               </section>
             </Reveal>
           )}
+
+          <Reveal>
+            <EventDetails events={data.events} title={data.hostName ?? data.eventTitle ?? ""} lang={data.language} />
+          </Reveal>
 
           <Reveal>
             <RSVPForm invitationId={data.id ?? data.slug} guestName={guestName} guestId={guestId} lang={data.language} />
