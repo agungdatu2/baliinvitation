@@ -7,7 +7,7 @@ import { getToken } from "next-auth/jwt";
 const PUBLIC_API_PREFIXES = ["/api/auth", "/api/rsvp", "/api/portal"];
 
 // Halaman /admin/* yang harus bisa diakses TANPA login (alur lupa password).
-const PUBLIC_ADMIN_PAGES = ["/admin/login", "/admin/forgot-password", "/admin/reset-password"];
+const PUBLIC_ADMIN_PAGES = ["/admin/k7xq2m9pv3", "/admin/forgot-password", "/admin/reset-password"];
 
 function isPublicApi(pathname: string) {
   return PUBLIC_API_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const loginUrl = new URL("/admin/login", req.url);
+  const loginUrl = new URL("/admin/k7xq2m9pv3", req.url);
   loginUrl.searchParams.set("callbackUrl", pathname);
   return NextResponse.redirect(loginUrl);
 }

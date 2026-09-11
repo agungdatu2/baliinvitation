@@ -5,7 +5,7 @@ import AdminNav from "@/components/admin/AdminNav";
 
 export default function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  if (pathname === "/admin/login") return <>{children}</>;
+  if (pathname === "/admin/k7xq2m9pv3") return <>{children}</>;
 
   return (
     <div className="min-h-screen bg-gray-50 md:flex">

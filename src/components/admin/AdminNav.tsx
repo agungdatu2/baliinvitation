@@ -49,7 +49,7 @@ export default function AdminNav() {
         </nav>
         <div className="p-3 border-t border-lume-line">
           <button
-            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            onClick={() => signOut({ callbackUrl: "/admin/k7xq2m9pv3" })}
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-gray-50 hover:text-lume-ink transition w-full"
           >
             <LogOut size={17} strokeWidth={1.75} />
@@ -63,7 +63,7 @@ export default function AdminNav() {
         <div className="px-4 py-4 flex items-center justify-between">
           <p className="font-serif text-lg text-lume-ink">BaliInvitation — Admin</p>
           <button
-            onClick={() => signOut({ callbackUrl: "/admin/login" })}
+            onClick={() => signOut({ callbackUrl: "/admin/k7xq2m9pv3" })}
             aria-label="Keluar"
             className="text-gray-400 hover:text-lume-ink transition"
           >

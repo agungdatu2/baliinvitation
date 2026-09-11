@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 
 interface NavLink {
@@ -94,9 +93,6 @@ export default function FullscreenNav({
             <a href={instagramHref} target="_blank" rel="noreferrer" className="hover:text-groove-ink transition-colors">
               Instagram
             </a>
-            <Link href="/admin" className="hover:text-groove-ink transition-colors">
-              Admin
-            </Link>
           </div>
         </div>
       </div>

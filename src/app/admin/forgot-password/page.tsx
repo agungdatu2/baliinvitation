@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
           </form>
         )}
 
-        <Link href="/admin/login" className="block text-center text-sm text-gray-400 mt-6 hover:text-lume-ink">
+        <Link href="/admin/k7xq2m9pv3" className="block text-center text-sm text-gray-400 mt-6 hover:text-lume-ink">
           Kembali ke login
         </Link>
       </div>
