@@ -52,7 +52,7 @@ export default async function ContohUndanganPage() {
                 >
                   <div>
                     <h2 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>
-                      {inv.groomNickname} &amp; {inv.brideNickname}
+                      {inv.hostName || `${inv.groomNickname} & ${inv.brideNickname}`}
                     </h2>
                     <p className="text-xs uppercase tracking-widest text-groove-primary-light">
                       {inv.template.name}

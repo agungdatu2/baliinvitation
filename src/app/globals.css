@@ -146,3 +146,12 @@ html.reverie-snap-scroll {
     rgba(255, 255, 255, 0.55) 100%
   );
 }
+
+/* Fallback background tema Grand Opening kalau admin belum upload video/foto —
+   gradient gelap hangat (bukan hitam polos) supaya tetap terasa premium tanpa
+   aset apa pun. */
+.groove-opening-gradient {
+  background:
+    radial-gradient(ellipse at 50% -10%, rgba(201, 164, 92, 0.16), transparent 60%),
+    linear-gradient(180deg, #1c1712 0%, #120f0b 55%, #0a0806 100%);
+}

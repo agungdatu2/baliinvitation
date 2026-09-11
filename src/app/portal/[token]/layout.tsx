@@ -38,7 +38,7 @@ export default async function PortalLayout({
         <div className="max-w-2xl mx-auto px-4 py-4">
           <p className="text-xs uppercase tracking-widest text-lume-gold">Portal Client</p>
           <h1 className="font-serif text-lg text-lume-ink">
-            {invitation.groomNickname} & {invitation.brideNickname}
+            {invitation.hostName || `${invitation.groomNickname} & ${invitation.brideNickname}`}
           </h1>
         </div>
       </header>

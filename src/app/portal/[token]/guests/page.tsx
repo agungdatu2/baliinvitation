@@ -16,12 +16,14 @@ export default async function PortalGuestsPage({ params }: { params: { token: st
     year: "numeric",
   });
 
+  const isWedding = !invitation.hostName;
+
   return (
     <GuestManager
       token={params.token}
       slug={invitation.slug}
-      groomNickname={invitation.groomNickname}
-      brideNickname={invitation.brideNickname}
+      invitationTitle={invitation.hostName || `${invitation.groomNickname} & ${invitation.brideNickname}`}
+      isWedding={isWedding}
       eventDateLabel={eventDateLabel}
       initialGuests={guests.map((g) => ({
         id: g.id,

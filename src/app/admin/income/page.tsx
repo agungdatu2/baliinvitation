@@ -11,11 +11,11 @@ export default async function IncomePage() {
   const [payments, invitations] = await Promise.all([
     prisma.payment.findMany({
       orderBy: { paidAt: "desc" },
-      include: { invitation: { select: { clientName: true, groomNickname: true, brideNickname: true } } },
+      include: { invitation: { select: { clientName: true, groomNickname: true, brideNickname: true, hostName: true } } },
     }),
     prisma.invitation.findMany({
       orderBy: { createdAt: "desc" },
-      select: { id: true, clientName: true, groomNickname: true, brideNickname: true, totalPrice: true, payments: { select: { amount: true } } },
+      select: { id: true, clientName: true, groomNickname: true, brideNickname: true, hostName: true, totalPrice: true, payments: { select: { amount: true } } },
     }),
   ]);
 
@@ -80,7 +80,7 @@ export default async function IncomePage() {
           }))}
           invitationOptions={invitations.map((inv) => ({
             id: inv.id,
-            label: `${inv.clientName} (${inv.groomNickname} & ${inv.brideNickname})`,
+            label: `${inv.clientName} (${inv.hostName || `${inv.groomNickname} & ${inv.brideNickname}`})`,
           }))}
         />
       </div>

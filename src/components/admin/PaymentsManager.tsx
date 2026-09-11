@@ -9,7 +9,7 @@ interface PaymentRow {
   amount: number;
   paidAt: string;
   note: string | null;
-  invitation: { clientName: string; groomNickname: string; brideNickname: string };
+  invitation: { clientName: string; groomNickname: string; brideNickname: string; hostName: string | null };
 }
 
 interface InvitationOption {
@@ -143,7 +143,7 @@ export default function PaymentsManager({
                 <td className="p-3 tabular-nums">{formatDate(p.paidAt)}</td>
                 <td className="p-3">
                   {p.invitation.clientName}
-                  <span className="text-gray-400"> — {p.invitation.groomNickname} & {p.invitation.brideNickname}</span>
+                  <span className="text-gray-400"> — {p.invitation.hostName || `${p.invitation.groomNickname} & ${p.invitation.brideNickname}`}</span>
                 </td>
                 <td className="p-3 tabular-nums">{formatRupiah(p.amount)}</td>
                 <td className="p-3 text-gray-500">{p.note || "-"}</td>

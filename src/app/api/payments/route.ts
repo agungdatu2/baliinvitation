@@ -6,7 +6,7 @@ import { paymentSchema } from "@/lib/validations/payment.schema";
 export async function GET() {
   const payments = await prisma.payment.findMany({
     orderBy: { paidAt: "desc" },
-    include: { invitation: { select: { clientName: true, groomNickname: true, brideNickname: true, slug: true } } },
+    include: { invitation: { select: { clientName: true, groomNickname: true, brideNickname: true, hostName: true, slug: true } } },
   });
   return NextResponse.json(payments);
 }

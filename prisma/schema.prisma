@@ -98,17 +98,27 @@ model Invitation {
   clientPhone   String?
   clientNotes   String?
 
-  // Data mempelai
-  groomNickname   String
-  groomFullName   String
-  groomParents    String
+  // Data mempelai — default "" (bukan nullable) supaya tipe TypeScript-nya tetap
+  // `string` di semua komponen tema wedding yang sudah ada (tidak perlu null-check
+  // di mana-mana). Untuk undangan non-wedding (mis. Grand Opening) field ini
+  // sengaja dikosongkan dan diganti eventTitle/hostName/hostLogo di bawah.
+  groomNickname   String @default("")
+  groomFullName   String @default("")
+  groomParents    String @default("")
   groomInstagram  String?
   groomPhoto      String? // URL foto mempelai pria, ditampilkan di CoupleProfile (fallback ke placeholder kalau kosong)
-  brideNickname   String
-  brideFullName   String
-  brideParents    String
+  brideNickname   String @default("")
+  brideFullName   String @default("")
+  brideParents    String @default("")
   brideInstagram  String?
   bridePhoto      String? // URL foto mempelai wanita, ditampilkan di CoupleProfile (fallback ke placeholder kalau kosong)
+
+  // Data acara non-wedding (mis. Grand Opening/Melaspas, Ulang Tahun, Potong Gigi)
+  // — dipakai template selain tema mempelai. Nullable karena tidak relevan untuk
+  // undangan wedding.
+  eventTitle String? // headline besar, mis. "GRAND OPENING"
+  hostName   String? // nama bisnis/keluarga penyelenggara, mis. "Surya Perkasa Motor"
+  hostLogo   String? // URL logo brand penyelenggara
 
   // Konten undangan
   coverImage    String?

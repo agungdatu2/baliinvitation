@@ -70,6 +70,43 @@ export default function ThemePreviewPage({
           eventNames: { akad: "Akad Nikah", reception: "Resepsi" },
         };
 
+  // Grand Opening (dan tema non-wedding sejenis) tidak punya akad/resepsi —
+  // satu event tunggal dengan nama acaranya sendiri.
+  const isGrandOpening = params.key === "grand-opening";
+  const events = isGrandOpening
+    ? [
+        {
+          name: "Grand Opening",
+          date: eventDateOnly,
+          timeStart: "13:00",
+          timeEnd: "Selesai",
+          timezone: "WITA",
+          venueName: "Surya Perkasa Motor",
+          location: "Jl. Gatot Subroto Timur No.88, Dangin Puri Kaja, Kota Denpasar, Bali",
+          mapsUrl: "https://maps.google.com",
+        },
+      ]
+    : [
+        {
+          name: content.eventNames.akad,
+          date: eventDateOnly,
+          timeStart: "09:00",
+          timeEnd: "10:00",
+          venueName: "The Garden Grille",
+          location: "Jl. Taman Palem Lestari No.1 Blok B 13, Cengkareng Barat, Jakarta, 11730, Indonesia",
+          mapsUrl: "https://maps.google.com",
+        },
+        {
+          name: content.eventNames.reception,
+          date: eventDateOnly,
+          timeStart: "12:00",
+          timeEnd: "14:00",
+          venueName: "The Garden Grille",
+          location: "Jl. Taman Palem Lestari No.1 Blok B 13, Cengkareng Barat, Jakarta, 11730, Indonesia",
+          mapsUrl: "https://maps.google.com",
+        },
+      ];
+
   const data: InvitationData = {
     slug: "preview",
     status: "published",
@@ -82,8 +119,12 @@ export default function ThemePreviewPage({
     brideNickname: "Ayu",
     brideFullName: "Ni Ayu Kirana",
     brideParents: "Bapak I Nyoman Contoh & Ibu Ni Putu Contoh",
+    eventTitle: isGrandOpening ? "Grand Opening" : undefined,
+    hostName: isGrandOpening ? "Surya Perkasa Motor" : undefined,
     quote: content.quote,
-    greeting: content.greeting,
+    greeting: isGrandOpening
+      ? "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu."
+      : content.greeting,
     eventDate: eventDateIso,
     galleryImages: [
       "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80",
@@ -93,26 +134,7 @@ export default function ThemePreviewPage({
       "https://images.unsplash.com/photo-1615966650071-855b15f29ad1?auto=format&fit=crop&w=900&q=80",
     ],
     loveStory: content.loveStory,
-    events: [
-      {
-        name: content.eventNames.akad,
-        date: eventDateOnly,
-        timeStart: "09:00",
-        timeEnd: "10:00",
-        venueName: "The Garden Grille",
-        location: "Jl. Taman Palem Lestari No.1 Blok B 13, Cengkareng Barat, Jakarta, 11730, Indonesia",
-        mapsUrl: "https://maps.google.com",
-      },
-      {
-        name: content.eventNames.reception,
-        date: eventDateOnly,
-        timeStart: "12:00",
-        timeEnd: "14:00",
-        venueName: "The Garden Grille",
-        location: "Jl. Taman Palem Lestari No.1 Blok B 13, Cengkareng Barat, Jakarta, 11730, Indonesia",
-        mapsUrl: "https://maps.google.com",
-      },
-    ],
+    events,
     bankAccounts: [
       { bank: "BCA", accountNumber: "1234567890", accountName: "I Made Wirawan" },
       { bank: "Mandiri", accountNumber: "0987654321", accountName: "Ni Ayu Kirana" },

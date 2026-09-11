@@ -56,6 +56,12 @@ export interface InvitationData {
   brideInstagram?: string;
   bridePhoto?: string;
 
+  // Data acara non-wedding (Grand Opening/Melaspas dkk) — lihat komentar
+  // Invitation.eventTitle di schema.prisma
+  eventTitle?: string;
+  hostName?: string;
+  hostLogo?: string;
+
   coverImage?: string;
   quote?: string;
   greeting?: string;

@@ -13,17 +13,20 @@ export function buildWaLink(waNumber: string, message: string): string {
 
 export function buildGuestInvitationMessage(params: {
   guestName: string;
-  groomNickname: string;
-  brideNickname: string;
+  title: string; // "Groom & Bride" untuk wedding, atau hostName untuk acara non-wedding
   eventDateLabel: string;
   link: string;
+  isWedding?: boolean; // default true — pengirim lama (semua wedding) tetap sama persis
 }): string {
-  const { guestName, groomNickname, brideNickname, eventDateLabel, link } = params;
+  const { guestName, title, eventDateLabel, link, isWedding = true } = params;
+  const intro = isWedding
+    ? "Dengan penuh kebahagiaan kami mengundang Anda untuk menghadiri pernikahan kami:"
+    : "Dengan hormat kami mengundang Anda untuk menghadiri acara kami:";
   return `Kepada Yth. Bapak/Ibu/Saudara/i *${guestName}*,
 
-Dengan penuh kebahagiaan kami mengundang Anda untuk menghadiri pernikahan kami:
+${intro}
 
-*${groomNickname} & ${brideNickname}*
+*${title}*
 ${eventDateLabel}
 
 Berikut link undangan digital kami, mohon dibuka untuk info lengkap acara & konfirmasi kehadiran:

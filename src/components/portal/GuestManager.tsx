@@ -23,15 +23,15 @@ const emptyForm = { name: "", waNumber: "", category: "lainnya" as GuestCategory
 export default function GuestManager({
   token,
   slug,
-  groomNickname,
-  brideNickname,
+  invitationTitle,
+  isWedding = true,
   eventDateLabel,
   initialGuests,
 }: {
   token: string;
   slug: string;
-  groomNickname: string;
-  brideNickname: string;
+  invitationTitle: string; // "Groom & Bride" (wedding) atau hostName (non-wedding)
+  isWedding?: boolean;
   eventDateLabel: string;
   initialGuests: GuestRow[];
 }) {
@@ -87,8 +87,8 @@ export default function GuestManager({
     setBusyId(null);
     const message = buildGuestInvitationMessage({
       guestName: guest.name,
-      groomNickname,
-      brideNickname,
+      title: invitationTitle,
+      isWedding,
       eventDateLabel,
       link: guestLink(guest.guestCode),
     });

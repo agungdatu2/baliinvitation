@@ -42,6 +42,9 @@ const defaultValues: InvitationFormValues = {
   brideParents: "",
   brideInstagram: "",
   bridePhoto: "",
+  eventTitle: "",
+  hostName: "",
+  hostLogo: "",
   coverImage: "",
   quote: "",
   greeting: "",
@@ -115,10 +118,24 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   // yang tidak dipakai tema lain.
   const selectedTemplateKey = watch("templateKey");
   const filteredTemplates = templates.filter((t) => t.category === categoryFilter);
+  // Field Mempelai (groom/bride) cuma relevan buat tema wedding — tema non-wedding
+  // (Grand Opening dkk) pakai field eventTitle/hostName/hostLogo generik sebagai
+  // gantinya. Default true (anggap wedding) selama daftar tema belum selesai fetch,
+  // supaya tidak ada flash section yang salah pas form pertama kali render.
+  const selectedTemplate = templates.find((t) => t.key === selectedTemplateKey);
+  const isWedding = selectedTemplate ? selectedTemplate.category === "wedding" : true;
   const handleCategoryChange = (category: TemplateCategory) => {
     setCategoryFilter(category);
     const firstMatch = templates.find((t) => t.category === category);
     if (firstMatch) setValue("templateKey", firstMatch.key, { shouldDirty: true });
+    // Love Story & Wedding Gift defaultnya mulai dengan satu baris kosong supaya
+    // admin wedding langsung lihat form-nya — tapi baris kosong itu tetap divalidasi
+    // (title/bank/dst wajib diisi), jadi bikin submit non-wedding gagal kalau tidak
+    // dikosongkan total begini.
+    if (category !== "wedding") {
+      setValue("loveStory", []);
+      setValue("bankAccounts", []);
+    }
   };
   const hiddenSections = watch("hiddenSections") ?? [];
   const toggleHiddenSection = (key: string) => {
@@ -239,46 +256,64 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         </label>
       </section>
 
-      {/* --- Mempelai --- */}
-      <section className="grid grid-cols-2 gap-4">
-        <div className="space-y-3 border rounded-lg p-4">
-          <h2 className="font-medium">2. Mempelai Pria</h2>
-          <Field label="Nama Panggilan" error={errors.groomNickname?.message}>
-            <input {...register("groomNickname")} className="input" />
-          </Field>
-          <Field label="Nama Lengkap" error={errors.groomFullName?.message}>
-            <input {...register("groomFullName")} className="input" />
-          </Field>
-          <Field label="Putra dari (nama orang tua)" error={errors.groomParents?.message}>
-            <input {...register("groomParents")} className="input" placeholder="Bapak ... & Ibu ..." />
-          </Field>
-          <Field label="Instagram (opsional)">
-            <input {...register("groomInstagram")} className="input" />
-          </Field>
-          <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
-            <input {...register("groomPhoto")} className="input" placeholder="https://..." />
-          </Field>
-        </div>
+      {/* --- Mempelai (tema wedding) --- */}
+      {isWedding && (
+        <section className="grid grid-cols-2 gap-4">
+          <div className="space-y-3 border rounded-lg p-4">
+            <h2 className="font-medium">2. Mempelai Pria</h2>
+            <Field label="Nama Panggilan" error={errors.groomNickname?.message}>
+              <input {...register("groomNickname")} className="input" />
+            </Field>
+            <Field label="Nama Lengkap" error={errors.groomFullName?.message}>
+              <input {...register("groomFullName")} className="input" />
+            </Field>
+            <Field label="Putra dari (nama orang tua)" error={errors.groomParents?.message}>
+              <input {...register("groomParents")} className="input" placeholder="Bapak ... & Ibu ..." />
+            </Field>
+            <Field label="Instagram (opsional)">
+              <input {...register("groomInstagram")} className="input" />
+            </Field>
+            <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
+              <input {...register("groomPhoto")} className="input" placeholder="https://..." />
+            </Field>
+          </div>
 
-        <div className="space-y-3 border rounded-lg p-4">
-          <h2 className="font-medium">3. Mempelai Wanita</h2>
-          <Field label="Nama Panggilan" error={errors.brideNickname?.message}>
-            <input {...register("brideNickname")} className="input" />
+          <div className="space-y-3 border rounded-lg p-4">
+            <h2 className="font-medium">3. Mempelai Wanita</h2>
+            <Field label="Nama Panggilan" error={errors.brideNickname?.message}>
+              <input {...register("brideNickname")} className="input" />
+            </Field>
+            <Field label="Nama Lengkap" error={errors.brideFullName?.message}>
+              <input {...register("brideFullName")} className="input" />
+            </Field>
+            <Field label="Putri dari (nama orang tua)" error={errors.brideParents?.message}>
+              <input {...register("brideParents")} className="input" placeholder="Bapak ... & Ibu ..." />
+            </Field>
+            <Field label="Instagram (opsional)">
+              <input {...register("brideInstagram")} className="input" />
+            </Field>
+            <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
+              <input {...register("bridePhoto")} className="input" placeholder="https://..." />
+            </Field>
+          </div>
+        </section>
+      )}
+
+      {/* --- Acara (tema non-wedding: Grand Opening, Ulang Tahun, dll) --- */}
+      {!isWedding && (
+        <section className="space-y-3 border rounded-lg p-4">
+          <h2 className="font-medium">2. Data Acara</h2>
+          <Field label="Judul Acara" error={errors.eventTitle?.message}>
+            <input {...register("eventTitle")} className="input" placeholder="GRAND OPENING" />
           </Field>
-          <Field label="Nama Lengkap" error={errors.brideFullName?.message}>
-            <input {...register("brideFullName")} className="input" />
+          <Field label="Nama Penyelenggara (bisnis/keluarga)" error={errors.hostName?.message}>
+            <input {...register("hostName")} className="input" placeholder="Surya Perkasa Motor" />
           </Field>
-          <Field label="Putri dari (nama orang tua)" error={errors.brideParents?.message}>
-            <input {...register("brideParents")} className="input" placeholder="Bapak ... & Ibu ..." />
+          <Field label="URL Logo Brand (opsional)">
+            <input {...register("hostLogo")} className="input" placeholder="https://..." />
           </Field>
-          <Field label="Instagram (opsional)">
-            <input {...register("brideInstagram")} className="input" />
-          </Field>
-          <Field label="URL Foto (opsional — kosongkan untuk pakai placeholder)">
-            <input {...register("bridePhoto")} className="input" placeholder="https://..." />
-          </Field>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* --- Konten Utama --- */}
       <section className="space-y-3 border rounded-lg p-4">

@@ -40,8 +40,11 @@ async function resolveGuest(invitationId: string, guestCode?: string) {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const inv = await getInvitation(params.slug);
   if (!inv) return {};
+  const title = inv.hostName
+    ? `${inv.eventTitle ?? "Undangan"} — ${inv.hostName}`
+    : `The Wedding of ${inv.groomNickname} & ${inv.brideNickname}`;
   return {
-    title: `The Wedding of ${inv.groomNickname} & ${inv.brideNickname}`,
+    title,
     description: inv.greeting ?? undefined,
     openGraph: { images: inv.coverImage ? [inv.coverImage] : [] },
   };
@@ -145,6 +148,9 @@ export default async function InvitationPage({
     brideParents: inv.brideParents,
     brideInstagram: inv.brideInstagram ?? undefined,
     bridePhoto: inv.bridePhoto ?? undefined,
+    eventTitle: inv.eventTitle ?? undefined,
+    hostName: inv.hostName ?? undefined,
+    hostLogo: inv.hostLogo ?? undefined,
     coverImage: inv.coverImage ?? undefined,
     quote: inv.quote ?? undefined,
     greeting: inv.greeting ?? undefined,

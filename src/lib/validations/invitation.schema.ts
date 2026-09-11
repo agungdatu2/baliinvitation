@@ -44,17 +44,24 @@ export const invitationSchema = z.object({
   clientPhone: z.string().optional(),
   clientNotes: z.string().optional(),
 
-  groomNickname: z.string().min(1),
-  groomFullName: z.string().min(1),
-  groomParents: z.string().min(1),
+  // Optional (bukan .min(1)) — undangan non-wedding (Grand Opening dkk) tidak
+  // mengisi field ini sama sekali, lihat eventTitle/hostName/hostLogo di bawah.
+  groomNickname: z.string().default(""),
+  groomFullName: z.string().default(""),
+  groomParents: z.string().default(""),
   groomInstagram: z.string().optional(),
   groomPhoto: z.string().optional(),
 
-  brideNickname: z.string().min(1),
-  brideFullName: z.string().min(1),
-  brideParents: z.string().min(1),
+  brideNickname: z.string().default(""),
+  brideFullName: z.string().default(""),
+  brideParents: z.string().default(""),
   brideInstagram: z.string().optional(),
   bridePhoto: z.string().optional(),
+
+  // Data acara non-wedding — lihat komentar Invitation.eventTitle di schema.prisma
+  eventTitle: z.string().optional(),
+  hostName: z.string().optional(),
+  hostLogo: z.string().optional(),
 
   coverImage: z.string().optional(),
   quote: z.string().optional(),

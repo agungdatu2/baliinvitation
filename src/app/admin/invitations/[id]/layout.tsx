@@ -24,7 +24,7 @@ export default async function InvitationDetailLayout({
       </Link>
       <h1 className="text-2xl font-semibold mb-1">{invitation.clientName}</h1>
       <p className="text-sm text-gray-500 mb-4">
-        {invitation.groomNickname} & {invitation.brideNickname} · /{invitation.slug}
+        {invitation.hostName || `${invitation.groomNickname} & ${invitation.brideNickname}`} · /{invitation.slug}
       </p>
       <InvitationDetailNav id={params.id} pendingChangeRequests={pendingChangeRequests} />
       {children}

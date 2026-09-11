@@ -133,7 +133,7 @@ export default async function AdminDashboard({
                 <tr key={inv.id} className="border-t">
                   <td className="p-3">{inv.clientName}</td>
                   <td className="p-3">
-                    {inv.groomNickname} & {inv.brideNickname}
+                    {inv.hostName || `${inv.groomNickname} & ${inv.brideNickname}`}
                   </td>
                   <td className="p-3">{inv.template.name}</td>
                   <td className="p-3">{inv.package ? inv.package.name : <span className="text-gray-400">-</span>}</td>
