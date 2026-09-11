@@ -23,6 +23,7 @@ export default async function PortalGuestsPage({ params }: { params: { token: st
       token={params.token}
       slug={invitation.slug}
       invitationTitle={invitation.hostName || `${invitation.groomNickname} & ${invitation.brideNickname}`}
+      eventTitle={invitation.eventTitle ?? undefined}
       isWedding={isWedding}
       eventDateLabel={eventDateLabel}
       initialGuests={guests.map((g) => ({

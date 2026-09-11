@@ -14,17 +14,38 @@ export function buildWaLink(waNumber: string, message: string): string {
 export function buildGuestInvitationMessage(params: {
   guestName: string;
   title: string; // "Groom & Bride" untuk wedding, atau hostName untuk acara non-wedding
+  eventTitle?: string; // "Grand Opening"/"Melaspas" dst — cuma dipakai undangan non-wedding
   eventDateLabel: string;
   link: string;
   isWedding?: boolean; // default true — pengirim lama (semua wedding) tetap sama persis
 }): string {
-  const { guestName, title, eventDateLabel, link, isWedding = true } = params;
-  const intro = isWedding
-    ? "Dengan penuh kebahagiaan kami mengundang Anda untuk menghadiri pernikahan kami:"
-    : "Dengan hormat kami mengundang Anda untuk menghadiri acara kami:";
+  const { guestName, title, eventTitle, eventDateLabel, link, isWedding = true } = params;
+
+  // Format salam Bali formal (Om Swastyastu / Om Shanti Shanti Shanti Om) — pembukaan
+  // & penutup baku yang umum dipakai undangan melaspas/acara adat, bukan konten unik
+  // situs manapun, jadi dipakai sebagai template default BaliInvitation untuk semua
+  // undangan non-wedding (Grand Opening, dll).
+  if (!isWedding) {
+    return `Kepada Yth.
+*${guestName}*
+
+Om Swastyastu,
+Tanpa mengurangi rasa hormat,
+Karena keterbatasan jarak dan waktu,
+kami bermaksud mengundang Bapak/Ibu/Saudara/i dalam acara ${eventTitle || "kami"} *${title}*.
+
+Undangan dapat dilihat dengan mengklik link dibawah ini :
+${link}
+
+Suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i dapat hadir pada acara kami dan memberikan doa restu. 🙏
+
+Terima kasih.
+Om Shanti, Shanti, Shanti Om`;
+  }
+
   return `Kepada Yth. Bapak/Ibu/Saudara/i *${guestName}*,
 
-${intro}
+Dengan penuh kebahagiaan kami mengundang Anda untuk menghadiri pernikahan kami:
 
 *${title}*
 ${eventDateLabel}

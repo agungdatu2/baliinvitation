@@ -24,6 +24,7 @@ export default function GuestManager({
   token,
   slug,
   invitationTitle,
+  eventTitle,
   isWedding = true,
   eventDateLabel,
   initialGuests,
@@ -31,6 +32,7 @@ export default function GuestManager({
   token: string;
   slug: string;
   invitationTitle: string; // "Groom & Bride" (wedding) atau hostName (non-wedding)
+  eventTitle?: string; // "Grand Opening"/"Melaspas" dst — cuma dipakai non-wedding
   isWedding?: boolean;
   eventDateLabel: string;
   initialGuests: GuestRow[];
@@ -88,6 +90,7 @@ export default function GuestManager({
     const message = buildGuestInvitationMessage({
       guestName: guest.name,
       title: invitationTitle,
+      eventTitle,
       isWedding,
       eventDateLabel,
       link: guestLink(guest.guestCode),
