@@ -143,24 +143,51 @@ export default async function HomePage() {
         </RevealOnLoad>
       </section>
 
-      {/* Trust / features */}
-      <section className="bg-white/50 border-y border-groove-line">
-        <div className="max-w-3xl mx-auto px-6 py-16">
-          <ScrollReveal className="text-center mb-10">
-            <h2 className="font-groove-display text-2xl md:text-3xl" style={{ fontWeight: 500 }}>
-              Kenapa Pilih BaliInvitation
+      {/* Kenapa Pilih — dua kolom: headline+copy+checklist di kiri, foto potret
+          di kanan. Kata kedua di headline dibuat italic sebagai aksen editorial. */}
+      <section className="bg-[#e9e3d6] border-y border-groove-line">
+        <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+          <ScrollReveal>
+            <h2
+              className="font-groove-display uppercase text-4xl sm:text-5xl leading-[1.1] text-groove-ink mb-6"
+              style={{ fontWeight: 500 }}
+            >
+              Mengapa kamu <em className="italic font-normal">harus</em> menggunakan BaliInvitation?
             </h2>
+            <p className="text-groove-ink/70 leading-relaxed mb-8">
+              BaliInvitation dikerjakan langsung oleh tim kami, bukan generate otomatis, supaya desainnya benar-benar
+              sesuai gaya dan cerita kalian. Dari kelola tamu, RSVP, sampai portal khusus client untuk pantau
+              undangan — semuanya sudah kami siapkan dalam satu tempat, dengan dukungan langsung via WhatsApp kalau
+              butuh bantuan.
+            </p>
+            <ul className="space-y-3 mb-10">
+              {FEATURES.map((f, i) => (
+                <ScrollReveal key={f} delay={i * 60}>
+                  <li className="flex items-start gap-3 text-sm text-groove-ink/75">
+                    <span className="text-groove-primary mt-0.5">✓</span>
+                    <span>{f}</span>
+                  </li>
+                </ScrollReveal>
+              ))}
+            </ul>
+            <a
+              href="#tema"
+              className="inline-block uppercase tracking-[0.2em] text-xs font-semibold text-groove-ink border-b-2 border-groove-ink pb-1.5 hover:text-groove-primary hover:border-groove-primary transition"
+            >
+              Lihat Tema
+            </a>
           </ScrollReveal>
-          <ul className="grid sm:grid-cols-2 gap-x-8 gap-y-4">
-            {FEATURES.map((f, i) => (
-              <ScrollReveal key={f} delay={i * 60}>
-                <li className="flex items-start gap-3 text-sm text-groove-ink/75">
-                  <span className="text-groove-primary mt-0.5">✓</span>
-                  <span>{f}</span>
-                </li>
-              </ScrollReveal>
-            ))}
-          </ul>
+          <ScrollReveal delay={120}>
+            <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden">
+              <Image
+                src="/landing/kenapa-baliinvitation.webp"
+                alt="Pasangan pengantin memakai busana adat Bali"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover"
+              />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
