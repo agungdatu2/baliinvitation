@@ -61,12 +61,6 @@ html.reverie-snap-scroll {
 .groove-glass-strong {
   position: relative;
   overflow: hidden;
-  /* Paksa layer GPU sendiri supaya blur ini tidak ikut di-resample tiap frame saat
-     ancestor-nya animasi (mis. ScrollReveal fade-in) — tanpa ini, backdrop-filter di
-     atas konten yang bergerak (video) "ngebug"/flicker pas kartu reveal. */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  will-change: transform;
 }
 .groove-glass::before,
 .groove-glass-dark::before,

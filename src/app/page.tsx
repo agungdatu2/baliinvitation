@@ -241,11 +241,17 @@ export default async function HomePage() {
               // dropdown admin; kartu di sini cuma perlu nama pendeknya.
               const displayName = theme.name.split(" - ")[0];
               return (
-                <ScrollReveal key={theme.key} delay={i * 120} slide={false}>
-                  {/* Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur)
-                      supaya video di section ini tetap kelihatan tembus, bukan blob blur
-                      screenshot sendiri yang bikin kartu kelihatan solid/opaque. */}
-                  <div className="groove-glass-strong relative flex flex-col items-center text-center rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2 p-8 sm:p-10">
+                // Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur) supaya
+                // video di section ini tetap kelihatan tembus. Panel kaca ini SENGAJA tidak
+                // dibungkus ScrollReveal (opacity/transform animasi) — backdrop-filter di atas
+                // video akan "ngebug"/gak ke-apply blurnya di Safari kalau ancestor-nya lagi
+                // animasi opacity. Yang di-fade cuma konten di dalamnya (teks/gambar biasa,
+                // aman dianimasikan), sementara panel kacanya sendiri statis & selalu benar.
+                <div
+                  key={theme.key}
+                  className="groove-glass-strong relative flex flex-col items-center text-center rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2 p-8 sm:p-10"
+                >
+                  <ScrollReveal delay={i * 120} className="w-full flex flex-col items-center text-center">
                     {theme.isMostPopular && (
                       <span
                         className="absolute top-6 right-6 uppercase tracking-widest text-[10px] font-semibold px-3 py-1.5 rounded-full text-groove-ink"
@@ -306,8 +312,8 @@ export default async function HomePage() {
                     >
                       Lihat Preview
                     </a>
-                  </div>
-                </ScrollReveal>
+                  </ScrollReveal>
+                </div>
               );
             })}
           </div>
