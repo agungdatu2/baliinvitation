@@ -322,15 +322,33 @@ export default async function HomePage() {
       </section>
 
       {/* Fitur — mockup HP di tengah bisa di-scroll, tiap tombol fitur kiri/kanan
-          lompat ke widget yang sesuai di dalam mockup (lihat FeatureShowcase). */}
-      <section id="fitur" className="max-w-6xl mx-auto px-6 py-24">
-        <ScrollReveal className="text-center mb-16">
-          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Semua Ada di Sini</p>
-          <h2 className="font-groove-display uppercase text-5xl sm:text-6xl md:text-7xl text-groove-ink" style={{ fontWeight: 700 }}>
-            Fitur
-          </h2>
-        </ScrollReveal>
-        <FeatureShowcase waLink={heroWaLink} />
+          lompat ke widget yang sesuai di dalam mockup (lihat FeatureShowcase).
+          Heading pakai pola yang sama dengan section Tema: watermark kata besar
+          transparan di belakang + eyebrow kecil + judul normal di depan. */}
+      <section id="fitur" className="relative overflow-hidden bg-groove-bg py-24">
+        <p
+          aria-hidden
+          className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
+          style={{
+            fontSize: "clamp(6rem, 22vw, 14rem)",
+            fontWeight: 700,
+            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          FITUR
+        </p>
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <ScrollReveal className="text-center mb-16">
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Semua Ada di Sini</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-ink" style={{ fontWeight: 500 }}>
+              Fitur Lengkap untuk Undanganmu
+            </h2>
+          </ScrollReveal>
+          <FeatureShowcase waLink={heroWaLink} />
+        </div>
       </section>
 
       {/* Packages */}
