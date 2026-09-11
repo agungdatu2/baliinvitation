@@ -62,8 +62,11 @@ export default async function HomePage() {
   // otomatis muncul begitu admin isi tagline/deskripsi/fitur-nya di /admin/themes —
   // tidak perlu ubah kode di sini lagi. Screenshot laptop/HP tetap lewat convention
   // /landing/thumbnails/<key>-{laptop,phone}.png.
+  // category: "wedding" — tema non-wedding (ulang tahun/melaspas/potong gigi) sengaja
+  // tidak dipasarkan di landing page dulu, meski tetap bisa dipilih admin saat bikin
+  // undangan client (lihat komentar Template.category di schema.prisma).
   const themes = await prisma.template.findMany({
-    where: { isActive: true },
+    where: { isActive: true, category: "wedding" },
     orderBy: { createdAt: "asc" },
   });
 

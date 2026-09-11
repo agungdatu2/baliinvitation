@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+export const TEMPLATE_CATEGORIES = ["wedding", "ulang-tahun", "melaspas", "potong-gigi"] as const;
+export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number];
+
 export const templateSchema = z.object({
   key: z
     .string()
@@ -13,6 +16,7 @@ export const templateSchema = z.object({
   description: z.string().optional().nullable(),
   features: z.array(z.string()).optional(),
   isMostPopular: z.boolean().optional(),
+  category: z.enum(TEMPLATE_CATEGORIES).default("wedding"),
 });
 
 export type TemplateFormValues = z.infer<typeof templateSchema>;

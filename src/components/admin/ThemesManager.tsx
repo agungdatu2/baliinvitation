@@ -2,6 +2,14 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { TEMPLATE_CATEGORIES, TemplateCategory } from "@/lib/validations/template.schema";
+
+const CATEGORY_LABELS: Record<TemplateCategory, string> = {
+  wedding: "Wedding",
+  "ulang-tahun": "Ulang Tahun",
+  melaspas: "Melaspas",
+  "potong-gigi": "Potong Gigi",
+};
 
 interface TemplateRow {
   id: string;
@@ -13,6 +21,7 @@ interface TemplateRow {
   description: string | null;
   features: string[];
   isMostPopular: boolean;
+  category: string;
   _count: { invitations: number };
 }
 
@@ -65,6 +74,27 @@ export default function ThemesManager({ initialTemplates }: { initialTemplates: 
             />
             Most Popular (tampilkan badge di landing page)
           </label>
+
+          <div className="mt-3">
+            <label className="block text-xs font-medium text-gray-600 mb-1">Jenis Acara</label>
+            <select
+              value={t.category}
+              disabled={busyId === t.id}
+              onChange={(e) => patch(t.id, { category: e.target.value })}
+              className="w-full border rounded px-2 py-1.5 text-sm"
+            >
+              {TEMPLATE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>
+                  {CATEGORY_LABELS[c]}
+                </option>
+              ))}
+            </select>
+            {t.category !== "wedding" && (
+              <p className="text-[11px] text-amber-600 mt-1">
+                Tidak tampil di list tema landing page — hanya bisa dipilih saat bikin undangan.
+              </p>
+            )}
+          </div>
 
           <div className="flex justify-between items-center mt-3">
             <p className="text-xs text-gray-500">{t._count.invitations} undangan pakai tema ini</p>

@@ -39,6 +39,11 @@ model Template {
   description   String? // paragraf singkat di kartu tema
   features      Json    @default("[]") // string[] — 3 poin checklist di kartu tema
   isMostPopular Boolean @default(false) // tampilkan badge "Most Popular" di landing
+
+  // Jenis acara tema ini dibuat untuk: "wedding" | "ulang-tahun" | "melaspas" | "potong-gigi".
+  // Landing page ("/") cuma nampilin category="wedding" di section Tema — tema non-wedding
+  // tetap bisa dipilih admin saat bikin undangan client, tapi belum dipasarkan ke publik.
+  category String @default("wedding")
 }
 
 // Paket layanan yang ditawarkan ke client (dipilih saat membuat undangan)

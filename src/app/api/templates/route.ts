@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   }
 
   const created = await prisma.template.create({
-    data: { key: d.key, name: d.name, thumbnail: d.thumbnail, isActive: d.isActive },
+    data: { key: d.key, name: d.name, thumbnail: d.thumbnail, isActive: d.isActive, category: d.category },
   });
 
   return NextResponse.json(created, { status: 201 });
