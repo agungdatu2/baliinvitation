@@ -31,7 +31,7 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
         slideshowImages={data.backgroundSlideshowImages}
       />
 
-      {loading && <LoadingReveal logo={data.hostLogo} onComplete={() => setLoading(false)} />}
+      {loading && <LoadingReveal onComplete={() => setLoading(false)} />}
 
       {!loading && !opened && (
         <GateScreen
