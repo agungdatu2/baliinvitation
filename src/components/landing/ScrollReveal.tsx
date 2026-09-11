@@ -9,10 +9,15 @@ export default function ScrollReveal({
   children,
   delay = 0,
   className = "",
+  slide = true,
 }: {
   children: React.ReactNode;
   delay?: number;
   className?: string;
+  // Kartu kaca (backdrop-filter) di atas video/gambar bergerak: animasikan transform
+  // di ancestor-nya bikin blur "ngebug" (flicker/robek) pas reveal di Safari & Chrome.
+  // Set false supaya elemen itu cuma fade opacity, tanpa translateY.
+  slide?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -30,7 +35,7 @@ export default function ScrollReveal({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-1000 ease-out ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"} ${className}`}
+      className={`transition-opacity duration-1000 ease-out ${slide ? "transition-transform" : ""} ${visible ? `opacity-100 ${slide ? "translate-y-0" : ""}` : `opacity-0 ${slide ? "translate-y-8" : ""}`} ${className}`}
       style={{ transitionDelay: visible ? `${delay}ms` : "0ms" }}
     >
       {children}

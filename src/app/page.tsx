@@ -241,7 +241,7 @@ export default async function HomePage() {
               // dropdown admin; kartu di sini cuma perlu nama pendeknya.
               const displayName = theme.name.split(" - ")[0];
               return (
-                <ScrollReveal key={theme.key} delay={i * 120}>
+                <ScrollReveal key={theme.key} delay={i * 120} slide={false}>
                   {/* Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur)
                       supaya video di section ini tetap kelihatan tembus, bukan blob blur
                       screenshot sendiri yang bikin kartu kelihatan solid/opaque. */}
