@@ -9,16 +9,22 @@ const DEFAULT_BACKGROUND_IMAGE = "https://images.unsplash.com/photo-151974149767
 const SLIDESHOW_INTERVAL_MS = 5000;
 
 interface Props {
-  type?: "video" | "image" | "slideshow";
+  type?: "video" | "image" | "slideshow" | "color";
   videoSrc?: string;
   imageSrc?: string;
   slideshowImages?: string[];
+  color?: string;
 }
 
 // Satu background, fixed di belakang seluruh halaman (gate + semua section) —
 // admin pilih tipenya per undangan: video (default, backward-compatible dengan
-// heroVideoUrl lama), foto tunggal, atau slideshow foto yang crossfade bergantian.
-export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages }: Props) {
+// heroVideoUrl lama), foto tunggal, slideshow foto yang crossfade bergantian,
+// atau warna solid polos (tanpa video/foto sama sekali).
+export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages, color }: Props) {
+  if (type === "color") {
+    return <div className="fixed inset-0 -z-10" style={{ backgroundColor: color || "#000000" }} />;
+  }
+
   if (type === "image") {
     return (
       <div className="fixed inset-0 -z-10 overflow-hidden">

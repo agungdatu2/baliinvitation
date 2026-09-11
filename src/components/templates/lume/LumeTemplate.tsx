@@ -89,7 +89,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
 
   return (
     <main className="text-groove-ink font-groove-body">
-      <FixedVideoBackground src={data.heroVideoUrl} />
+      <FixedVideoBackground src={data.heroVideoUrl} type={data.backgroundType} color={data.backgroundColor} />
 
       {!opened && (
         <SplashGate

@@ -1,10 +1,22 @@
 import { DEFAULT_HERO_VIDEO_URL } from "./PlaceholderPhoto";
 import { getYouTubeVideoId } from "@/lib/utils/youtube";
 
-// Satu video, fixed di belakang seluruh halaman (gate + semua section) — bukan
+interface Props {
+  src?: string;
+  type?: "video" | "image" | "slideshow" | "color";
+  color?: string;
+}
+
+// Satu video, fixed di belakang seluruh halaman (gate & semua section) — bukan
 // per-section seperti sebelumnya, supaya video terasa jadi "latar" undangan,
-// bukan cuma dekorasi hero.
-export default function FixedVideoBackground({ src }: { src?: string }) {
+// bukan cuma dekorasi hero. Lume didesain video-only (tidak ada mode foto/slideshow
+// seperti Reverie/Muse) — tapi admin tetap bisa pilih "color" kalau tidak mau
+// pakai video default (stock nature), ganti jadi warna solid polos.
+export default function FixedVideoBackground({ src, type = "video", color }: Props) {
+  if (type === "color" && color) {
+    return <div className="fixed inset-0 -z-10" style={{ backgroundColor: color }} />;
+  }
+
   const youtubeId = src ? getYouTubeVideoId(src) : null;
 
   return (

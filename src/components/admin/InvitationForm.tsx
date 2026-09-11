@@ -45,7 +45,9 @@ const defaultValues: InvitationFormValues = {
   eventTitle: "",
   hostName: "",
   hostLogo: "",
+  hostLogoSize: "medium",
   coverImage: "",
+  metaImage: "",
   quote: "",
   greeting: "",
   musicUrl: "",
@@ -57,6 +59,7 @@ const defaultValues: InvitationFormValues = {
   reverieFooterImage: "",
   backgroundType: "video",
   backgroundImage: "",
+  backgroundColor: "",
   backgroundSlideshowImages: [],
   hiddenSections: [],
   eventDate: "",
@@ -312,6 +315,13 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <Field label="URL Logo Brand (opsional)">
             <input {...register("hostLogo")} className="input" placeholder="https://..." />
           </Field>
+          <Field label="Ukuran Logo (di gate & hero)">
+            <select {...register("hostLogoSize")} className="input">
+              <option value="small">Kecil</option>
+              <option value="medium">Sedang</option>
+              <option value="large">Besar</option>
+            </select>
+          </Field>
         </section>
       )}
 
@@ -324,51 +334,61 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Cover Image">
           <input {...register("coverImage")} className="input" placeholder="https://..." />
         </Field>
+        <Field label="URL Meta Image (gambar preview waktu link di-share ke WhatsApp dkk, opsional — kosongkan untuk otomatis pakai Cover Image/foto lain)">
+          <input {...register("metaImage")} className="input" placeholder="https://..." />
+        </Field>
         <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
+
+        <Field label="Tipe Background (berlaku semua tema)">
+          <select {...register("backgroundType")} className="input">
+            <option value="video">Video</option>
+            <option value="image">Foto Tunggal</option>
+            <option value="slideshow">Slideshow Foto</option>
+            <option value="color">Warna Solid</option>
+          </select>
+        </Field>
+        {backgroundType === "video" && (
+          <p className="text-xs text-gray-500 -mt-1">Pakai URL Video Hero di atas.</p>
+        )}
+        {backgroundType === "image" && (
+          <Field label="URL Foto Background (opsional — kosongkan untuk pakai placeholder)">
+            <input {...register("backgroundImage")} className="input" placeholder="https://..." />
+          </Field>
+        )}
+        {backgroundType === "color" && (
+          <Field label="Warna Background (dipakai kalau tidak ada video/foto)">
+            <input type="color" {...register("backgroundColor")} className="input h-10 w-20 p-1" />
+          </Field>
+        )}
+        {backgroundType === "slideshow" && (
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <label className="text-sm font-medium">Foto Slideshow Background</label>
+              <button type="button" onClick={() => backgroundSlideshow.append("" as never)} className="btn-add">
+                + Tambah Foto
+              </button>
+            </div>
+            {backgroundSlideshow.fields.map((f, i) => (
+              <div key={f.id} className="flex gap-2">
+                <input
+                  {...register(`backgroundSlideshowImages.${i}` as const)}
+                  className="input flex-1"
+                  placeholder="https://..."
+                />
+                <button type="button" onClick={() => backgroundSlideshow.remove(i)} className="btn-remove">
+                  X
+                </button>
+              </div>
+            ))}
+            {backgroundSlideshow.fields.length === 0 && (
+              <p className="text-xs text-gray-500">Belum ada foto — tambahkan minimal 2 foto.</p>
+            )}
+          </div>
+        )}
         {(selectedTemplateKey === "reverie" || selectedTemplateKey === "muse") && (
           <>
-            <Field label="Tipe Background Section Scrollable (khusus tema Reverie/Muse)">
-              <select {...register("backgroundType")} className="input">
-                <option value="video">Video</option>
-                <option value="image">Foto Tunggal</option>
-                <option value="slideshow">Slideshow Foto</option>
-              </select>
-            </Field>
-            {backgroundType === "video" && (
-              <p className="text-xs text-gray-500 -mt-1">Pakai URL Video Hero di atas.</p>
-            )}
-            {backgroundType === "image" && (
-              <Field label="URL Foto Background (opsional — kosongkan untuk pakai placeholder)">
-                <input {...register("backgroundImage")} className="input" placeholder="https://..." />
-              </Field>
-            )}
-            {backgroundType === "slideshow" && (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Foto Slideshow Background</label>
-                  <button type="button" onClick={() => backgroundSlideshow.append("" as never)} className="btn-add">
-                    + Tambah Foto
-                  </button>
-                </div>
-                {backgroundSlideshow.fields.map((f, i) => (
-                  <div key={f.id} className="flex gap-2">
-                    <input
-                      {...register(`backgroundSlideshowImages.${i}` as const)}
-                      className="input flex-1"
-                      placeholder="https://..."
-                    />
-                    <button type="button" onClick={() => backgroundSlideshow.remove(i)} className="btn-remove">
-                      X
-                    </button>
-                  </div>
-                ))}
-                {backgroundSlideshow.fields.length === 0 && (
-                  <p className="text-xs text-gray-500">Belum ada foto — tambahkan minimal 2 foto.</p>
-                )}
-              </div>
-            )}
             <Field label="URL Foto Background Gate (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
             </Field>

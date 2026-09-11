@@ -50,12 +50,19 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   // Setiap link undangan harus selalu punya thumbnail waktu di-share (WhatsApp,
   // dst) — jangan sampai kosong hanya karena admin belum isi Cover Image.
-  // Urutan fallback: Cover Image > foto galeri pertama (bukan video) > logo
-  // brand client > foto mempelai > logo BaliInvitation (jaring pengaman terakhir).
+  // Urutan fallback: Meta Image (eksplisit dari admin) > Cover Image > foto
+  // galeri pertama (bukan video) > logo brand client > foto mempelai > logo
+  // BaliInvitation (jaring pengaman terakhir).
   const galleryImages = (inv.galleryImages as unknown as string[]) ?? [];
   const firstGalleryPhoto = galleryImages.find((src) => !VIDEO_EXT_RE.test(src));
   const ogImage =
-    inv.coverImage || firstGalleryPhoto || inv.hostLogo || inv.groomPhoto || inv.bridePhoto || "/brand/logo.webp";
+    inv.metaImage ||
+    inv.coverImage ||
+    firstGalleryPhoto ||
+    inv.hostLogo ||
+    inv.groomPhoto ||
+    inv.bridePhoto ||
+    "/brand/logo.webp";
 
   return {
     title,
@@ -171,7 +178,9 @@ export default async function InvitationPage({
     eventTitle: inv.eventTitle ?? undefined,
     hostName: inv.hostName ?? undefined,
     hostLogo: inv.hostLogo ?? undefined,
+    hostLogoSize: inv.hostLogoSize as InvitationData["hostLogoSize"],
     coverImage: inv.coverImage ?? undefined,
+    metaImage: inv.metaImage ?? undefined,
     quote: inv.quote ?? undefined,
     greeting: inv.greeting ?? undefined,
     musicUrl: inv.musicUrl ?? undefined,
@@ -183,6 +192,7 @@ export default async function InvitationPage({
     reverieFooterImage: inv.reverieFooterImage ?? undefined,
     backgroundType: inv.backgroundType as InvitationData["backgroundType"],
     backgroundImage: inv.backgroundImage ?? undefined,
+    backgroundColor: inv.backgroundColor ?? undefined,
     backgroundSlideshowImages: (inv.backgroundSlideshowImages as unknown as string[]) ?? [],
     hiddenSections: (inv.hiddenSections as unknown as string[]) ?? [],
     eventDate: inv.eventDate.toISOString(),

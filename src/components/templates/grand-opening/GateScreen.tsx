@@ -6,17 +6,23 @@ import { getDict, Lang } from "@/lib/i18n/grand-opening";
 
 const EXIT_DURATION_MS = 600;
 const GOLD_GRADIENT = "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 45%, #8a6d2f 100%)";
+const LOGO_SIZE_CLASS: Record<string, string> = {
+  small: "w-16 h-16",
+  medium: "w-24 h-24",
+  large: "w-36 h-36",
+};
 
 interface Props {
   eventTitle?: string;
   hostName?: string;
   hostLogo?: string;
+  hostLogoSize?: string;
   guestName?: string;
   lang?: Lang;
   onOpen: () => void;
 }
 
-export default function GateScreen({ eventTitle, hostName, hostLogo, guestName, lang, onOpen }: Props) {
+export default function GateScreen({ eventTitle, hostName, hostLogo, hostLogoSize, guestName, lang, onOpen }: Props) {
   const t = getDict(lang);
   const [closing, setClosing] = useState(false);
 
@@ -36,7 +42,11 @@ export default function GateScreen({ eventTitle, hostName, hostLogo, guestName, 
       <div className="relative z-10 max-w-sm w-full">
         {hostLogo ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={hostLogo} alt={hostName ?? ""} className="mx-auto mb-6 w-24 h-24 object-contain" />
+          <img
+            src={hostLogo}
+            alt={hostName ?? ""}
+            className={`mx-auto mb-6 ${LOGO_SIZE_CLASS[hostLogoSize ?? "medium"]} object-contain`}
+          />
         ) : (
           <div className="mx-auto mb-6 w-16 h-16 rounded-full border border-groove-primary-light/50 flex items-center justify-center">
             <span className="font-groove-display text-2xl text-groove-primary-light">

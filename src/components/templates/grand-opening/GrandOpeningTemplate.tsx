@@ -12,6 +12,13 @@ import ClosingFooter from "./ClosingFooter";
 import Reveal from "./Reveal";
 
 const GOLD_GRADIENT = "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 45%, #8a6d2f 100%)";
+// Ukuran logo brand client di hero — proporsinya lebih kecil dari gate (lihat
+// GateScreen.tsx) karena hero juga punya headline besar di bawahnya.
+const HERO_LOGO_SIZE_CLASS: Record<string, string> = {
+  small: "w-14 h-14",
+  medium: "w-20 h-20",
+  large: "w-28 h-28",
+};
 
 // Orchestrator tema "Grand Opening" — dipakai untuk acara non-wedding (melaspas,
 // grand opening bisnis, dll). Alurnya: loading branded (gaya PageLoader landing,
@@ -29,6 +36,7 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
         videoSrc={data.heroVideoUrl}
         imageSrc={data.backgroundImage}
         slideshowImages={data.backgroundSlideshowImages}
+        color={data.backgroundColor}
       />
 
       {loading && <LoadingReveal onComplete={() => setLoading(false)} />}
@@ -38,6 +46,7 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
           eventTitle={data.eventTitle}
           hostName={data.hostName}
           hostLogo={data.hostLogo}
+          hostLogoSize={data.hostLogoSize}
           guestName={guestName}
           lang={data.language}
           onOpen={() => setOpened(true)}
@@ -51,7 +60,11 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
           <section className="min-h-[70vh] flex flex-col items-center justify-center text-center px-6 py-24">
             {data.hostLogo && (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={data.hostLogo} alt={data.hostName ?? ""} className="w-20 h-20 object-contain mb-6" />
+              <img
+                src={data.hostLogo}
+                alt={data.hostName ?? ""}
+                className={`${HERO_LOGO_SIZE_CLASS[data.hostLogoSize ?? "medium"]} object-contain mb-6`}
+              />
             )}
             <p className="font-groove-label uppercase tracking-[0.3em] text-xs text-groove-primary-light mb-4">
               {t.invitationLabel}

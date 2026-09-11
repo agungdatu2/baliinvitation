@@ -116,6 +116,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
         videoSrc={data.heroVideoUrl}
         imageSrc={data.backgroundImage}
         slideshowImages={data.backgroundSlideshowImages}
+        color={data.backgroundColor}
       />
 
       {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru

@@ -119,9 +119,14 @@ model Invitation {
   eventTitle String? // headline besar, mis. "GRAND OPENING"
   hostName   String? // nama bisnis/keluarga penyelenggara, mis. "Surya Perkasa Motor"
   hostLogo   String? // URL logo brand penyelenggara
+  hostLogoSize String @default("medium") // small | medium | large — ukuran tampilan logo di gate & hero (khusus tema Grand Opening dkk)
 
   // Konten undangan
   coverImage    String?
+  // Gambar eksplisit untuk og:image (preview link waktu di-share ke WhatsApp/chat
+  // lain) — kalau kosong, fallback otomatis ke coverImage/galeri/logo (lihat
+  // generateMetadata di src/app/[slug]/page.tsx).
+  metaImage     String?
   quote         String?
   greeting      String?  // paragraf "Om Swastiastu ..." / pembuka sesuai adat
   musicUrl      String?
@@ -130,12 +135,14 @@ model Invitation {
   livestreamNote String? // jadwal bebas, mis. "11 April 2026, 11:00-13:00 WIB"
   heroVideoUrl   String? // video background hero (mp4) — kalau kosong pakai placeholder
 
-  // Background fixed di belakang seluruh section scrollable — khusus tema Reverie
-  // & Muse (lihat FixedBackground.tsx di masing-masing folder tema). "video" pakai
-  // heroVideoUrl di atas (default, backward-compatible); "image" pakai backgroundImage;
-  // "slideshow" pakai backgroundSlideshowImages (crossfade bergantian).
-  backgroundType             String  @default("video") // video | image | slideshow
+  // Background fixed di belakang seluruh section scrollable — semua tema (lihat
+  // FixedBackground/FixedVideoBackground.tsx di masing-masing folder tema).
+  // "video" pakai heroVideoUrl di atas (default, backward-compatible); "image"
+  // pakai backgroundImage; "slideshow" pakai backgroundSlideshowImages (crossfade
+  // bergantian); "color" pakai backgroundColor (warna solid, tanpa video/foto).
+  backgroundType             String  @default("video") // video | image | slideshow | color
   backgroundImage            String? // dipakai kalau backgroundType = "image"
+  backgroundColor            String? // dipakai kalau backgroundType = "color" — hex, mis. "#1c1712"
   backgroundSlideshowImages  Json    @default("[]") // string[] — dipakai kalau backgroundType = "slideshow"
   reverieGateImage String? // foto background layar gate/pembuka — khusus tema Reverie, kalau kosong pakai placeholder
   reverieSaveTheDateImage String? // foto kecil di section Save the Date/countdown — khusus tema Reverie, kalau kosong pakai placeholder

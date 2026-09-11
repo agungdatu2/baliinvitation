@@ -62,8 +62,11 @@ export const invitationSchema = z.object({
   eventTitle: z.string().optional(),
   hostName: z.string().optional(),
   hostLogo: z.string().optional(),
+  hostLogoSize: z.enum(["small", "medium", "large"]).default("medium"),
 
   coverImage: z.string().optional(),
+  // og:image eksplisit — lihat komentar Invitation.metaImage di schema.prisma
+  metaImage: z.string().optional(),
   quote: z.string().optional(),
   greeting: z.string().optional(),
   musicUrl: z.string().optional(),
@@ -73,8 +76,9 @@ export const invitationSchema = z.object({
   reverieGateImage: z.string().optional(),
   reverieSaveTheDateImage: z.string().optional(),
   reverieFooterImage: z.string().optional(),
-  backgroundType: z.enum(["video", "image", "slideshow"]).default("video"),
+  backgroundType: z.enum(["video", "image", "slideshow", "color"]).default("video"),
   backgroundImage: z.string().optional(),
+  backgroundColor: z.string().optional(),
   backgroundSlideshowImages: z.array(z.string()).default([]),
   hiddenSections: z.array(z.string()).default([]),
 

@@ -6,18 +6,26 @@ import { getYouTubeVideoId } from "@/lib/utils/youtube";
 const SLIDESHOW_INTERVAL_MS = 5000;
 
 interface Props {
-  type?: "video" | "image" | "slideshow";
+  type?: "video" | "image" | "slideshow" | "color";
   videoSrc?: string;
   imageSrc?: string;
   slideshowImages?: string[];
+  color?: string;
 }
 
 // Beda dari FixedBackground Reverie/Muse: kalau admin tidak isi
 // video/foto/slideshow sama sekali (wajar untuk klien non-wedding yang belum
 // punya aset visual), fallback-nya BUKAN video/foto stock pernikahan — tapi
 // gradient gelap elegan polos, supaya tetap terlihat premium tanpa aset apa pun.
-export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages }: Props) {
+// "color" beda dari fallback itu — itu warna solid yang SENGAJA dipilih admin,
+// bukan cuma jaring pengaman kalau lupa isi.
+export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages, color }: Props) {
   const fallback = <div className="fixed inset-0 -z-10 groove-opening-gradient" />;
+
+  if (type === "color") {
+    if (!color) return fallback;
+    return <div className="fixed inset-0 -z-10" style={{ backgroundColor: color }} />;
+  }
 
   if (type === "image") {
     if (!imageSrc) return fallback;

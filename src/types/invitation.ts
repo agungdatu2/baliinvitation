@@ -61,8 +61,10 @@ export interface InvitationData {
   eventTitle?: string;
   hostName?: string;
   hostLogo?: string;
+  hostLogoSize?: "small" | "medium" | "large";
 
   coverImage?: string;
+  metaImage?: string; // og:image eksplisit — lihat komentar Invitation.metaImage di schema.prisma
   quote?: string;
   greeting?: string;
   musicUrl?: string;
@@ -73,11 +75,13 @@ export interface InvitationData {
   reverieSaveTheDateImage?: string; // foto kecil di section Save the Date/countdown — khusus tema Reverie
   reverieFooterImage?: string; // foto background footer/penutup — khusus tema Reverie
 
-  // Background fixed di belakang seluruh section scrollable — khusus tema Reverie & Muse.
+  // Background fixed di belakang seluruh section scrollable — semua tema.
   // "video" pakai heroVideoUrl (default), "image" pakai backgroundImage, "slideshow"
-  // pakai backgroundSlideshowImages (crossfade bergantian) — lihat FixedBackground.tsx.
-  backgroundType?: "video" | "image" | "slideshow";
+  // pakai backgroundSlideshowImages (crossfade bergantian), "color" pakai
+  // backgroundColor (warna solid) — lihat FixedBackground/FixedVideoBackground.tsx.
+  backgroundType?: "video" | "image" | "slideshow" | "color";
   backgroundImage?: string;
+  backgroundColor?: string;
   backgroundSlideshowImages?: string[];
   hiddenSections?: string[]; // key section yang disembunyikan client — berlaku semua tema, lihat HIDEABLE_SECTIONS_BY_TEMPLATE
 

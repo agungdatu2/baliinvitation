@@ -112,6 +112,7 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
         videoSrc={data.heroVideoUrl}
         imageSrc={data.backgroundImage}
         slideshowImages={data.backgroundSlideshowImages}
+        color={data.backgroundColor}
       />
 
       {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru
