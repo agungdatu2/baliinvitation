@@ -21,30 +21,6 @@ const CREATOR = {
   instagramHandle: "baliinvitation",
 };
 
-const THEMES = [
-  {
-    key: "lume",
-    name: "Lume",
-    tagline: "Elegant Minimalist",
-    desc: "Kertas hangat & emas pudar — clean, timeless, cocok untuk gaya formal-klasik.",
-    features: ["Font Cormorant + Hanken Grotesk", "Background bertekstur kertas hangat", "Cocok gaya formal & klasik"],
-  },
-  {
-    key: "reverie",
-    name: "Reverie",
-    tagline: "Editorial Split",
-    desc: "Panel foto besar sticky di samping konten yang scroll — dramatis & modern.",
-    features: ["Panel foto sticky di layar desktop", "Layout split editorial", "Scroll-snap antar section"],
-  },
-  {
-    key: "muse",
-    name: "Muse",
-    tagline: "Editorial Free Scroll",
-    desc: "Turunan Reverie yang lebih santai, hero eyebrow-nama-tanggal yang bersih.",
-    features: ["Scroll bebas tanpa snap", "Hero eyebrow-nama-tanggal bersih", "Nuansa lebih santai & ringan"],
-  },
-];
-
 // Ukuran mockup laptop+HP di section Tema — ditampilkan berdampingan
 // (bukan tumpang tindih) supaya kedua device kelihatan utuh.
 const LAPTOP_WIDTH = 220;
@@ -79,6 +55,15 @@ export default async function HomePage() {
   const packages = await prisma.package.findMany({
     where: { isActive: true },
     orderBy: { price: "asc" },
+  });
+
+  // Tema di landing page ambil dari DB (bukan array hardcoded) supaya tema baru
+  // otomatis muncul begitu admin isi tagline/deskripsi/fitur-nya di /admin/themes —
+  // tidak perlu ubah kode di sini lagi. Screenshot laptop/HP tetap lewat convention
+  // /landing/thumbnails/<key>-{laptop,phone}.png.
+  const themes = await prisma.template.findMany({
+    where: { isActive: true },
+    orderBy: { createdAt: "asc" },
   });
 
   const heroWaLink = buildWaLink(
@@ -223,13 +208,25 @@ export default async function HomePage() {
             </h2>
           </ScrollReveal>
           <div className="grid sm:grid-cols-2 gap-8">
-            {THEMES.map((theme, i) => {
+            {themes.map((theme, i) => {
+              const features = theme.features as string[];
+              // Template.name disimpan lengkap ("Lume - Elegant Minimalist") untuk
+              // dropdown admin; kartu di sini cuma perlu nama pendeknya.
+              const displayName = theme.name.split(" - ")[0];
               return (
                 <ScrollReveal key={theme.key} delay={i * 120}>
                   {/* Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur)
                       supaya video di section ini tetap kelihatan tembus, bukan blob blur
                       screenshot sendiri yang bikin kartu kelihatan solid/opaque. */}
                   <div className="groove-glass-strong relative flex flex-col items-center text-center rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2 p-8 sm:p-10">
+                    {theme.isMostPopular && (
+                      <span
+                        className="absolute top-6 right-6 uppercase tracking-widest text-[10px] font-semibold px-3 py-1.5 rounded-full text-groove-ink"
+                        style={{ backgroundImage: "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 100%)" }}
+                      >
+                        Most Popular
+                      </span>
+                    )}
                     {/* Nama tema — gradient emas solid, konsisten di semua tema
                         (dulu di-mask pakai screenshot sendiri, tapi warnanya jadi
                         acak/kusam tergantung crop foto yang kebetulan kena). */}
@@ -244,7 +241,7 @@ export default async function HomePage() {
                         WebkitTextFillColor: "transparent",
                       }}
                     >
-                      {theme.name}
+                      {displayName}
                     </h3>
 
                     <div className="w-16 h-px bg-groove-primary-light/50 mb-6" />
@@ -261,9 +258,9 @@ export default async function HomePage() {
                     </div>
 
                     <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-3">{theme.tagline}</p>
-                    <p className="text-sm text-white/70 mb-6 min-h-[2.5em]">{theme.desc}</p>
+                    <p className="text-sm text-white/70 mb-6 min-h-[2.5em]">{theme.description}</p>
                     <ul className="w-full space-y-3 mb-8 text-left">
-                      {theme.features.map((f) => (
+                      {features.map((f) => (
                         <li key={f} className="flex items-center gap-3 text-sm text-white/80">
                           <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-primary-light/15 flex items-center justify-center">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary-light">

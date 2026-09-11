@@ -8,6 +8,11 @@ export const templateSchema = z.object({
   name: z.string().min(1, "Nama tema wajib diisi"),
   thumbnail: z.string().optional(),
   isActive: z.boolean().default(true),
+  // Konten kartu tema di landing page ("/") — lihat komentar di schema.prisma
+  tagline: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  features: z.array(z.string()).optional(),
+  isMostPopular: z.boolean().optional(),
 });
 
 export type TemplateFormValues = z.infer<typeof templateSchema>;

@@ -30,6 +30,15 @@ model Template {
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   invitations Invitation[]
+
+  // Konten kartu tema di landing page ("/") — diisi dari admin supaya tema baru
+  // otomatis muncul di landing tanpa perlu ubah kode page.tsx. Screenshot laptop
+  // & HP tetap lewat convention file /landing/thumbnails/<key>-{laptop,phone}.png
+  // (di-generate lewat scripts/capture-screenshots.js), bukan field DB.
+  tagline       String? // "Elegant Minimalist"
+  description   String? // paragraf singkat di kartu tema
+  features      Json    @default("[]") // string[] — 3 poin checklist di kartu tema
+  isMostPopular Boolean @default(false) // tampilkan badge "Most Popular" di landing
 }
 
 // Paket layanan yang ditawarkan ke client (dipilih saat membuat undangan)
