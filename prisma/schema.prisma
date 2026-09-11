@@ -92,6 +92,11 @@ model Invitation {
   // otomatis (skip aturan PORTAL_EXPIRY_GRACE_DAYS di resolve-portal.ts),
   // dipakai saat client butuh akses lebih lama dari 30 hari pasca-acara.
   portalNeverExpires   Boolean @default(false)
+  // Template pesan WhatsApp custom yang diisi CLIENT sendiri dari portal (bukan
+  // admin) — placeholder {{nama}} & {{link}} diganti otomatis per tamu saat kirim
+  // (lihat renderMessageTemplate di lib/utils/whatsapp.ts). Null/kosong = pakai
+  // template default bawaan (buildGuestInvitationMessage).
+  messageTemplate      String?
 
   // Data client (internal, admin only)
   clientName    String

@@ -56,6 +56,14 @@ ${link}
 Merupakan suatu kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir. Terima kasih 🙏`;
 }
 
+// Placeholder yang boleh client pakai di template pesan custom-nya —
+// diganti otomatis per tamu saat "Kirim via WA" ditekan.
+export const MESSAGE_TEMPLATE_PLACEHOLDERS = ["{{nama}}", "{{link}}"] as const;
+
+export function renderMessageTemplate(template: string, vars: { nama: string; link: string }): string {
+  return template.replaceAll("{{nama}}", vars.nama).replaceAll("{{link}}", vars.link);
+}
+
 export function buildPortalLinkMessage(params: { clientName: string; portalLink: string }): string {
   return `Halo ${params.clientName},
 

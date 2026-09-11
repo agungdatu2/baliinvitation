@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GUEST_STATUS_LABEL, GUEST_STATUS_CLASS, GUEST_CATEGORY_LABEL, GuestStatus } from "@/lib/utils/guest-status";
 import { GUEST_CATEGORIES, GuestCategory, parseGuestBulkImport } from "@/lib/utils/bulk-import";
-import { buildWaLink, buildGuestInvitationMessage } from "@/lib/utils/whatsapp";
+import { buildWaLink, buildGuestInvitationMessage, renderMessageTemplate } from "@/lib/utils/whatsapp";
 import { formatDate } from "@/lib/utils/format";
+import MessageTemplateEditor from "./MessageTemplateEditor";
 
 interface GuestRow {
   id: string;
@@ -28,6 +29,7 @@ export default function GuestManager({
   isWedding = true,
   eventDateLabel,
   initialGuests,
+  initialMessageTemplate,
 }: {
   token: string;
   slug: string;
@@ -36,8 +38,10 @@ export default function GuestManager({
   isWedding?: boolean;
   eventDateLabel: string;
   initialGuests: GuestRow[];
+  initialMessageTemplate?: string; // template custom client, "" = pakai default
 }) {
   const router = useRouter();
+  const [messageTemplate, setMessageTemplate] = useState(initialMessageTemplate ?? "");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
@@ -87,14 +91,16 @@ export default function GuestManager({
     setBusyId(guest.id);
     await fetch(`/api/portal/${token}/guests/${guest.id}/mark-sent`, { method: "POST" });
     setBusyId(null);
-    const message = buildGuestInvitationMessage({
-      guestName: guest.name,
-      title: invitationTitle,
-      eventTitle,
-      isWedding,
-      eventDateLabel,
-      link: guestLink(guest.guestCode),
-    });
+    const message = messageTemplate.trim()
+      ? renderMessageTemplate(messageTemplate, { nama: guest.name, link: guestLink(guest.guestCode) })
+      : buildGuestInvitationMessage({
+          guestName: guest.name,
+          title: invitationTitle,
+          eventTitle,
+          isWedding,
+          eventDateLabel,
+          link: guestLink(guest.guestCode),
+        });
     window.open(buildWaLink(guest.waNumber, message), "_blank");
     router.refresh();
   };
@@ -163,6 +169,8 @@ export default function GuestManager({
 
   return (
     <div className="space-y-4">
+      <MessageTemplateEditor token={token} initialValue={messageTemplate} onSaved={setMessageTemplate} />
+
       <div className="flex flex-wrap gap-2 text-sm">
         <select className="input !mt-0 w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
           <option value="all">Semua Status</option>
