@@ -224,20 +224,20 @@ export default async function HomePage() {
           </ScrollReveal>
           <div className="grid sm:grid-cols-2 gap-8">
             {THEMES.map((theme, i) => {
-              const bg = `/landing/thumbnails/${theme.key}-laptop.png`;
               return (
                 <ScrollReveal key={theme.key} delay={i * 120}>
                   {/* Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur)
                       supaya video di section ini tetap kelihatan tembus, bukan blob blur
                       screenshot sendiri yang bikin kartu kelihatan solid/opaque. */}
                   <div className="groove-glass-strong relative flex flex-col items-center text-center rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2 p-8 sm:p-10">
-                    {/* Nama tema — teks jadi "jendela" menampilkan screenshot tajam di
-                        dalam bentuk hurufnya, kontras sama kartu kaca di sekitarnya. */}
+                    {/* Nama tema — gradient emas solid, konsisten di semua tema
+                        (dulu di-mask pakai screenshot sendiri, tapi warnanya jadi
+                        acak/kusam tergantung crop foto yang kebetulan kena). */}
                     <h3
-                      className="font-groove-display uppercase text-6xl sm:text-7xl leading-none mb-4 bg-cover bg-center"
+                      className="font-groove-display uppercase text-6xl sm:text-7xl leading-none mb-4"
                       style={{
                         fontWeight: 800,
-                        backgroundImage: `url(${bg})`,
+                        backgroundImage: "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 45%, #8a6d2f 100%)",
                         WebkitBackgroundClip: "text",
                         backgroundClip: "text",
                         color: "transparent",
