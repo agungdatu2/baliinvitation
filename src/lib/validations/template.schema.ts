@@ -3,6 +3,13 @@ import { z } from "zod";
 export const TEMPLATE_CATEGORIES = ["wedding", "ulang-tahun", "melaspas", "potong-gigi"] as const;
 export type TemplateCategory = (typeof TEMPLATE_CATEGORIES)[number];
 
+export const TEMPLATE_CATEGORY_LABELS: Record<TemplateCategory, string> = {
+  wedding: "Wedding",
+  "ulang-tahun": "Ulang Tahun",
+  melaspas: "Melaspas",
+  "potong-gigi": "Potong Gigi",
+};
+
 export const templateSchema = z.object({
   key: z
     .string()

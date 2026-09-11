@@ -2,14 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { TEMPLATE_CATEGORIES, TemplateCategory } from "@/lib/validations/template.schema";
-
-const CATEGORY_LABELS: Record<TemplateCategory, string> = {
-  wedding: "Wedding",
-  "ulang-tahun": "Ulang Tahun",
-  melaspas: "Melaspas",
-  "potong-gigi": "Potong Gigi",
-};
+import { TEMPLATE_CATEGORIES, TEMPLATE_CATEGORY_LABELS } from "@/lib/validations/template.schema";
 
 interface TemplateRow {
   id: string;
@@ -85,7 +78,7 @@ export default function ThemesManager({ initialTemplates }: { initialTemplates: 
             >
               {TEMPLATE_CATEGORIES.map((c) => (
                 <option key={c} value={c}>
-                  {CATEGORY_LABELS[c]}
+                  {TEMPLATE_CATEGORY_LABELS[c]}
                 </option>
               ))}
             </select>

@@ -6,11 +6,13 @@ import { invitationSchema, InvitationFormValues } from "@/lib/validations/invita
 import { useEffect, useState } from "react";
 import { formatRupiah } from "@/lib/utils/format";
 import { HIDEABLE_SECTIONS_BY_TEMPLATE } from "@/lib/hideable-sections";
+import { TEMPLATE_CATEGORIES, TEMPLATE_CATEGORY_LABELS, TemplateCategory } from "@/lib/validations/template.schema";
 
 interface TemplateOption {
   key: string;
   name: string;
   isActive: boolean;
+  category: TemplateCategory;
 }
 
 interface PackageOption {
@@ -76,11 +78,21 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const [saved, setSaved] = useState(false);
   const [templates, setTemplates] = useState<TemplateOption[]>([]);
   const [packages, setPackages] = useState<PackageOption[]>([]);
+  // Jenis Acara — filter tampilan Template supaya admin tidak perlu nyari tema
+  // wedding di antara tema melaspas/ulang tahun/potong gigi begitu jumlah tema
+  // makin banyak. Defaultnya ikut tema undangan yang sudah ada (mode edit),
+  // atau "wedding" untuk undangan baru.
+  const [categoryFilter, setCategoryFilter] = useState<TemplateCategory>("wedding");
 
   useEffect(() => {
     fetch("/api/templates")
       .then((r) => r.json())
-      .then((data: TemplateOption[]) => setTemplates(data.filter((t) => t.isActive)));
+      .then((data: TemplateOption[]) => {
+        const active = data.filter((t) => t.isActive);
+        setTemplates(active);
+        const current = active.find((t) => t.key === (initialValues?.templateKey ?? defaultValues.templateKey));
+        if (current) setCategoryFilter(current.category);
+      });
     fetch("/api/packages")
       .then((r) => r.json())
       .then((data: PackageOption[]) => setPackages(data.filter((p) => p.isActive)));
@@ -102,6 +114,12 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   // template yang dipilih "reverie" — jangan bingungin admin dengan field
   // yang tidak dipakai tema lain.
   const selectedTemplateKey = watch("templateKey");
+  const filteredTemplates = templates.filter((t) => t.category === categoryFilter);
+  const handleCategoryChange = (category: TemplateCategory) => {
+    setCategoryFilter(category);
+    const firstMatch = templates.find((t) => t.category === category);
+    if (firstMatch) setValue("templateKey", firstMatch.key, { shouldDirty: true });
+  };
   const hiddenSections = watch("hiddenSections") ?? [];
   const toggleHiddenSection = (key: string) => {
     setValue(
@@ -165,12 +183,29 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <Field label="Slug URL (contoh: michael-sherly)" error={errors.slug?.message}>
             <input {...register("slug")} className="input" placeholder="michael-sherly" />
           </Field>
-          <Field label="Template">
-            <select {...register("templateKey")} className="input">
-              {templates.map((t) => (
-                <option key={t.key} value={t.key}>{t.name}</option>
+          <Field label="Jenis Acara">
+            <select
+              value={categoryFilter}
+              onChange={(e) => handleCategoryChange(e.target.value as TemplateCategory)}
+              className="input"
+            >
+              {TEMPLATE_CATEGORIES.map((c) => (
+                <option key={c} value={c}>{TEMPLATE_CATEGORY_LABELS[c]}</option>
               ))}
             </select>
+          </Field>
+          <Field label="Template">
+            {filteredTemplates.length > 0 ? (
+              <select {...register("templateKey")} className="input">
+                {filteredTemplates.map((t) => (
+                  <option key={t.key} value={t.key}>{t.name}</option>
+                ))}
+              </select>
+            ) : (
+              <p className="input text-gray-400 flex items-center">
+                Belum ada tema untuk {TEMPLATE_CATEGORY_LABELS[categoryFilter]} — tambahkan di menu Tema
+              </p>
+            )}
           </Field>
           <Field label="Status">
             <select {...register("status")} className="input">
