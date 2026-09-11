@@ -60,9 +60,25 @@ export default function GuestManager({
   const [editForm, setEditForm] = useState(emptyForm);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const guestLink = (guestCode: string) =>
     `${typeof window !== "undefined" ? window.location.origin : ""}/${slug}?g=${guestCode}`;
+
+  // Dipakai bareng oleh "Kirim via WA" (buka wa.me) dan "Salin Pesan" (copy manual
+  // — buat tamu yang nomornya belum diisi, jadi client tetap bisa kirim sendiri
+  // lewat WhatsApp/kontak apapun tanpa perlu isi nomor ke sistem dulu).
+  const buildMessage = (guest: GuestRow) =>
+    messageTemplate.trim()
+      ? renderMessageTemplate(messageTemplate, { nama: guest.name, link: guestLink(guest.guestCode) })
+      : buildGuestInvitationMessage({
+          guestName: guest.name,
+          title: invitationTitle,
+          eventTitle,
+          isWedding,
+          eventDateLabel,
+          link: guestLink(guest.guestCode),
+        });
 
   const filtered = useMemo(() => {
     return initialGuests.filter((g) => {
@@ -91,17 +107,21 @@ export default function GuestManager({
     setBusyId(guest.id);
     await fetch(`/api/portal/${token}/guests/${guest.id}/mark-sent`, { method: "POST" });
     setBusyId(null);
-    const message = messageTemplate.trim()
-      ? renderMessageTemplate(messageTemplate, { nama: guest.name, link: guestLink(guest.guestCode) })
-      : buildGuestInvitationMessage({
-          guestName: guest.name,
-          title: invitationTitle,
-          eventTitle,
-          isWedding,
-          eventDateLabel,
-          link: guestLink(guest.guestCode),
-        });
-    window.open(buildWaLink(guest.waNumber, message), "_blank");
+    window.open(buildWaLink(guest.waNumber, buildMessage(guest)), "_blank");
+    router.refresh();
+  };
+
+  // Buat tamu yang nomor WA-nya belum/tidak diisi — copy pesan lengkap (sudah
+  // terisi nama & link) supaya client bisa paste sendiri ke WhatsApp/kontak
+  // manapun. Tetap tandai "Sudah dikirim" sama seperti "Kirim via WA", karena
+  // niatnya sama-sama untuk langsung dikirim ke tamu itu.
+  const copyMessage = async (guest: GuestRow) => {
+    await navigator.clipboard.writeText(buildMessage(guest));
+    setCopiedMessageId(guest.id);
+    setTimeout(() => setCopiedMessageId(null), 1500);
+    setBusyId(guest.id);
+    await fetch(`/api/portal/${token}/guests/${guest.id}/mark-sent`, { method: "POST" });
+    setBusyId(null);
     router.refresh();
   };
 
@@ -316,6 +336,9 @@ export default function GuestManager({
                 <div className="flex flex-col gap-1 text-xs items-end shrink-0">
                   <button onClick={() => copyLink(g)} className="text-blue-600">
                     {copiedId === g.id ? "Tersalin!" : "Salin Link"}
+                  </button>
+                  <button onClick={() => copyMessage(g)} disabled={busyId === g.id} className="text-blue-600">
+                    {copiedMessageId === g.id ? "Tersalin!" : "Salin Pesan"}
                   </button>
                   {g.waNumber && (
                     <button onClick={() => sendViaWa(g)} disabled={busyId === g.id} className="text-green-700">
