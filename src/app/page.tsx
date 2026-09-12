@@ -355,36 +355,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Our Client — heading & bg persis pola section Fitur (watermark raksasa +
-          eyebrow + judul di atas bg-groove-bg polos, teks gelap), bukan pola Tema/
-          Paket yang di atas video gelap. Foto klien beneran, carousel geser mulus
-          tanpa henti (CSS animation, loop lewat track yang diduplikasi 2x). */}
-      <section id="klien" className="relative overflow-hidden bg-groove-bg py-24">
-        <p
-          aria-hidden
-          className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
-          style={{
-            fontSize: "clamp(6rem, 22vw, 14rem)",
-            fontWeight: 700,
-            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
-            WebkitBackgroundClip: "text",
-            backgroundClip: "text",
-            color: "transparent",
-          }}
-        >
-          KLIEN
-        </p>
-        <div className="relative z-10">
-          <ScrollReveal className="text-center mb-16 px-6">
-            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Our Client</p>
-            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-ink" style={{ fontWeight: 500 }}>
-              Sudah Dipercaya Ratusan Pasangan
-            </h2>
-          </ScrollReveal>
-          <ClientCarousel />
-        </div>
-      </section>
-
       {/* Packages — heading & overlay mengikuti pola section Tema (watermark
           raksasa + eyebrow + judul di atas video), card pakai glassmorphism
           yang sama (.groove-glass-strong) supaya konsisten satu bahasa visual. */}
@@ -472,6 +442,36 @@ export default async function HomePage() {
               </ul>
             </ScrollReveal>
           </div>
+        </div>
+      </section>
+
+      {/* Our Client — heading & bg persis pola section Fitur (watermark raksasa +
+          eyebrow + judul di atas bg-groove-bg polos, teks gelap), bukan pola Tema/
+          Paket yang di atas video gelap. Foto klien beneran, carousel geser mulus
+          tanpa henti (CSS animation, loop lewat track yang diduplikasi 2x). */}
+      <section id="klien" className="relative overflow-hidden bg-groove-bg py-24">
+        <p
+          aria-hidden
+          className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
+          style={{
+            fontSize: "clamp(6rem, 22vw, 14rem)",
+            fontWeight: 700,
+            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          KLIEN
+        </p>
+        <div className="relative z-10">
+          <ScrollReveal className="text-center mb-16 px-6">
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Our Client</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-ink" style={{ fontWeight: 500 }}>
+              Sudah Dipercaya Ratusan Pasangan
+            </h2>
+          </ScrollReveal>
+          <ClientCarousel />
         </div>
       </section>
 
