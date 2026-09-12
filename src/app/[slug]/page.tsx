@@ -116,7 +116,7 @@ export default async function InvitationPage({
 
   // Expired check dilewati untuk portal preview supaya admin/client tetap bisa
   // lihat isinya walau masa aktif paketnya sudah lewat.
-  if (!isPortalPreview && isExpired(inv.eventDate, inv.package?.activeMonths)) {
+  if (!isPortalPreview && !inv.neverExpires && isExpired(inv.eventDate, inv.package?.activeMonths)) {
     return (
       <div className="min-h-screen bg-groove-bg flex items-center justify-center px-6 text-center">
         <div>

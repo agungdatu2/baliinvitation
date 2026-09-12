@@ -29,6 +29,7 @@ const defaultValues: InvitationFormValues = {
   showAsExample: false,
   templateKey: "lume",
   packageId: "",
+  neverExpires: false,
   clientName: "",
   clientPhone: "",
   clientNotes: "",
@@ -256,6 +257,10 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("showAsExample")} className="h-4 w-4" />
           Tampilkan sebagai contoh publik di landing page (/contoh-undangan)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("neverExpires")} className="h-4 w-4" />
+          Link aktif seumur hidup (add-on) — abaikan masa aktif paket untuk undangan ini saja
         </label>
       </section>
 

@@ -81,6 +81,11 @@ model Invitation {
   packageId     String?
   package       Package? @relation(fields: [packageId], references: [id])
   totalPrice    Int?     // snapshot harga paket saat undangan dibuat
+  // Override per-invitation untuk add-on "Link aktif seumur hidup" — Package.activeMonths
+  // cuma bisa disetel per Package (semua invitation di paket itu ikut kena), jadi kalau
+  // cuma 1 client yang beli add-on ini, true di sini bikin isExpired() di [slug]/page.tsx
+  // selalu return false berapa pun activeMonths paketnya, tanpa perlu bikin Package baru.
+  neverExpires  Boolean  @default(false)
 
   // Portal client self-service — token DI URL adalah otentikasinya (tidak ada login).
   // Digenerate via crypto.randomBytes di API (bukan cuid) karena ini token akses,

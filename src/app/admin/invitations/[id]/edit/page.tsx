@@ -26,6 +26,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     showAsExample: invitation.showAsExample,
     templateKey: invitation.template.key,
     packageId: invitation.packageId ?? "",
+    neverExpires: invitation.neverExpires,
     clientName: invitation.clientName,
     clientPhone: invitation.clientPhone ?? "",
     clientNotes: invitation.clientNotes ?? "",

@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       templateId: template.id,
       packageId,
       totalPrice,
+      neverExpires: d.neverExpires,
       portalToken: generatePortalToken(),
       clientName: d.clientName,
       clientPhone: d.clientPhone,
