@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Pause, Play } from "lucide-react";
 import { TemplateProps } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/grand-opening";
 import FixedBackground from "./FixedBackground";
@@ -29,7 +30,47 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
   // Lume/Muse/Reverie, intro di sini bukan fitur upsell yang di-gate oleh Package.hasIntro.
   const [loading, setLoading] = useState(true);
   const [opened, setOpened] = useState(false);
+  const [musicPlaying, setMusicPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const t = getDict(data.language);
+
+  const handleOpen = () => {
+    setOpened(true);
+    audioRef.current?.play().then(() => setMusicPlaying(true)).catch(() => {});
+  };
+
+  const toggleMusic = () => {
+    if (!audioRef.current) return;
+    if (audioRef.current.paused) {
+      audioRef.current.play().then(() => setMusicPlaying(true)).catch(() => {});
+    } else {
+      audioRef.current.pause();
+      setMusicPlaying(false);
+    }
+  };
+
+  // Pause musik saat tab/window disembunyikan, lanjut lagi begitu balik — sama
+  // seperti tema Lume — hanya kalau musik memang lagi dinyalakan user.
+  useEffect(() => {
+    const pauseIfPlaying = () => {
+      const audio = audioRef.current;
+      if (audio && !audio.paused) audio.pause();
+    };
+    const resumeIfWasPlaying = () => {
+      const audio = audioRef.current;
+      if (audio && musicPlaying && audio.paused) audio.play().catch(() => {});
+    };
+    const handleVisibility = () => (document.hidden ? pauseIfPlaying() : resumeIfWasPlaying());
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("blur", pauseIfPlaying);
+    window.addEventListener("focus", resumeIfWasPlaying);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("blur", pauseIfPlaying);
+      window.removeEventListener("focus", resumeIfWasPlaying);
+    };
+  }, [musicPlaying]);
 
   return (
     <main className="text-groove-bg font-groove-body min-h-screen">
@@ -51,8 +92,20 @@ export default function GrandOpeningTemplate({ data, guestName, guestId }: Templ
           hostLogoSize={data.hostLogoSize}
           guestName={guestName}
           lang={data.language}
-          onOpen={() => setOpened(true)}
+          onOpen={handleOpen}
         />
+      )}
+
+      {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
+
+      {opened && data.musicUrl && (
+        <button
+          onClick={toggleMusic}
+          aria-label={musicPlaying ? "Jeda musik" : "Putar musik"}
+          className="fixed bottom-6 right-6 z-50 w-11 h-11 flex items-center justify-center rounded-full border border-groove-line-dark bg-groove-stone/70 backdrop-blur text-groove-bg hover:bg-groove-stone transition"
+        >
+          {musicPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current" />}
+        </button>
       )}
 
       {opened && (
