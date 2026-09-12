@@ -354,58 +354,94 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Packages */}
-      <section id="paket" className="max-w-5xl mx-auto px-6 py-24">
-        <ScrollReveal className="text-center mb-12">
-          <p className="uppercase tracking-[0.25em] text-xs text-groove-primary mb-3">Paket Harga</p>
-          <h2 className="font-groove-display text-3xl md:text-4xl" style={{ fontWeight: 500 }}>
-            Pilih Paket Sesuai Kebutuhan
-          </h2>
-        </ScrollReveal>
-        <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-          {packages.map((pkg, i) => (
-            <ScrollReveal key={pkg.id} delay={i * 120}>
-              <div className="border border-groove-line rounded-2xl p-8 bg-white/50 flex flex-col h-full">
-                <h3 className="font-groove-display text-2xl mb-1" style={{ fontWeight: 500 }}>{pkg.name}</h3>
-                <p className="font-groove-display text-3xl mb-6" style={{ fontWeight: 600 }}>{formatRupiah(pkg.price)}</p>
-                <ul className="space-y-2.5 mb-8 flex-1">
-                  {(pkg.features as string[]).map((f) => (
-                    <li key={f} className="text-sm text-groove-ink/75 flex items-start gap-2">
-                      <span className="text-groove-primary mt-0.5">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a
-                  href={buildWaLink(
-                    CREATOR.whatsappNumber,
-                    `Halo, saya mau pesan undangan digital paket ${pkg.name} (${formatRupiah(pkg.price)}) 🙏`
-                  )}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="text-center px-6 py-3 rounded-full bg-groove-ink text-groove-bg text-sm tracking-wide hover:opacity-90 transition"
-                >
-                  Pilih Paket Ini
-                </a>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
+      {/* Packages — heading & overlay mengikuti pola section Tema (watermark
+          raksasa + eyebrow + judul di atas video), card pakai glassmorphism
+          yang sama (.groove-glass-strong) supaya konsisten satu bahasa visual. */}
+      <section id="paket" className="relative overflow-hidden bg-groove-bg py-24">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260808_113714_92f54685-af06-4020-8f35-dbb8871b9d32.mp4"
+        />
+        <div className="absolute inset-0 bg-black/35" />
 
-        {/* Add-ons */}
-        <ScrollReveal delay={240} className="max-w-3xl mx-auto mt-10">
-          <div className="border border-groove-line rounded-2xl p-6 bg-white/40">
-            <p className="text-xs uppercase tracking-widest text-groove-primary mb-4">Fitur Tambahan (Add-On)</p>
-            <ul className="space-y-2">
-              {ADDONS.map((a) => (
-                <li key={a.label} className="flex items-center justify-between text-sm gap-4">
-                  <span className="text-groove-ink/75">{a.label}</span>
-                  <span className="text-groove-ink/50 whitespace-nowrap">{a.price}</span>
-                </li>
-              ))}
-            </ul>
+        <p
+          aria-hidden
+          className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
+          style={{
+            fontSize: "clamp(6rem, 22vw, 14rem)",
+            fontWeight: 700,
+            backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
+          }}
+        >
+          PAKET
+        </p>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6">
+          <ScrollReveal className="text-center mb-12">
+            <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Paket Harga</p>
+            <h2 className="font-groove-display text-3xl md:text-4xl text-groove-bg" style={{ fontWeight: 500 }}>
+              Pilih Paket Sesuai Kebutuhan
+            </h2>
+          </ScrollReveal>
+          <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {packages.map((pkg, i) => (
+              // Panel kaca ini sengaja TIDAK dibungkus ScrollReveal (lihat catatan
+              // di section Tema) — hanya konten di dalamnya yang dianimasikan.
+              <div key={pkg.id} className="groove-glass-strong relative flex flex-col rounded-[2.5rem] p-8 sm:p-10">
+                <ScrollReveal delay={i * 120} className="flex flex-col h-full">
+                  <h3 className="font-groove-display text-2xl mb-1 text-groove-bg" style={{ fontWeight: 500 }}>
+                    {pkg.name}
+                  </h3>
+                  <p className="font-groove-display text-3xl mb-6 text-groove-bg" style={{ fontWeight: 600 }}>
+                    {formatRupiah(pkg.price)}
+                  </p>
+                  <ul className="space-y-2.5 mb-8 flex-1">
+                    {(pkg.features as string[]).map((f) => (
+                      <li key={f} className="text-sm text-white/80 flex items-start gap-2">
+                        <span className="text-groove-primary-light mt-0.5">✓</span>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <a
+                    href={buildWaLink(
+                      CREATOR.whatsappNumber,
+                      `Halo, saya mau pesan undangan digital paket ${pkg.name} (${formatRupiah(pkg.price)}) 🙏`
+                    )}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-center px-6 py-3 rounded-full text-groove-ink text-sm font-semibold tracking-wide hover:opacity-90 transition"
+                    style={{ backgroundImage: "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 100%)" }}
+                  >
+                    Pilih Paket Ini
+                  </a>
+                </ScrollReveal>
+              </div>
+            ))}
           </div>
-        </ScrollReveal>
+
+          {/* Add-ons */}
+          <div className="groove-glass-strong relative rounded-2xl max-w-3xl mx-auto mt-10 p-6">
+            <ScrollReveal delay={240}>
+              <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-4">Fitur Tambahan (Add-On)</p>
+              <ul className="space-y-2">
+                {ADDONS.map((a) => (
+                  <li key={a.label} className="flex items-center justify-between text-sm gap-4">
+                    <span className="text-white/80">{a.label}</span>
+                    <span className="text-white/50 whitespace-nowrap">{a.price}</span>
+                  </li>
+                ))}
+              </ul>
+            </ScrollReveal>
+          </div>
+        </div>
       </section>
 
       {/* Footer / contact */}
