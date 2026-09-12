@@ -63,7 +63,8 @@ function EventRow({ event, title, last, lang }: { event: EventItem; title: strin
           {new Date(event.date).toLocaleDateString(t.dateLocale, { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
         </p>
         <p className="font-groove-body text-lg text-groove-bg/90 mb-4">
-          {t.at} {event.timeStart} {event.timezone}
+          {t.at} {event.timeStart}
+          {event.timeEnd ? ` - ${event.timeEnd}` : ""} {event.timezone}
         </p>
         {event.location && (
           <p className="font-groove-body text-sm text-groove-bg/70 leading-relaxed mb-5 max-w-sm">{event.location}</p>
