@@ -25,7 +25,9 @@ const HERO_LOGO_SIZE_CLASS: Record<string, string> = {
 // bukan progress bar Lume) -> gate nama tamu -> konten (hero, detail acara +
 // countdown + maps, ucapan penutup, RSVP + buku tamu).
 export default function GrandOpeningTemplate({ data, guestName, guestId }: TemplateProps) {
-  const [loading, setLoading] = useState(data.hasIntro);
+  // Loading branded (gaya PageLoader landing) selalu tampil di tema ini — beda dari
+  // Lume/Muse/Reverie, intro di sini bukan fitur upsell yang di-gate oleh Package.hasIntro.
+  const [loading, setLoading] = useState(true);
   const [opened, setOpened] = useState(false);
   const t = getDict(data.language);
 
