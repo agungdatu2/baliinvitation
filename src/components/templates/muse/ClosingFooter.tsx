@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Globe } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { normalizeWaNumber } from "@/lib/utils/whatsapp";
@@ -59,6 +60,14 @@ export default function ClosingFooter({ data }: { data: InvitationData }) {
       </div>
 
       <div className="pb-16 px-6 flex flex-col items-center gap-3">
+        <Image
+          src="/brand/logo.webp"
+          alt="BaliInvitation"
+          width={220}
+          height={65}
+          className="w-28 h-auto"
+          style={{ filter: "brightness(0) invert(1)" }}
+        />
         <p className="font-groove-label text-[10px] opacity-70 tracking-widest uppercase">Created By</p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           <a
