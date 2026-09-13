@@ -11,7 +11,6 @@ import FullscreenNav from "@/components/landing/FullscreenNav";
 import RevealOnLoad from "@/components/landing/RevealOnLoad";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import ClientCarousel from "@/components/landing/ClientCarousel";
-import { getGoogleReviews, googleReviewsUrl } from "@/lib/services/google-reviews";
 import { Star } from "lucide-react";
 
 const NAV_LINKS = [
@@ -47,6 +46,21 @@ const ADDONS = [
   { label: "Link aktif seumur hidup", price: "Rp 100.000" },
 ];
 
+// Link "Lihat Semua Review di Google" di section Testimoni — buka listing
+// Google Maps BaliInvitation langsung.
+const GOOGLE_REVIEWS_URL =
+  "https://www.google.com/maps/place/Bali+Invitation/@-8.6241767,115.2079771,17z/data=!4m8!3m7!1s0x2dd23ffcb9b332ad:0xbc3a60a903d0b46!8m2!3d-8.6241767!4d115.2079771!9m1!1b1!16s%2Fg%2F11jyjbg9ct?entry=ttu&g_ep=EgoyMDI2MDkwOS4wIKXMDSoASAFQAw%3D%3D";
+
+// Testimoni tidak punya foto profil asli (dikelola manual, bukan API Google
+// yang punya profile_photo_url) — avatar dibuat dari huruf awal nama, warnanya
+// diturunkan dari nama itu sendiri supaya konsisten tiap render, mirip avatar
+// default Google sendiri.
+const AVATAR_COLORS = ["#7c3aed", "#ea580c", "#2563eb", "#059669", "#db2777", "#0891b2"];
+function avatarColor(name: string) {
+  const sum = [...name].reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+  return AVATAR_COLORS[sum % AVATAR_COLORS.length];
+}
+
 // Paket dikelola dari /admin/packages — revalidate tiap jam supaya perubahan
 // harga/fitur tidak nunggu deploy baru untuk muncul di landing page.
 export const revalidate = 3600;
@@ -61,8 +75,10 @@ export default async function HomePage() {
     orderBy: { price: "asc" },
   });
 
-  const reviews = await getGoogleReviews();
-  const reviewsUrl = googleReviewsUrl();
+  const testimonials = await prisma.testimonial.findMany({
+    where: { isActive: true },
+    orderBy: { order: "asc" },
+  });
 
   // Tema di landing page ambil dari DB (bukan array hardcoded) supaya tema baru
   // otomatis muncul begitu admin isi tagline/deskripsi/fitur-nya di /admin/themes —
@@ -481,11 +497,12 @@ export default async function HomePage() {
       </section>
 
       {/* Testimoni — background video sama persis dengan section Tema, card
-          glassmorphism sama (.groove-glass-strong). Data review beneran dari
-          Google Places API (lihat src/lib/services/google-reviews.ts) — bukan
-          dikarang, jadi section ini otomatis tidak tampil kalau API key/Place ID
-          belum disetel di .env, daripada nampilin testimoni palsu. */}
-      {reviews.length > 0 && (
+          glassmorphism sama (.groove-glass-strong). Isinya dikelola manual dari
+          /admin/testimonials (tempel review asli dari Google Review sendiri),
+          bukan fetch live — Google Places API cuma kasih 5 review "paling
+          relevan" pilihan Google & butuh API key berbayar, sementara di sini
+          admin bebas pilih & urutkan review mana yang mau ditonjolkan. */}
+      {testimonials.length > 0 && (
         <section id="testimoni" className="relative overflow-hidden bg-groove-bg py-24">
           <video
             autoPlay
@@ -525,9 +542,9 @@ export default async function HomePage() {
             </ScrollReveal>
 
             <div className="grid sm:grid-cols-2 gap-6">
-              {reviews.slice(0, 4).map((r, i) => (
+              {testimonials.slice(0, 6).map((t, i) => (
                 <div
-                  key={i}
+                  key={t.id}
                   className="groove-glass-strong relative flex flex-col rounded-[2.5rem] p-8 sm:p-10"
                 >
                   <ScrollReveal delay={i * 120} className="flex flex-col h-full">
@@ -536,24 +553,23 @@ export default async function HomePage() {
                         <Star
                           key={idx}
                           className={`h-4 w-4 ${
-                            idx < r.rating ? "fill-groove-primary-light text-groove-primary-light" : "text-white/20"
+                            idx < t.rating ? "fill-groove-primary-light text-groove-primary-light" : "text-white/20"
                           }`}
                         />
                       ))}
                     </div>
-                    <p className="text-sm text-white/80 leading-relaxed mb-6 flex-1">{r.text}</p>
+                    <p className="text-sm text-white/80 leading-relaxed mb-6 flex-1">{t.text}</p>
                     <div className="flex items-center gap-3">
-                      {r.authorPhotoUrl && (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={r.authorPhotoUrl}
-                          alt={r.authorName}
-                          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
-                        />
-                      )}
+                      <div
+                        aria-hidden
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0"
+                        style={{ backgroundColor: avatarColor(t.authorName) }}
+                      >
+                        {t.authorName.charAt(0).toUpperCase()}
+                      </div>
                       <div>
-                        <p className="text-sm text-groove-bg font-medium">{r.authorName}</p>
-                        <p className="text-xs text-white/50">{r.relativeTime}</p>
+                        <p className="text-sm text-groove-bg font-medium">{t.authorName}</p>
+                        <p className="text-xs text-white/50">{t.timeLabel}</p>
                       </div>
                     </div>
                   </ScrollReveal>
@@ -561,18 +577,16 @@ export default async function HomePage() {
               ))}
             </div>
 
-            {reviewsUrl && (
-              <div className="text-center mt-12">
-                <a
-                  href={reviewsUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-groove-bg text-groove-ink text-sm font-semibold hover:opacity-90 transition"
-                >
-                  Lihat Semua Review di Google
-                </a>
-              </div>
-            )}
+            <div className="text-center mt-12">
+              <a
+                href={GOOGLE_REVIEWS_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-groove-bg text-groove-ink text-sm font-semibold hover:opacity-90 transition"
+              >
+                Lihat Semua Review di Google
+              </a>
+            </div>
           </div>
         </section>
       )}

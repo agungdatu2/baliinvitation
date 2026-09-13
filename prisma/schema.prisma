@@ -47,6 +47,23 @@ model Template {
 }
 
 // Paket layanan yang ditawarkan ke client (dipilih saat membuat undangan)
+// Testimoni di landing page (section "Testimoni", src/app/page.tsx) — dikelola
+// manual dari /admin/testimonials (tambah/hapus), bukan fetch live dari Google
+// Places API (butuh API key + billing, dan dibatasi cuma 5 review terpilih
+// Google) — client memilih tempel review asli dari Google Review-nya sendiri.
+model Testimonial {
+  id         String   @id @default(cuid())
+  authorName String
+  rating     Int      @default(5) // 1-5
+  text       String
+  // Teks bebas seperti tampilan asli Google Review ("47 minggu lalu", "14 Feb
+  // 2024") — bukan DateTime supaya admin bisa tempel apa adanya tanpa mikir format.
+  timeLabel  String
+  order      Int      @default(0) // urutan tampil, kecil dulu
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+}
+
 model Package {
   id          String       @id @default(cuid())
   name        String       // "Silver", "Gold", dst

@@ -62,7 +62,7 @@ export default function ClientCarousel() {
               className="object-cover"
             />
             <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent pt-10 pb-3 px-3">
-              <p className="text-white text-xs sm:text-sm font-groove-label tracking-wide text-center">
+              <p className="text-white text-base sm:text-lg font-groove-display text-center" style={{ fontWeight: 500 }}>
                 {displayName(file)}
               </p>
             </div>
