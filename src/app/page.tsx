@@ -11,6 +11,8 @@ import FullscreenNav from "@/components/landing/FullscreenNav";
 import RevealOnLoad from "@/components/landing/RevealOnLoad";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import ClientCarousel from "@/components/landing/ClientCarousel";
+import { getGoogleReviews, googleReviewsUrl } from "@/lib/services/google-reviews";
+import { Star } from "lucide-react";
 
 const NAV_LINKS = [
   { label: "Tema", href: "#tema" },
@@ -58,6 +60,9 @@ export default async function HomePage() {
     where: { isActive: true },
     orderBy: { price: "asc" },
   });
+
+  const reviews = await getGoogleReviews();
+  const reviewsUrl = googleReviewsUrl();
 
   // Tema di landing page ambil dari DB (bukan array hardcoded) supaya tema baru
   // otomatis muncul begitu admin isi tagline/deskripsi/fitur-nya di /admin/themes —
@@ -449,7 +454,7 @@ export default async function HomePage() {
           eyebrow + judul di atas bg-groove-bg polos, teks gelap), bukan pola Tema/
           Paket yang di atas video gelap. Foto klien beneran, carousel geser mulus
           tanpa henti (CSS animation, loop lewat track yang diduplikasi 2x). */}
-      <section id="klien" className="relative overflow-hidden bg-groove-bg py-24">
+      <section id="client" className="relative overflow-hidden bg-groove-bg py-24">
         <p
           aria-hidden
           className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
@@ -462,7 +467,7 @@ export default async function HomePage() {
             color: "transparent",
           }}
         >
-          KLIEN
+          CLIENT
         </p>
         <div className="relative z-10">
           <ScrollReveal className="text-center mb-16 px-6">
@@ -474,6 +479,103 @@ export default async function HomePage() {
           <ClientCarousel />
         </div>
       </section>
+
+      {/* Testimoni — background video sama persis dengan section Tema, card
+          glassmorphism sama (.groove-glass-strong). Data review beneran dari
+          Google Places API (lihat src/lib/services/google-reviews.ts) — bukan
+          dikarang, jadi section ini otomatis tidak tampil kalau API key/Place ID
+          belum disetel di .env, daripada nampilin testimoni palsu. */}
+      {reviews.length > 0 && (
+        <section id="testimoni" className="relative overflow-hidden bg-groove-bg py-24">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260815_030633_83c8f212-88f1-442c-a2cc-3b25355f12c6.mp4"
+          />
+          <div className="absolute inset-0 bg-black/35" />
+
+          <p
+            aria-hidden
+            className="pointer-events-none select-none absolute inset-x-0 top-8 text-center font-groove-display leading-none"
+            style={{
+              fontSize: "clamp(6rem, 22vw, 14rem)",
+              fontWeight: 700,
+              backgroundImage: "linear-gradient(to bottom, rgba(201,164,92,0.35), rgba(201,164,92,0.04))",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+            }}
+          >
+            REVIEW
+          </p>
+
+          <div className="relative z-10 max-w-5xl mx-auto px-6">
+            <ScrollReveal className="text-center mb-12">
+              <p className="uppercase tracking-[0.25em] text-xs text-groove-primary-light mb-3">Testimoni</p>
+              <h2 className="font-groove-display text-3xl md:text-4xl text-groove-bg mb-4" style={{ fontWeight: 500 }}>
+                Apa Kata Client Kami
+              </h2>
+              <p className="text-sm text-white/70 max-w-xl mx-auto">
+                Diambil langsung dari Google Review — client yang sudah pakai undangan digital kami untuk
+                pernikahan, ulang tahun, melaspas, sampai grand opening.
+              </p>
+            </ScrollReveal>
+
+            <div className="grid sm:grid-cols-2 gap-6">
+              {reviews.slice(0, 4).map((r, i) => (
+                <div
+                  key={i}
+                  className="groove-glass-strong relative flex flex-col rounded-[2.5rem] p-8 sm:p-10"
+                >
+                  <ScrollReveal delay={i * 120} className="flex flex-col h-full">
+                    <div className="flex gap-0.5 mb-4">
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <Star
+                          key={idx}
+                          className={`h-4 w-4 ${
+                            idx < r.rating ? "fill-groove-primary-light text-groove-primary-light" : "text-white/20"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <p className="text-sm text-white/80 leading-relaxed mb-6 flex-1">{r.text}</p>
+                    <div className="flex items-center gap-3">
+                      {r.authorPhotoUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={r.authorPhotoUrl}
+                          alt={r.authorName}
+                          className="w-10 h-10 rounded-full object-cover flex-shrink-0"
+                        />
+                      )}
+                      <div>
+                        <p className="text-sm text-groove-bg font-medium">{r.authorName}</p>
+                        <p className="text-xs text-white/50">{r.relativeTime}</p>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
+              ))}
+            </div>
+
+            {reviewsUrl && (
+              <div className="text-center mt-12">
+                <a
+                  href={reviewsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-groove-bg text-groove-ink text-sm font-semibold hover:opacity-90 transition"
+                >
+                  Lihat Semua Review di Google
+                </a>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* Footer / contact */}
       <footer className="border-t border-groove-line">
