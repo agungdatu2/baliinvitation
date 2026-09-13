@@ -59,6 +59,13 @@ export default function ClientCarousel() {
               src={`/landing/clients/${file}.webp`}
               alt={displayName(file)}
               fill
+              // Lazy loading (default Next.js) memantau posisi asli elemen di
+              // viewport — karena track ini digeser pakai CSS transform, bukan
+              // scroll beneran, sebagian besar kartu dianggap "di luar viewport"
+              // selamanya walau kelihatan kena slide masuk, jadi gambarnya baru
+              // fetch telat/gak sempat ke-load pas gilirannya lewat. Eager
+              // supaya semua foto (cuma 23 file unik) langsung di-fetch dari awal.
+              loading="eager"
               sizes="(min-width: 768px) 320px, (min-width: 640px) 288px, 224px"
               className="object-cover"
             />
