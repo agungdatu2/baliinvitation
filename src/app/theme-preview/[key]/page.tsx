@@ -148,6 +148,9 @@ export default function ThemePreviewPage({
     hasIntro,
     maxGalleryImages: null,
     hiddenSections,
+    // Musik latar contoh — "Wedding Harp" (Mixkit, no watermark/attribution),
+    // instrumental harpa lembut yang related buat semua tema preview.
+    musicUrl: "https://assets.mixkit.co/music/672/672.mp3",
     backgroundType,
     backgroundImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1600&q=85",
     backgroundSlideshowImages: [

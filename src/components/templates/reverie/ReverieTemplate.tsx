@@ -117,6 +117,9 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
         imageSrc={data.backgroundImage}
         slideshowImages={data.backgroundSlideshowImages}
         color={data.backgroundColor}
+        // Gate Reverie sudah terkurung kolom kanan 30% sejak awal (beda dari Muse) —
+        // background boleh langsung menyempit begitu loading selesai.
+        column={!showLoading}
       />
 
       {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru

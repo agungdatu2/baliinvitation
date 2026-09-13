@@ -14,20 +14,30 @@ interface Props {
   imageSrc?: string;
   slideshowImages?: string[];
   color?: string;
+  // true = di desktop, background disempitkan ke kolom kanan 30% (scrollable)
+  // alih-alih lebar layar penuh — dipakai begitu layout split kolom kiri
+  // (foto sticky) sudah tampil, supaya video/foto object-cover dihitung
+  // terhadap kotak sempit itu (center-nya benar, dan portrait fit lebih pas)
+  // alih-alih terhadap layar penuh lalu ketutup foto sticky di kolom kiri.
+  // false (default) = fullscreen, dipakai saat gate/loading masih menutupi
+  // seluruh viewport sebelum layout split kelihatan.
+  column?: boolean;
 }
 
 // Satu background, fixed di belakang seluruh halaman (gate + semua section) —
 // admin pilih tipenya per undangan: video (default, backward-compatible dengan
 // heroVideoUrl lama), foto tunggal, slideshow foto yang crossfade bergantian,
 // atau warna solid polos (tanpa video/foto sama sekali).
-export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages, color }: Props) {
+export default function FixedBackground({ type = "video", videoSrc, imageSrc, slideshowImages, color, column }: Props) {
+  const wrapper = column ? "fixed inset-y-0 left-0 right-0 md:left-auto md:w-[30%] -z-10" : "fixed inset-0 -z-10";
+
   if (type === "color") {
-    return <div className="fixed inset-0 -z-10" style={{ backgroundColor: color || "#000000" }} />;
+    return <div className={wrapper} style={{ backgroundColor: color || "#000000" }} />;
   }
 
   if (type === "image") {
     return (
-      <div className="fixed inset-0 -z-10 overflow-hidden">
+      <div className={`${wrapper} overflow-hidden`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imageSrc || DEFAULT_BACKGROUND_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-groove-stone/45" />
@@ -37,13 +47,13 @@ export default function FixedBackground({ type = "video", videoSrc, imageSrc, sl
 
   if (type === "slideshow") {
     const images = slideshowImages?.length ? slideshowImages : [DEFAULT_BACKGROUND_IMAGE];
-    return <SlideshowBackground images={images} />;
+    return <SlideshowBackground images={images} wrapperClassName={wrapper} />;
   }
 
   const youtubeId = videoSrc ? getYouTubeVideoId(videoSrc) : null;
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
+    <div className={`${wrapper} overflow-hidden`}>
       {/* Video sendiri tetap tajam (gate & hero lihat video apa adanya). Blur untuk
           section sesudah hero dipasang lewat satu wrapper backdrop-filter di
           MuseTemplate (.groove-page-blur), bukan di sini. */}
@@ -72,7 +82,7 @@ export default function FixedBackground({ type = "video", videoSrc, imageSrc, sl
   );
 }
 
-function SlideshowBackground({ images }: { images: string[] }) {
+function SlideshowBackground({ images, wrapperClassName }: { images: string[]; wrapperClassName: string }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -81,7 +91,7 @@ function SlideshowBackground({ images }: { images: string[] }) {
   }, [images.length]);
 
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden">
+    <div className={`${wrapperClassName} overflow-hidden`}>
       <AnimatePresence initial={false}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <motion.img

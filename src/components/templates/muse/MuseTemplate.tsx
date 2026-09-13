@@ -113,6 +113,9 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
         imageSrc={data.backgroundImage}
         slideshowImages={data.backgroundSlideshowImages}
         color={data.backgroundColor}
+        // Gate Muse fullscreen (menutupi kolom sticky) sampai dibuka — background
+        // baru boleh menyempit ke kolom kanan begitu layout split kelihatan.
+        column={opened}
       />
 
       {/* LoadingScreen tetap fullscreen (bukan bagian kolom split) — baru

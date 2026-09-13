@@ -8,7 +8,10 @@ export default function PlaceholderPhoto({ label, className = "" }: { label?: st
   );
 }
 
-// Klip stok gratis (Mixkit, no watermark) — sinar matahari menembus dedaunan pohon,
-// nuansa lebih related ke wedding — dipakai sebagai video hero default kalau admin
-// belum isi `heroVideoUrl` dengan footage venue asli.
-export const DEFAULT_HERO_VIDEO_URL = "https://assets.mixkit.co/videos/34371/34371-720.mp4";
+// Klip stok gratis (Mixkit, no watermark), portrait 1080x1920 — bule kaca
+// champagne bertoast, nuansa hangat golden & romantis — dipakai sebagai video
+// hero default kalau admin belum isi `heroVideoUrl` dengan footage venue asli.
+// Sengaja portrait (bukan landscape) karena di layout split kolom, video ini
+// cuma kelihatan lewat kolom kanan 30% (lihat FixedBackground prop `column`)
+// yang bentuknya sempit-memanjang — portrait crop lebih pas & center-nya benar.
+export const DEFAULT_HERO_VIDEO_URL = "https://assets.mixkit.co/videos/22738/22738-720.mp4";
