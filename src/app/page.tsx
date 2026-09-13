@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
@@ -157,12 +156,6 @@ export default async function HomePage() {
                 >
                   Buat Undangan
                 </a>
-                <Link
-                  href="/contoh-undangan"
-                  className="px-6 py-3 groove-glass-dark rounded-full text-white text-sm font-semibold hover:bg-white/10 transition"
-                >
-                  Lihat Contoh Undangan
-                </Link>
               </div>
             </div>
           </div>
