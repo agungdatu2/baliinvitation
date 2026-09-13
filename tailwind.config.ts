@@ -38,15 +38,9 @@ const config: Config = {
       },
       keyframes: {
         fadeIn: { from: { opacity: "0" }, to: { opacity: "1" } },
-        // Track berisi list konten diduplikasi 2x, jadi geser -50% pas balik
-        // ke posisi awal yang identik = loop mulus tanpa "lompat".
-        "groove-marquee": { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
       },
       animation: {
         fadeIn: "fadeIn 0.8s ease-in-out",
-        // Durasi panjang + linear supaya kecepatannya konstan & pelan ("elegant"),
-        // bukan ngebut lalu nyentak balik ke awal.
-        "groove-marquee": "groove-marquee 100s linear infinite",
       },
     },
   },
