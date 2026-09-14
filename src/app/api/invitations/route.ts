@@ -94,6 +94,7 @@ export async function POST(req: NextRequest) {
       hiddenSections: d.hiddenSections,
       eventDate: new Date(d.eventDate),
       galleryImages: d.galleryImages,
+      galleryStyle: d.galleryStyle,
       loveStory: d.loveStory,
       events: d.events,
       bankAccounts: d.bankAccounts,

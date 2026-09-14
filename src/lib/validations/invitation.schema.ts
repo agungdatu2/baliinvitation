@@ -88,6 +88,7 @@ export const invitationSchema = z.object({
   eventDate: z.string().min(1, "Tanggal acara utama wajib diisi"),
 
   galleryImages: z.array(z.string()).default([]),
+  galleryStyle: z.enum(["default", "masonry", "grid"]).default("default"),
   loveStory: z.array(loveStoryItemSchema).default([]),
   events: z.array(eventItemSchema).default([]),
   bankAccounts: z.array(bankAccountItemSchema).default([]),

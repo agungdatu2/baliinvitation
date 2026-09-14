@@ -261,7 +261,7 @@ export default function ReverieTemplate({ data, guestName, guestId }: TemplatePr
                     {!hidden.has("gallery") && (
                       <div id="gallery">
                         <Reveal>
-                          <Gallery images={visibleGalleryImages} lang={data.language} />
+                          <Gallery images={visibleGalleryImages} lang={data.language} style={data.galleryStyle} />
                         </Reveal>
                       </div>
                     )}

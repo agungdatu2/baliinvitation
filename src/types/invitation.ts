@@ -88,6 +88,10 @@ export interface InvitationData {
   eventDate: string; // ISO
 
   galleryImages: string[];
+  // Tampilan section Gallery — "default" = style asli tema (Lume: featured+masonry,
+  // Muse/Reverie: slideshow satu-per-satu), "masonry"/"grid" tampilkan semua foto
+  // sekaligus. Undefined = treated sebagai "default" (lihat Gallery.tsx tiap tema).
+  galleryStyle?: "default" | "masonry" | "grid";
   loveStory: LoveStoryItem[];
   events: EventItem[];
   bankAccounts: BankAccountItem[];

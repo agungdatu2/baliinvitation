@@ -12,7 +12,7 @@ export default function ThemePreviewPage({
   searchParams,
 }: {
   params: { key: string };
-  searchParams: { lang?: string; intro?: string; hidden?: string; bg?: string };
+  searchParams: { lang?: string; intro?: string; hidden?: string; bg?: string; gallery?: string };
 }) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
@@ -30,6 +30,10 @@ export default function ThemePreviewPage({
   // (default "video" kalau tidak di-set, sama seperti perilaku lama).
   const backgroundType: "video" | "image" | "slideshow" =
     searchParams.bg === "image" ? "image" : searchParams.bg === "slideshow" ? "slideshow" : "video";
+  // ?gallery=masonry / ?gallery=grid — test-only, coba style Gallery tanpa perlu
+  // bikin undangan asli (default "default" kalau tidak di-set).
+  const galleryStyle: "default" | "masonry" | "grid" =
+    searchParams.gallery === "masonry" ? "masonry" : searchParams.gallery === "grid" ? "grid" : "default";
 
   const eventDate = new Date();
   eventDate.setDate(eventDate.getDate() + 60);
@@ -152,6 +156,7 @@ export default function ThemePreviewPage({
     // instrumental harpa lembut yang related buat semua tema preview.
     musicUrl: "https://assets.mixkit.co/music/672/672.mp3",
     backgroundType,
+    galleryStyle,
     backgroundImage: "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1600&q=85",
     backgroundSlideshowImages: [
       "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1600&q=85",

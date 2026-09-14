@@ -259,7 +259,7 @@ export default function MuseTemplate({ data, guestName, guestId }: TemplateProps
                     {!hidden.has("gallery") && (
                       <div id="gallery">
                         <Reveal>
-                          <Gallery images={visibleGalleryImages} lang={data.language} />
+                          <Gallery images={visibleGalleryImages} lang={data.language} style={data.galleryStyle} />
                         </Reveal>
                       </div>
                     )}

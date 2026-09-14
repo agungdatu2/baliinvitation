@@ -14,10 +14,19 @@ function isVideoUrl(url: string) {
   return VIDEO_EXT_RE.test(url);
 }
 
-export default function Gallery({ images, lang }: { images: string[]; lang?: Lang }) {
+export type GalleryStyle = "default" | "masonry" | "grid";
+
+// "default"/"masonry" sama persis (style asli tema ini SUDAH masonry, jadi
+// admin pilih salah satu dari keduanya hasilnya identik) — cuma "grid" yang
+// benar-benar varian baru: sisa foto dipotong seragam aspect-square alih-alih
+// tinggi natural per foto. Video tetap jadi featured item terpisah di kedua
+// varian (bukan ikut masuk grid/masonry) supaya Lightbox (di bawah, image-only)
+// tidak perlu berubah.
+export default function Gallery({ images, lang, style = "default" }: { images: string[]; lang?: Lang; style?: GalleryStyle }) {
   const t = getDict(lang);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [videoPlaying, setVideoPlaying] = useState(false);
+  const isGrid = style === "grid";
 
   const usingPlaceholders = !images?.length;
 
@@ -64,23 +73,31 @@ export default function Gallery({ images, lang }: { images: string[]; lang?: Lan
           </div>
         )}
 
-        {/* Masonry (CSS columns, break-inside-avoid) untuk sisa foto */}
-        <div className="columns-2 md:columns-3 gap-2">
+        {/* Sisa foto: masonry (CSS columns, tinggi natural) atau grid (kotak seragam) */}
+        <div className={isGrid ? "grid grid-cols-2 md:grid-cols-3 gap-2" : "columns-2 md:columns-3 gap-2"}>
           {restImages.map((src, i) =>
             src ? (
               <button
                 key={i}
                 onClick={() => setLightboxIndex(i)}
-                className="block w-full mb-2 break-inside-avoid"
+                className={isGrid ? "relative block w-full aspect-square overflow-hidden" : "block w-full mb-2 break-inside-avoid"}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt={`gallery-${i}`} className="w-full h-auto object-cover" />
+                <img
+                  src={src}
+                  alt={`gallery-${i}`}
+                  className={isGrid ? "absolute inset-0 h-full w-full object-cover" : "w-full h-auto object-cover"}
+                />
               </button>
             ) : (
               <PlaceholderPhoto
                 key={i}
                 label={`${t.photo} ${i + 1}`}
-                className={`w-full mb-2 break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`}
+                className={
+                  isGrid
+                    ? "relative w-full aspect-square"
+                    : `w-full mb-2 break-inside-avoid ${PLACEHOLDER_HEIGHTS[i % PLACEHOLDER_HEIGHTS.length]}`
+                }
               />
             )
           )}

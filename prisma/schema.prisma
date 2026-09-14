@@ -180,6 +180,9 @@ model Invitation {
   eventDate     DateTime // tanggal utama acara (dipakai countdown)
 
   galleryImages Json     @default("[]") // string[] url foto
+  // Tampilan section Gallery — "default" (style asli tiap tema), "masonry", atau
+  // "grid" — lihat Gallery.tsx di masing-masing folder tema.
+  galleryStyle  String   @default("default")
   loveStory     Json     @default("[]") // { title: string; story: string }[]
   events        Json     @default("[]") // { name, date, timeStart, timeEnd, location, mapsUrl }[]
   bankAccounts  Json     @default("[]") // { bank, accountNumber, accountName }[]

@@ -197,6 +197,7 @@ export default async function InvitationPage({
     hiddenSections: (inv.hiddenSections as unknown as string[]) ?? [],
     eventDate: inv.eventDate.toISOString(),
     galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
+    galleryStyle: (inv.galleryStyle as InvitationData["galleryStyle"]) ?? "default",
     loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],
     events: (inv.events as unknown as InvitationData["events"]) ?? [],
     bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],

@@ -65,6 +65,7 @@ const defaultValues: InvitationFormValues = {
   hiddenSections: [],
   eventDate: "",
   galleryImages: [],
+  galleryStyle: "default",
   loveStory: [{ title: "", story: "" }],
   events: [
     { name: "Resepsi", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" },
@@ -553,6 +554,13 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             + Tambah Foto
           </button>
         </div>
+        <Field label="Tampilan Galeri (berlaku semua tema)">
+          <select {...register("galleryStyle")} className="input">
+            <option value="default">Bawaan Tema</option>
+            <option value="masonry">Masonry (kolom, tinggi natural)</option>
+            <option value="grid">Grid (kotak seragam)</option>
+          </select>
+        </Field>
         {gallery.fields.map((f, i) => (
           <div key={f.id} className="flex gap-2">
             <input {...register(`galleryImages.${i}` as const)} className="input flex-1" placeholder="https://..." />
