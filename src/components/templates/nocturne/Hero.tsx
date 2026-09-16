@@ -59,11 +59,12 @@ export default function Hero({ data }: { data: InvitationData }) {
         </p>
       </div>
 
-      {/* Marquee nama pasangan — paling bawah. overflow-x-hidden (BUKAN
-          overflow-hidden) supaya cuma horizontal yang kepotong buat efek
-          marquee-nya — overflow-hidden biasa juga motong vertikal, bikin
-          descender huruf italic (mis. ekor "y") kepotong. */}
-      <div className="absolute bottom-8 md:bottom-14 inset-x-0 overflow-x-hidden">
+      {/* Marquee nama pasangan — paling bawah. SENGAJA tanpa overflow di sini
+          (browser menganggap "overflow-x: hidden" tanpa overflow-y eksplisit
+          sebagai overflow-y: auto, yang tetap motong descender huruf italic
+          mis. ekor "y") — horizontal clipping buat efek marquee-nya cukup
+          diserahkan ke overflow-hidden section (jauh lebih tinggi, jadi aman). */}
+      <div className="absolute bottom-8 md:bottom-14 inset-x-0">
         <div className="flex w-max items-center gap-8 md:gap-12 whitespace-nowrap animate-nocturne-marquee">
           {loopedTrack.map((name, i) => (
             <span key={i} className="flex items-center gap-8 md:gap-12 shrink-0">
