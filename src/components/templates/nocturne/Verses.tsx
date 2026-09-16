@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useScroll, useMotionValueEvent, useTransform, motion, AnimatePresence } from "motion/react";
+import { useScroll, useMotionValueEvent, useTransform, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
 const IMAGE_COUNT = 5;
@@ -19,6 +19,11 @@ const DEFAULT_IMAGES = Array.from(
   { length: IMAGE_COUNT },
   (_, i) => `https://picsum.photos/seed/nocturne-verse-${i}/900/1200`
 );
+// Total geser track (dalam % lebar TRACK sendiri, bukan lebar jendela) supaya
+// foto terakhir pas berhenti di jendela — track lebarnya IMAGE_COUNT x jendela,
+// jadi tiap 1 foto = (100/IMAGE_COUNT)% dari track, total (IMAGE_COUNT-1) foto
+// yang perlu digeser.
+const TRACK_END_PCT = -((IMAGE_COUNT - 1) / IMAGE_COUNT) * 100;
 
 const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 
@@ -28,13 +33,12 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 // - Backdrop hitam + kutipan fade-in SEKALI di awal (Hero ketutup halus),
 //   lalu backdrop dikunci solid seterusnya (lihat `revealed` — begitu true,
 //   tidak pernah balik false walau scroll ke atas).
-// - Kartu foto kecil portrait di belakang kutipan, baru mulai tampil setelah
-//   fade awal itu tuntas. SETIAP pergantian foto (bukan cuma yang pertama)
-//   masuk dari kiri sambil fade-in, lalu keluar ke kanan sambil fade-out —
-//   seperti conveyor/slider yang jalan terus tiap 1/5 dari total scroll.
+// - Foto ditampilkan sebagai FILMSTRIP horizontal (kayak marquee) di jendela
+//   kecil portrait di belakang kutipan — seluruh track digeser terus-menerus
+//   mengikuti scroll (bukan potongan slide-masuk/slide-keluar per foto),
+//   jadi kelihatan "mengalir" halus dari satu foto ke foto berikutnya.
 export default function Verses({ data }: { data: InvitationData }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
@@ -44,10 +48,11 @@ export default function Verses({ data }: { data: InvitationData }) {
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const fadeIn = useTransform(scrollYProgress, [0, FADE_IN_END], [0, 1]);
+  // Track filmstrip cuma mulai bergerak SETELAH fade awal tuntas, lalu mengalir
+  // terus-menerus (bukan lompat per index) sampai akhir scroll section ini.
+  const trackX = useTransform(scrollYProgress, [FADE_IN_END, 1], ["0%", `${TRACK_END_PCT}%`]);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    const idx = Math.min(IMAGE_COUNT - 1, Math.max(0, Math.floor(v * IMAGE_COUNT)));
-    setActiveIndex(idx);
     if (v >= FADE_IN_END) setRevealed(true);
   });
 
@@ -63,28 +68,25 @@ export default function Verses({ data }: { data: InvitationData }) {
           <motion.div className="absolute inset-0 bg-black" style={{ opacity: fadeIn }} />
         )}
 
-        {/* Kartu foto kecil portrait — di belakang kutipan, baru dirender setelah
-            fade awal tuntas. Tiap ganti activeIndex: masuk dari kiri + fade-in,
-            keluar ke kanan + fade-out (AnimatePresence, bukan cuma toggle opacity). */}
-        {revealed && (
-          <div className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0">
-            <AnimatePresence initial={true}>
-              <motion.img
-                key={activeIndex}
-                src={images[activeIndex]}
-                alt=""
-                className="absolute inset-0 h-full w-full object-cover"
-                initial={{ x: "-100%", opacity: 0 }}
-                animate={{ x: "0%", opacity: 1 }}
-                exit={{ x: "100%", opacity: 0 }}
-                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
-              />
-            </AnimatePresence>
-            <div className="absolute inset-0 bg-black/25" />
-          </div>
-        )}
+        {/* Jendela kecil portrait — di belakang kutipan. Isinya filmstrip
+            (track) selebar IMAGE_COUNT x jendela, digeser terus mengikuti
+            scroll (style={{x: trackX}}) supaya kelihatan mengalir kayak marquee. */}
+        <motion.div
+          style={{ opacity: fadeIn }}
+          className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
+        >
+          <motion.div className="flex h-full" style={{ width: `${IMAGE_COUNT * 100}%`, x: trackX }}>
+            {images.map((src, i) => (
+              <div key={i} className="relative h-full shrink-0" style={{ width: `${100 / IMAGE_COUNT}%` }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover" />
+              </div>
+            ))}
+          </motion.div>
+          <div className="absolute inset-0 bg-black/25 pointer-events-none" />
+        </motion.div>
 
-        {/* Kutipan — overlay di atas kartu foto, center persis sama */}
+        {/* Kutipan — overlay di atas jendela foto, center persis sama */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
           <motion.p
             style={{ opacity: fadeIn }}
