@@ -8,6 +8,7 @@ import LoadingScreen from "./LoadingScreen";
 import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import Hero from "./Hero";
+import Verses from "./Verses";
 
 // Tema baru "Nocturne" (dark & moody, layout beda dari Lume/Reverie/Muse) —
 // sedang dibangun section per section bareng client. Baru ada LoadingScreen +
@@ -110,6 +111,7 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
           />
 
           <Hero data={data} />
+          <Verses data={data} />
         </div>
       )}
     </main>

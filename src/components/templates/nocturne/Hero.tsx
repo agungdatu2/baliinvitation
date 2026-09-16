@@ -23,7 +23,12 @@ export default function Hero({ data }: { data: InvitationData }) {
   const loopedTrack = [...track, ...track];
 
   return (
-    <section id="hero" className="relative h-[100svh] w-full overflow-hidden text-groove-bg">
+    // sticky (bukan cuma relative) — dibiarkan "nempel" di top:0 pas section
+    // sesudahnya (Verses) di-scroll, jadi Hero kelihatan ketutup pelan-pelan
+    // oleh background gelap Verses alih-alih langsung discroll lewat begitu
+    // saja. Cukup lewat urutan DOM + z-0 di sini / z-10 di Verses (elemen
+    // belakangan otomatis digambar di atas), tanpa perlu wrapper tambahan.
+    <section id="hero" className="sticky top-0 z-0 h-[100svh] w-full overflow-hidden text-groove-bg">
       {data.heroVideoUrl ? (
         <video
           src={data.heroVideoUrl}
