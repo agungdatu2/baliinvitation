@@ -39,9 +39,13 @@ const config: Config = {
       },
       keyframes: {
         fadeIn: { from: { opacity: "0" }, to: { opacity: "1" } },
+        // Track nama pasangan diduplikasi 2x di Hero Nocturne, jadi geser -50%
+        // pas balik ke posisi awal yang identik = loop mulus tanpa "lompat".
+        "nocturne-marquee": { from: { transform: "translateX(0)" }, to: { transform: "translateX(-50%)" } },
       },
       animation: {
         fadeIn: "fadeIn 0.8s ease-in-out",
+        "nocturne-marquee": "nocturne-marquee 28s linear infinite",
       },
     },
   },
