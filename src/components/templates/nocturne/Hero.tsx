@@ -18,7 +18,7 @@ export default function Hero({ data }: { data: InvitationData }) {
     year: "numeric",
   });
 
-  const nameTrack = `${data.groomNickname} – ${data.brideNickname}`;
+  const nameTrack = `${t.theWeddingOf} ${data.groomNickname} – ${data.brideNickname}`;
   const track = Array.from({ length: MARQUEE_REPEAT }, () => nameTrack);
   const loopedTrack = [...track, ...track];
 
@@ -59,8 +59,11 @@ export default function Hero({ data }: { data: InvitationData }) {
         </p>
       </div>
 
-      {/* Marquee nama pasangan — paling bawah */}
-      <div className="absolute bottom-8 md:bottom-14 inset-x-0 overflow-hidden">
+      {/* Marquee nama pasangan — paling bawah. overflow-x-hidden (BUKAN
+          overflow-hidden) supaya cuma horizontal yang kepotong buat efek
+          marquee-nya — overflow-hidden biasa juga motong vertikal, bikin
+          descender huruf italic (mis. ekor "y") kepotong. */}
+      <div className="absolute bottom-8 md:bottom-14 inset-x-0 overflow-x-hidden">
         <div className="flex w-max items-center gap-8 md:gap-12 whitespace-nowrap animate-nocturne-marquee">
           {loopedTrack.map((name, i) => (
             <span key={i} className="flex items-center gap-8 md:gap-12 shrink-0">
