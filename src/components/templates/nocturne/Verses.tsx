@@ -1,17 +1,16 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useScroll, useMotionValueEvent, useTransform, motion } from "motion/react";
+import { useScroll, useMotionValueEvent, useTransform, motion, AnimatePresence } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
 const IMAGE_COUNT = 5;
 // Fade backdrop hitam + kutipan (yang bikin efek "Hero ketutup halus") tuntas
-// di 12% pertama dari total scroll section ini (~60vh dari 500vh). Kartu foto
-// SENGAJA belum muncul sampai fade ini tuntas — baru geser masuk dari kiri
-// selama IMAGE_SLIDE_SPAN berikutnya, biar urutannya: background+teks dulu,
-// foto belakangan (bukan bareng-bareng).
+// di 12% pertama dari total scroll section ini (~60vh dari 500vh) — SEKALI
+// jalan di awal saja. Sesudah itu backdrop dikunci solid (bukan ikut computed
+// dari scroll lagi) supaya tidak pernah kelihatan transparan lagi walau
+// scroll naik-turun di dalam section ini.
 const FADE_IN_END = 0.12;
-const IMAGE_SLIDE_SPAN = 0.06;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.
@@ -25,14 +24,18 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 
 // Section "Verses" — scroll-driven: container-nya sengaja TINGGI (5x100vh),
 // isinya cuma satu viewport "sticky" yang nempel di layar selama scroll itu
-// berlangsung. Dua lapis animasi dikontrol scroll-progress yang sama:
-// 1. Backdrop hitam + kutipan fade-in halus di awal (bikin Hero yang sticky
-//    di section sebelumnya kelihatan "melebur" ke hitam, bukan ketutup mendadak).
-// 2. Kartu foto KECIL portrait (bukan full-bleed) di belakang kutipan, gantian
-//    tiap 1/5 dari total scroll (5 foto) — seperti slide.
+// berlangsung.
+// - Backdrop hitam + kutipan fade-in SEKALI di awal (Hero ketutup halus),
+//   lalu backdrop dikunci solid seterusnya (lihat `revealed` — begitu true,
+//   tidak pernah balik false walau scroll ke atas).
+// - Kartu foto kecil portrait di belakang kutipan, baru mulai tampil setelah
+//   fade awal itu tuntas. SETIAP pergantian foto (bukan cuma yang pertama)
+//   masuk dari kiri sambil fade-in, lalu keluar ke kanan sambil fade-out —
+//   seperti conveyor/slider yang jalan terus tiap 1/5 dari total scroll.
 export default function Verses({ data }: { data: InvitationData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [revealed, setRevealed] = useState(false);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
   const images = photoOnly.length
@@ -41,42 +44,45 @@ export default function Verses({ data }: { data: InvitationData }) {
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const fadeIn = useTransform(scrollYProgress, [0, FADE_IN_END], [0, 1]);
-  // Foto baru mulai geser masuk SETELAH fadeIn tuntas (bukan dari progress 0
-  // seperti backdrop/kutipan) — dari luar frame kiri (-60vw) ke posisi normal.
-  const imageX = useTransform(scrollYProgress, [FADE_IN_END, FADE_IN_END + IMAGE_SLIDE_SPAN], ["-60vw", "0vw"]);
-  const imageOpacity = useTransform(scrollYProgress, [FADE_IN_END, FADE_IN_END + IMAGE_SLIDE_SPAN / 2], [0, 1]);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const idx = Math.min(IMAGE_COUNT - 1, Math.max(0, Math.floor(v * IMAGE_COUNT)));
     setActiveIndex(idx);
+    if (v >= FADE_IN_END) setRevealed(true);
   });
 
   return (
     <div ref={containerRef} className="relative z-10" style={{ height: `${IMAGE_COUNT * 100}vh` }}>
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden flex items-center justify-center">
-        {/* Backdrop hitam — fade-in halus, BUKAN langsung opaque, supaya Hero
-            di baliknya kelihatan melebur pelan-pelan alih-alih ketutup mendadak. */}
-        <motion.div className="absolute inset-0 bg-black" style={{ opacity: fadeIn }} />
+        {/* Backdrop hitam — fade-in halus sekali di awal (Hero melebur ke hitam),
+            lalu dikunci bg-black solid (className, bukan style) begitu `revealed`
+            true, supaya tidak pernah transparan lagi setelahnya. */}
+        {revealed ? (
+          <div className="absolute inset-0 bg-black" />
+        ) : (
+          <motion.div className="absolute inset-0 bg-black" style={{ opacity: fadeIn }} />
+        )}
 
-        {/* Kartu foto kecil portrait — di belakang kutipan (layered, bukan full-bleed).
-            Geser masuk dari kiri (x: imageX) + fade (opacity: imageOpacity),
-            baru dimulai setelah backdrop/kutipan tuntas fade-in. */}
-        <motion.div
-          style={{ x: imageX, opacity: imageOpacity }}
-          className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
-        >
-          {images.map((src, i) => (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              key={i}
-              src={src}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out"
-              style={{ opacity: i === activeIndex ? 1 : 0 }}
-            />
-          ))}
-          <div className="absolute inset-0 bg-black/25" />
-        </motion.div>
+        {/* Kartu foto kecil portrait — di belakang kutipan, baru dirender setelah
+            fade awal tuntas. Tiap ganti activeIndex: masuk dari kiri + fade-in,
+            keluar ke kanan + fade-out (AnimatePresence, bukan cuma toggle opacity). */}
+        {revealed && (
+          <div className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0">
+            <AnimatePresence initial={true}>
+              <motion.img
+                key={activeIndex}
+                src={images[activeIndex]}
+                alt=""
+                className="absolute inset-0 h-full w-full object-cover"
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{ x: "0%", opacity: 1 }}
+                exit={{ x: "100%", opacity: 0 }}
+                transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
+              />
+            </AnimatePresence>
+            <div className="absolute inset-0 bg-black/25" />
+          </div>
+        )}
 
         {/* Kutipan — overlay di atas kartu foto, center persis sama */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
