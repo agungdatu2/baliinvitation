@@ -5,10 +5,13 @@ import { useScroll, useMotionValueEvent, useTransform, motion } from "motion/rea
 import { InvitationData } from "@/types/invitation";
 
 const IMAGE_COUNT = 5;
-// Fade backdrop hitam (yang bikin efek "Hero ketutup halus") tuntas di 12%
-// pertama dari total scroll section ini (~60vh dari 500vh) — sisanya (88%)
-// dipakai buat gilir 5 foto dengan tenang.
+// Fade backdrop hitam + kutipan (yang bikin efek "Hero ketutup halus") tuntas
+// di 12% pertama dari total scroll section ini (~60vh dari 500vh). Kartu foto
+// SENGAJA belum muncul sampai fade ini tuntas — baru geser masuk dari kiri
+// selama IMAGE_SLIDE_SPAN berikutnya, biar urutannya: background+teks dulu,
+// foto belakangan (bukan bareng-bareng).
 const FADE_IN_END = 0.12;
+const IMAGE_SLIDE_SPAN = 0.06;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.
@@ -38,6 +41,10 @@ export default function Verses({ data }: { data: InvitationData }) {
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   const fadeIn = useTransform(scrollYProgress, [0, FADE_IN_END], [0, 1]);
+  // Foto baru mulai geser masuk SETELAH fadeIn tuntas (bukan dari progress 0
+  // seperti backdrop/kutipan) — dari luar frame kiri (-60vw) ke posisi normal.
+  const imageX = useTransform(scrollYProgress, [FADE_IN_END, FADE_IN_END + IMAGE_SLIDE_SPAN], ["-60vw", "0vw"]);
+  const imageOpacity = useTransform(scrollYProgress, [FADE_IN_END, FADE_IN_END + IMAGE_SLIDE_SPAN / 2], [0, 1]);
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const idx = Math.min(IMAGE_COUNT - 1, Math.max(0, Math.floor(v * IMAGE_COUNT)));
@@ -51,8 +58,13 @@ export default function Verses({ data }: { data: InvitationData }) {
             di baliknya kelihatan melebur pelan-pelan alih-alih ketutup mendadak. */}
         <motion.div className="absolute inset-0 bg-black" style={{ opacity: fadeIn }} />
 
-        {/* Kartu foto kecil portrait — di belakang kutipan (layered, bukan full-bleed) */}
-        <div className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0">
+        {/* Kartu foto kecil portrait — di belakang kutipan (layered, bukan full-bleed).
+            Geser masuk dari kiri (x: imageX) + fade (opacity: imageOpacity),
+            baru dimulai setelah backdrop/kutipan tuntas fade-in. */}
+        <motion.div
+          style={{ x: imageX, opacity: imageOpacity }}
+          className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
+        >
           {images.map((src, i) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -64,7 +76,7 @@ export default function Verses({ data }: { data: InvitationData }) {
             />
           ))}
           <div className="absolute inset-0 bg-black/25" />
-        </div>
+        </motion.div>
 
         {/* Kutipan — overlay di atas kartu foto, center persis sama */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
