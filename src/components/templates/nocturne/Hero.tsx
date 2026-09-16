@@ -39,18 +39,11 @@ export default function Hero({ data }: { data: InvitationData }) {
       )}
       <div className="absolute inset-0 bg-groove-stone/45" />
 
-      {/* Eyebrow + tanggal — bertumpuk (kiri) di mobile supaya tidak numpuk kalau
-          teksnya kepanjangan, baru jadi kiri-kanan sejajar di desktop. Jarak kanan
-          desktop disengaja lega (md:right-24) supaya tidak ketiban tombol
-          hamburger NavMenu yang duduk di pojok kanan-atas juga. */}
-      <div className="absolute top-6 md:top-10 left-6 right-6 md:left-12 md:right-24 flex flex-col md:flex-row md:items-start md:justify-between gap-1">
-        <p className="font-groove-label text-xs md:text-sm uppercase tracking-[0.2em] text-groove-bg/90">
-          {t.theWeddingOf}
-        </p>
-        <p className="font-groove-label text-xs md:text-sm uppercase tracking-[0.2em] text-groove-bg/90 md:text-right">
-          {eventDateLabel}
-        </p>
-      </div>
+      {/* Tanggal — pojok kiri-atas (revisi: eyebrow "THE WEDDING OF" dihapus,
+          sudah redundan karena kalimat itu sekarang ada di teks marquee). */}
+      <p className="absolute top-6 md:top-10 left-6 md:left-12 font-groove-label text-xs md:text-sm uppercase tracking-[0.2em] text-groove-bg/90">
+        {eventDateLabel}
+      </p>
 
       {/* Kutipan — center layar */}
       <div className="absolute inset-0 flex items-center justify-center px-6 md:px-24">
