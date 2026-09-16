@@ -50,7 +50,7 @@ export default function ThemePreviewPage({
     language === "en"
       ? {
           guestName: "Guest",
-          quote: "Love that grows from simplicity, lasting in togetherness.",
+          quote: "Love is patient, love is kind. It does not envy, it does not boast, it is not proud. Love never fails.",
           greeting: "With heartfelt gratitude, we invite you to celebrate our special day with us.",
           loveStory: [
             { title: "First Met", story: "We were brought together at a family gathering in Bali, and our story began from there." },
@@ -62,7 +62,7 @@ export default function ThemePreviewPage({
         }
       : {
           guestName: "Tamu Undangan",
-          quote: "Cinta yang tumbuh dari kesederhanaan, abadi dalam kebersamaan.",
+          quote: "Kasih itu sabar, kasih itu murah hati. Ia tidak cemburu, ia tidak memegahkan diri dan tidak sombong. Kasih tidak berkesudahan.",
           greeting:
             "Om Swastyastu, dengan penuh rasa syukur kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.",
           loveStory: [
