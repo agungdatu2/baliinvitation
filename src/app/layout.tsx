@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script } from "next/font/google";
+import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script, Bodoni_Moda } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 
@@ -54,6 +54,16 @@ const dancingScript = Dancing_Script({
   weight: ["500", "600", "700"],
   variable: "--font-script",
 });
+// Dipakai khusus tema "Nocturne" — serif kontras tinggi (garis tebal-tipis
+// dramatis), sengaja beda keluarga dari Cormorant/Vogue/Cormorant Garamond yang
+// sudah dipakai 3 tema lain, supaya "dark & moody" Nocturne kerasa beda secara
+// tipografi walau palet warnanya masih berbagi token `groove-*` yang sama.
+const bodoniModa = Bodoni_Moda({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["italic", "normal"],
+  variable: "--font-nocturne-display",
+});
 
 export const metadata: Metadata = {
   // Wajib supaya og:image dengan URL relatif (mis. "/brand/logo.webp") di-resolve
@@ -75,7 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable} ${bodoniModa.variable}`}
     >
       <body>{children}</body>
     </html>

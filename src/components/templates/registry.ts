@@ -4,6 +4,7 @@ import LumeTemplate from "./lume/LumeTemplate";
 import ReverieTemplate from "./reverie/ReverieTemplate";
 import MuseTemplate from "./muse/MuseTemplate";
 import GrandOpeningTemplate from "./grand-opening/GrandOpeningTemplate";
+import NocturneTemplate from "./nocturne/NocturneTemplate";
 
 // Daftar semua template yang tersedia. Tambah template baru cukup:
 // 1. buat folder src/components/templates/<key>/
@@ -13,4 +14,7 @@ export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   reverie: ReverieTemplate,
   muse: MuseTemplate,
   "grand-opening": GrandOpeningTemplate,
+  // Belum didaftarkan ke Template DB (prisma/seed.ts) — masih dibangun section per
+  // section, jadi belum bisa dipilih di admin dashboard. Preview via /theme-preview/nocturne.
+  nocturne: NocturneTemplate,
 };
