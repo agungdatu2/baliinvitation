@@ -91,7 +91,7 @@ export default function NavMenu({
 
       <div
         style={{ backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}
-        className={`fixed top-0 left-0 z-40 w-full h-full sm:h-auto sm:max-h-[85vh] bg-groove-stone/40 border-b border-white/10 shadow-2xl transition-transform duration-500 ease-out flex flex-col justify-between p-8 md:p-10 ${
+        className={`fixed top-0 left-0 z-40 w-full h-full bg-groove-stone/40 border-b border-white/10 shadow-2xl transition-transform duration-500 ease-out flex flex-col justify-between p-8 md:p-10 ${
           open ? "translate-y-0" : "-translate-y-full"
         }`}
       >
