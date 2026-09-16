@@ -56,8 +56,11 @@ export default function SplashGate({
       <div className="absolute inset-0 bg-gradient-to-b from-groove-stone/55 via-groove-stone/15 to-groove-stone/60 -z-10" />
 
       <div className="relative z-10 h-full flex flex-col justify-between px-6 md:px-16 pt-14 md:pt-20 pb-14 md:pb-16">
-        {/* Blok judul — rata kiri */}
-        <div className="max-w-3xl">
+        {/* Blok judul — KOTAKNYA di-tengah halaman (mx-auto), tapi teks di dalamnya
+            tetap rata kiri (nama & eyebrow) dan tanggal rata kanan, sama seperti
+            referensi (revisi: sebelumnya kotak ini nempel ke padding kiri terluar,
+            bukan ke tengah). */}
+        <div className="max-w-3xl mx-auto">
           <p className="font-groove-body text-sm md:text-base text-groove-bg/85">{t.theWeddingOf}</p>
           <h1 className="mt-1 md:mt-2 font-nocturne-display italic text-5xl sm:text-6xl md:text-8xl leading-[0.95]">
             {groomNickname} <span className="text-groove-bg/70">–</span> {brideNickname}
