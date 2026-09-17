@@ -79,7 +79,7 @@ export default function Hero({ data }: { data: InvitationData }) {
 
       {/* Kutipan — center layar */}
       <div className="absolute inset-0 flex items-center justify-center px-6 md:px-24">
-        <p className="max-w-[250px] md:max-w-[290px] text-center font-groove-body text-sm md:text-base leading-relaxed text-groove-bg/90 whitespace-pre-line">
+        <p className="max-w-[300px] md:max-w-[420px] text-center font-groove-body text-base md:text-xl leading-relaxed text-groove-bg/90 whitespace-pre-line">
           {data.quote || t.defaultPrayerQuote}
         </p>
       </div>
