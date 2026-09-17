@@ -1,4 +1,4 @@
-import { useScroll, useTransform, motion } from "motion/react";
+import { useScroll, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
@@ -32,10 +32,14 @@ export default function Hero({ data }: { data: InvitationData }) {
   // yang sama terus, tidak pernah punya masalah timing dengan dirinya
   // sendiri). Dipakai scroll GLOBAL (window), BUKAN progress relatif ke
   // container Verses lagi — reaksinya jadi instan sejak scroll pertama,
-  // bukan nunggu 1 layar penuh discroll dulu. Tanpa spring juga (raw,
-  // langsung ngikut posisi scroll) supaya kerasa 1:1 responsif, tidak nge-lag.
+  // bukan nunggu 1 layar penuh discroll dulu.
   const { scrollY } = useScroll();
-  const heroDim = useTransform(scrollY, (px) => {
+  // Spring ringan (stiffness tinggi = tetap kerasa responsif/instan, damping
+  // di atas kritis = tidak mantul) di atas scrollY mentah — supaya lompatan
+  // scroll yang tidak rata (notch mouse wheel dst.) diikuti dengan gerakan
+  // yang mengalir, bukan patah-patah 1:1 per event scroll seperti sebelumnya.
+  const smoothScrollY = useSpring(scrollY, { stiffness: 300, damping: 30, mass: 0.5 });
+  const heroDim = useTransform(smoothScrollY, (px) => {
     const vh = typeof window !== "undefined" ? window.innerHeight : 800;
     return Math.min(1, Math.max(0, px / (vh * ENTRY_DIM_VH)));
   });
