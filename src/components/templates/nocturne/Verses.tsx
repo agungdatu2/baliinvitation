@@ -14,9 +14,10 @@ const VH_PER_IMAGE = 160;
 //    Kutipan & foto masih disembunyikan total di tahap ini.
 // 2) Baru SESUDAH hitam penuh, kutipan (dan foto pertama) fade-in di atas
 //    layar hitam itu (HERO_DIM_END -> CONTENT_IN_END).
-// Keduanya SEKALI jalan di awal saja — sesudah itu backdrop dikunci solid
-// (lihat `revealed`) supaya tidak pernah kelihatan transparan lagi walau
-// scroll naik-turun di dalam section ini.
+// Keduanya SEPENUHNYA REAKTIF ke posisi scroll (bukan animasi sekali jalan
+// yang dikunci) — scroll ke atas HARUS membalikkan efeknya lagi (Hero kembali
+// kelihatan, kutipan/foto fade-out), persis seperti scroll ke bawah tapi
+// terbalik. Jangan ditambah lock/ratchet di sini lagi.
 // Diekspor supaya Hero bisa pakai titik yang SAMA persis buat overlay
 // peredupannya sendiri (lihat komentar di Hero.tsx).
 // Kecil (dekat ke 0) SENGAJA — supaya jarak scroll dari Hero sampai section
@@ -39,9 +40,8 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 // Section "Verses" — scroll-driven: container-nya sengaja TINGGI (5x100vh),
 // isinya cuma satu viewport "sticky" yang nempel di layar selama scroll itu
 // berlangsung.
-// - Backdrop hitam + kutipan fade-in SEKALI di awal (Hero ketutup halus),
-//   lalu backdrop dikunci solid seterusnya (lihat `revealed` — begitu true,
-//   tidak pernah balik false walau scroll ke atas).
+// - Backdrop hitam + kutipan fade-in/out SEPENUHNYA MENGIKUTI posisi scroll
+//   (dua arah — scroll ke atas beneran membalikkan animasinya).
 // - Kartu foto kecil portrait MELINTASI SELURUH LEBAR LAYAR (dari luar tepi
 //   kiri ke luar tepi kanan, lewat tengah pas di belakang kutipan) — bukan
 //   cuma bergeser sedikit di jendela kecil. Sisa scroll (setelah fade awal)
@@ -60,11 +60,6 @@ interface VersesProps {
 }
 
 export default function Verses({ data, containerRef }: VersesProps) {
-  const [revealed, setRevealed] = useState(false);
-  // Dikunci begitu kutipan+foto pertama selesai fade-in, sama alasannya
-  // dengan `revealed` — tanpa ini, scroll balik ke atas sedikit bikin
-  // kutipan/foto ikut fade-out lagi (kerasa seperti animasi mengulang).
-  const [contentRevealed, setContentRevealed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
@@ -75,7 +70,8 @@ export default function Verses({ data, containerRef }: VersesProps) {
   const { scrollYProgress: rawProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
   // Spring lebih lembut (stiffness lebih rendah, damping tinggi = overdamped,
   // tidak mantul) — biar gerakannya kerasa mengalir/elastis, bukan lompat
-  // kaku 1:1 per pixel scroll.
+  // kaku 1:1 per pixel scroll. Tetap dua arah — scroll ke atas ikut di-spring
+  // balik ke posisi sebelumnya juga.
   const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
   // Tahap 1 — Hero meredup jadi hitam. Ini SATU-SATUNYA yang menggerakkan
   // opacity backdrop, jadi kutipan/foto belum ikut nongol di tahap ini.
@@ -120,8 +116,6 @@ export default function Verses({ data, containerRef }: VersesProps) {
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v >= HERO_DIM_END) setRevealed(true);
-    if (v >= CONTENT_IN_END) setContentRevealed(true);
     const local = Math.max(0, (v - CONTENT_IN_END) / (1 - CONTENT_IN_END)) * IMAGE_COUNT;
     setActiveIndex(Math.min(IMAGE_COUNT - 1, Math.floor(local)));
   });
@@ -129,20 +123,14 @@ export default function Verses({ data, containerRef }: VersesProps) {
   return (
     <div ref={containerRef} className="relative z-10" style={{ height: `${IMAGE_COUNT * VH_PER_IMAGE}vh` }}>
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden flex items-center justify-center">
-        {/* Backdrop hitam — fade-in halus sekali di awal (Hero melebur ke hitam),
-            lalu dikunci bg-black solid (className, bukan style) begitu `revealed`
-            true, supaya tidak pernah transparan lagi setelahnya. */}
-        {revealed ? (
-          <div className="absolute inset-0 bg-black" />
-        ) : (
-          <motion.div className="absolute inset-0 bg-black" style={{ opacity: heroDim }} />
-        )}
+        {/* Backdrop hitam — opacity ngikutin scroll dua arah (bukan dikunci). */}
+        <motion.div className="absolute inset-0 bg-black" style={{ opacity: heroDim }} />
 
         {/* Kartu foto kecil portrait — posisi rest-nya di tengah (flex child
             biasa, BUKAN absolute, supaya `x` di bawah ini murni jadi OFFSET
             dari posisi tengah itu, bukan ketiban logic centering lain). */}
         <motion.div
-          style={{ x: imageX, opacity: contentRevealed ? lapOpacity : imageOpacity }}
+          style={{ x: imageX, opacity: imageOpacity }}
           className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -154,7 +142,7 @@ export default function Verses({ data, containerRef }: VersesProps) {
             foto yang lewat di belakangnya) */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
           <motion.p
-            style={{ opacity: contentRevealed ? 1 : contentFade }}
+            style={{ opacity: contentFade }}
             className="max-w-xs sm:max-w-sm md:max-w-lg text-center font-nocturne-display italic text-xl sm:text-2xl md:text-4xl leading-snug text-groove-primary-light"
           >
             {data.quote || DEFAULT_VERSE}
