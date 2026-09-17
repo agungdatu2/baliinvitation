@@ -7,11 +7,13 @@ import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
 const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=85";
-// Tinggi container lebih dari 100vh — 60vh pertama dipakai buat reveal masuk
-// (foto zoom-out + fade konten), sisanya cuma "menahan" tampilan sticky-nya
-// sampai user selesai scroll ke section berikutnya.
-const SECTION_VH = 160;
-const REVEAL_END = 0.35;
+// Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk
+// (foto zoom-out + fade konten). Sebelumnya cuma 60vh extra & REVEAL_END
+// 0.35 (~145px reveal) — jauh lebih pendek/buru-buru dibanding peredupan
+// Hero (~625px, ~0.9 layar) jadi kerasa gak sehalus Hero. Dinaikkan supaya
+// jarak reveal-nya sepadan (~0.85 x 100vh extra ≈ 1 layar, mirip Hero).
+const SECTION_VH = 200;
+const REVEAL_END = 0.85;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
