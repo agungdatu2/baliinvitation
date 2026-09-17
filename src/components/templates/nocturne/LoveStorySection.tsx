@@ -15,7 +15,12 @@ const REVEAL_END = 0.85;
 // Foto berganti otomatis (timer), LEPAS dari posisi scroll — bukan ngikutin
 // slide seperti sebelumnya. Tiap foto zoom-out terus-menerus selama jatah
 // tampilnya, lalu crossfade ke foto berikutnya yang mulai zoom lagi.
-const PHOTO_INTERVAL_MS = 3500;
+// Dicek langsung dari referensi (groovepublic.com/claire, section "A Journey
+// in Love") — slideshow-nya pakai slide_duration 100ms + transition_duration
+// 100ms (~200ms total per foto), jauh lebih cepat dari percobaan pertama
+// (3500ms). Disamakan di sini.
+const PHOTO_INTERVAL_MS = 200;
+const CROSSFADE_MS = 150;
 const IMAGE_SCALE_START = 1.25;
 
 const DEFAULT_IMAGES = Array.from(
@@ -73,7 +78,7 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{
-                opacity: { duration: 1, ease: "easeOut" },
+                opacity: { duration: CROSSFADE_MS / 1000, ease: "linear" },
                 scale: { duration: PHOTO_INTERVAL_MS / 1000, ease: "linear" },
               }}
               className="absolute inset-0 h-full w-full object-cover"
