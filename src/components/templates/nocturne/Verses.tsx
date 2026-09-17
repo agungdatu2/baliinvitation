@@ -19,8 +19,12 @@ const VH_PER_IMAGE = 160;
 // scroll naik-turun di dalam section ini.
 // Diekspor supaya Hero bisa pakai titik yang SAMA persis buat overlay
 // peredupannya sendiri (lihat komentar di Hero.tsx).
-export const HERO_DIM_END = 0.07;
-const CONTENT_IN_END = 0.15;
+// Kecil (dekat ke 0) SENGAJA — supaya jarak scroll dari Hero sampai section
+// ini kelihatan penuh tidak kelamaan. Ini fraksi dari total tinggi scroll
+// section ini (IMAGE_COUNT * VH_PER_IMAGE), jadi menaikkan VH_PER_IMAGE
+// tidak ikut memperlambat transisi masuk ini.
+export const HERO_DIM_END = 0.035;
+const CONTENT_IN_END = 0.07;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.
@@ -57,6 +61,10 @@ interface VersesProps {
 
 export default function Verses({ data, containerRef }: VersesProps) {
   const [revealed, setRevealed] = useState(false);
+  // Dikunci begitu kutipan+foto pertama selesai fade-in, sama alasannya
+  // dengan `revealed` — tanpa ini, scroll balik ke atas sedikit bikin
+  // kutipan/foto ikut fade-out lagi (kerasa seperti animasi mengulang).
+  const [contentRevealed, setContentRevealed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
@@ -113,6 +121,7 @@ export default function Verses({ data, containerRef }: VersesProps) {
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     if (v >= HERO_DIM_END) setRevealed(true);
+    if (v >= CONTENT_IN_END) setContentRevealed(true);
     const local = Math.max(0, (v - CONTENT_IN_END) / (1 - CONTENT_IN_END)) * IMAGE_COUNT;
     setActiveIndex(Math.min(IMAGE_COUNT - 1, Math.floor(local)));
   });
@@ -133,7 +142,7 @@ export default function Verses({ data, containerRef }: VersesProps) {
             biasa, BUKAN absolute, supaya `x` di bawah ini murni jadi OFFSET
             dari posisi tengah itu, bukan ketiban logic centering lain). */}
         <motion.div
-          style={{ x: imageX, opacity: imageOpacity }}
+          style={{ x: imageX, opacity: contentRevealed ? lapOpacity : imageOpacity }}
           className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -145,7 +154,7 @@ export default function Verses({ data, containerRef }: VersesProps) {
             foto yang lewat di belakangnya) */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
           <motion.p
-            style={{ opacity: contentFade }}
+            style={{ opacity: contentRevealed ? 1 : contentFade }}
             className="max-w-xs sm:max-w-sm md:max-w-lg text-center font-nocturne-display italic text-xl sm:text-2xl md:text-4xl leading-snug text-groove-primary-light"
           >
             {data.quote || DEFAULT_VERSE}

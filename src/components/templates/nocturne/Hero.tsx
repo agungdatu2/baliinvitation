@@ -1,5 +1,5 @@
-import { RefObject } from "react";
-import { useScroll, useTransform, useSpring, motion } from "motion/react";
+import { RefObject, useState } from "react";
+import { useScroll, useMotionValueEvent, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 import { HERO_DIM_END } from "./Verses";
@@ -40,6 +40,15 @@ export default function Hero({ data, versesContainerRef }: HeroProps) {
   });
   const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
   const heroDim = useTransform(scrollYProgress, [0, HERO_DIM_END], [0, 1]);
+  // Sekali gelap total, DIKUNCI (sama seperti backdrop Verses) — supaya
+  // scroll balik ke atas sedikit saja tidak langsung mengulang animasi
+  // peredupan secara terbalik (dulu heroDim murni fungsi dari posisi scroll,
+  // jadi scroll mundur bikin Hero "muncul lagi" pelan-pelan, kerasa seperti
+  // animasinya mainan berulang).
+  const [dimmed, setDimmed] = useState(false);
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (v >= HERO_DIM_END) setDimmed(true);
+  });
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
     day: "numeric",
@@ -103,9 +112,15 @@ export default function Hero({ data, versesContainerRef }: HeroProps) {
 
       {/* Overlay peredupan — di atas SEGALANYA di dalam Hero (background,
           tanggal, kutipan, marquee ikut meredup bareng), opacity 0 -> 1
-          ngikutin scroll masuk ke Verses. pointer-events-none supaya nav/menu
-          Hero tetap bisa diklik selama overlay belum solid. */}
-      <motion.div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: heroDim }} />
+          ngikutin scroll masuk ke Verses, lalu dikunci solid (div biasa,
+          bukan motion) begitu `dimmed` true supaya tidak pernah "muncul lagi"
+          walau scroll dibalik. pointer-events-none supaya nav/menu Hero tetap
+          bisa diklik selama overlay belum solid. */}
+      {dimmed ? (
+        <div className="absolute inset-0 bg-black pointer-events-none" />
+      ) : (
+        <motion.div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: heroDim }} />
+      )}
     </section>
   );
 }
