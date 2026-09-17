@@ -11,6 +11,7 @@ import Hero from "./Hero";
 import Verses from "./Verses";
 import GroomSection from "./GroomSection";
 import BrideSection from "./BrideSection";
+import LoveStorySection from "./LoveStorySection";
 
 // Tema baru "Nocturne" (dark & moody, layout beda dari Lume/Reverie/Muse) —
 // sedang dibangun section per section bareng client. Baru ada LoadingScreen +
@@ -116,6 +117,7 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
           <Verses data={data} />
           <GroomSection data={data} />
           <BrideSection data={data} />
+          <LoveStorySection data={data} />
         </div>
       )}
     </main>
