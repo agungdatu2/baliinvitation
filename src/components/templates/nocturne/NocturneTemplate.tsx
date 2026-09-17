@@ -13,11 +13,16 @@ import GroomSection from "./GroomSection";
 import BrideSection from "./BrideSection";
 import LoveStorySection from "./LoveStorySection";
 import LoveStoryList from "./LoveStoryList";
+import SaveTheDateSection from "./SaveTheDateSection";
+import WeddingDetails from "./WeddingDetails";
+import WeddingGift from "./WeddingGift";
+import RSVPForm from "./RSVPForm";
+import ClosingFooter from "./ClosingFooter";
 
 // Tema baru "Nocturne" (dark & moody, layout beda dari Lume/Reverie/Muse) —
 // sedang dibangun section per section bareng client. Baru ada LoadingScreen +
 // SplashGate + NavMenu + Hero; section lain menyusul satu-satu.
-export default function NocturneTemplate({ data, guestName }: TemplateProps) {
+export default function NocturneTemplate({ data, guestName, guestId }: TemplateProps) {
   const [showLoading, setShowLoading] = useState(Boolean(data.hasIntro));
   const [opened, setOpened] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
@@ -120,6 +125,19 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
           <BrideSection data={data} />
           <LoveStorySection data={data} />
           <LoveStoryList data={data} />
+          <SaveTheDateSection data={data} />
+          <WeddingDetails data={data} />
+          {data.bankAccounts && data.bankAccounts.length > 0 && (
+            <WeddingGift accounts={data.bankAccounts} image={data.reverieSaveTheDateImage} lang={data.language} />
+          )}
+          <RSVPForm
+            invitationId={data.id ?? data.slug}
+            guestName={guestName}
+            guestId={guestId}
+            lang={data.language}
+            initialWishes={data.initialWishes}
+          />
+          <ClosingFooter data={data} />
         </div>
       )}
     </main>
