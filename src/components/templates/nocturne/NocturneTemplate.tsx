@@ -18,10 +18,6 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
   const [opened, setOpened] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  // Di-lift ke sini (bukan dibuat sendiri-sendiri di Hero/Verses) supaya
-  // keduanya ngukur progress scroll dari SATU sumber yang identik — Hero
-  // butuh ini buat overlay peredupannya sendiri, lihat komentar di Hero.tsx.
-  const versesContainerRef = useRef<HTMLDivElement>(null);
 
   const visibleGalleryImages = data.maxGalleryImages
     ? data.galleryImages.slice(0, data.maxGalleryImages)
@@ -114,8 +110,8 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
             hiddenSections={data.hiddenSections}
           />
 
-          <Hero data={data} versesContainerRef={versesContainerRef} />
-          <Verses data={data} containerRef={versesContainerRef} />
+          <Hero data={data} />
+          <Verses data={data} />
         </div>
       )}
     </main>

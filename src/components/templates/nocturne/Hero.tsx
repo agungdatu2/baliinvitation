@@ -1,26 +1,24 @@
-import { RefObject } from "react";
-import { useScroll, useTransform, useSpring, motion } from "motion/react";
+import { useScroll, useTransform, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
-import { HERO_DIM_END } from "./Verses";
 
 const DEFAULT_BACKGROUND = "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=85";
 const MARQUEE_REPEAT = 4;
-
-interface HeroProps {
-  data: InvitationData;
-  // Ref ke container Verses (di-lift dari NocturneTemplate) — dipakai buat
-  // ngukur progress scroll masuk ke Verses, SUMBER YANG SAMA dengan yang
-  // dipakai Verses sendiri untuk tahap "hero meredup"-nya (lihat HERO_DIM_END).
-  versesContainerRef: RefObject<HTMLDivElement>;
-}
+// Hero dianggap gelap total setelah discroll sejauh ini kali TINGGI VIEWPORT
+// (bukan fraksi dari total tinggi section Verses) — supaya peredupan mulai
+// PERSIS dari scroll pixel pertama (scrollY global, Hero mulai di documentY
+// 0), bukan baru mulai setelah 1 layar penuh discroll dulu. Sebelumnya
+// progress dihitung relatif ke container Verses (baru mulai di v=0 SETELAH
+// tinggi Hero penuh discroll), jadi beberapa scroll pertama di Hero terasa
+// tidak ada perubahan sama sekali.
+const ENTRY_DIM_VH = 0.9;
 
 // Hero tema Nocturne — background video/foto full-bleed, eyebrow "THE WEDDING
 // OF" kiri-atas + tanggal kanan-atas (persis referensi client), kutipan CENTER
 // di tengah layar (revisi dari referensi yang rata kiri), dan nama pasangan
 // RAKSASA berjalan sebagai marquee di PALING BAWAH (revisi — di referensi
 // marquee ada di tengah, kutipan di bawahnya; di sini ditukar).
-export default function Hero({ data, versesContainerRef }: HeroProps) {
+export default function Hero({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
 
   // Overlay hitam Hero SENDIRI (bukan titip ke backdrop section Verses) —
@@ -32,16 +30,15 @@ export default function Hero({ data, versesContainerRef }: HeroProps) {
   // gelap — keliatan seperti sambungan/seam yang kasar.
   // Fix: taruh overlay peredupannya DI HERO SENDIRI (elemen sticky full-layar
   // yang sama terus, tidak pernah punya masalah timing dengan dirinya
-  // sendiri), pakai sumber scroll-progress yang SAMA (containerRef Verses)
-  // supaya waktunya identik dengan tahap 1 punya Verses.
-  const { scrollYProgress: rawProgress } = useScroll({
-    target: versesContainerRef,
-    offset: ["start start", "end end"],
+  // sendiri). Dipakai scroll GLOBAL (window), BUKAN progress relatif ke
+  // container Verses lagi — reaksinya jadi instan sejak scroll pertama,
+  // bukan nunggu 1 layar penuh discroll dulu. Tanpa spring juga (raw,
+  // langsung ngikut posisi scroll) supaya kerasa 1:1 responsif, tidak nge-lag.
+  const { scrollY } = useScroll();
+  const heroDim = useTransform(scrollY, (px) => {
+    const vh = typeof window !== "undefined" ? window.innerHeight : 800;
+    return Math.min(1, Math.max(0, px / (vh * ENTRY_DIM_VH)));
   });
-  const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
-  // Reaktif dua arah SENGAJA (bukan dikunci) — scroll ke atas harus benar-benar
-  // membalikkan peredupan ini, Hero kembali kelihatan.
-  const heroDim = useTransform(scrollYProgress, [0, HERO_DIM_END], [0, 1]);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
     day: "numeric",
@@ -105,9 +102,9 @@ export default function Hero({ data, versesContainerRef }: HeroProps) {
 
       {/* Overlay peredupan — di atas SEGALANYA di dalam Hero (background,
           tanggal, kutipan, marquee ikut meredup bareng), opacity 0 -> 1
-          ngikutin scroll masuk ke Verses, DUA ARAH (scroll ke atas beneran
-          balik terang lagi). pointer-events-none supaya nav/menu Hero tetap
-          bisa diklik selama overlay belum solid. */}
+          ngikutin scroll GLOBAL sejak pixel pertama, DUA ARAH (scroll ke atas
+          beneran balik terang lagi). pointer-events-none supaya nav/menu Hero
+          tetap bisa diklik selama overlay belum solid. */}
       <motion.div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: heroDim }} />
     </section>
   );

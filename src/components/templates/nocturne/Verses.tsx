@@ -1,6 +1,6 @@
 "use client";
 
-import { RefObject, useState } from "react";
+import { useRef, useState } from "react";
 import { useScroll, useMotionValueEvent, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
@@ -18,13 +18,14 @@ const VH_PER_IMAGE = 160;
 // yang dikunci) — scroll ke atas HARUS membalikkan efeknya lagi (Hero kembali
 // kelihatan, kutipan/foto fade-out), persis seperti scroll ke bawah tapi
 // terbalik. Jangan ditambah lock/ratchet di sini lagi.
-// Diekspor supaya Hero bisa pakai titik yang SAMA persis buat overlay
-// peredupannya sendiri (lihat komentar di Hero.tsx).
-// Kecil (dekat ke 0) SENGAJA — supaya jarak scroll dari Hero sampai section
-// ini kelihatan penuh tidak kelamaan. Ini fraksi dari total tinggi scroll
-// section ini (IMAGE_COUNT * VH_PER_IMAGE), jadi menaikkan VH_PER_IMAGE
-// tidak ikut memperlambat transisi masuk ini.
-export const HERO_DIM_END = 0.035;
+// Kecil (dekat ke 0) SENGAJA — supaya jarak scroll dari container ini mulai
+// sampai section ini kelihatan penuh tidak kelamaan. Ini fraksi dari total
+// tinggi scroll section ini (IMAGE_COUNT * VH_PER_IMAGE), jadi menaikkan
+// VH_PER_IMAGE tidak ikut memperlambat transisi masuk ini. Peredupan Hero
+// sendiri sekarang independen (lihat ENTRY_DIM_VH di Hero.tsx) — dua-duanya
+// tidak lagi perlu sinkron persis karena backdrop di sini cuma "backup" solid
+// hitam (Hero sendiri sudah gelap duluan lewat overlay-nya sendiri).
+const HERO_DIM_END = 0.035;
 const CONTENT_IN_END = 0.07;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
@@ -49,17 +50,8 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 //   lalu foto berikutnya mulai dari kiri lagi — terus-menerus mengikuti
 //   scroll (bukan animasi berbasis waktu), jadi kelihatan mengalir kayak
 //   marquee raksasa selebar layar.
-interface VersesProps {
-  data: InvitationData;
-  // Ref ke container luar (yang tinggi, non-sticky) di-lift ke NocturneTemplate
-  // supaya Hero.tsx bisa pakai sumber scroll-progress yang SAMA PERSIS untuk
-  // overlay peredupannya sendiri — lihat komentar di Hero.tsx kenapa ini
-  // penting (dulu overlay hidup di sini, foto Hero-nya masih sempat kelihatan
-  // "nyempil" sesaat sebelum section ini benar-benar menutup penuh).
-  containerRef: RefObject<HTMLDivElement>;
-}
-
-export default function Verses({ data, containerRef }: VersesProps) {
+export default function Verses({ data }: { data: InvitationData }) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
