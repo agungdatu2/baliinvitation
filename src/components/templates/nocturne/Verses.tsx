@@ -9,12 +9,16 @@ const IMAGE_COUNT = 5;
 // lebih panjang (kerasa lebih pelan/halus), bukan lewat cuma dalam 1 gulungan
 // scroll singkat.
 const VH_PER_IMAGE = 160;
-// Fade backdrop hitam + kutipan (yang bikin efek "Hero ketutup halus") tuntas
-// di 12% pertama dari total scroll section ini (~60vh dari 500vh) — SEKALI
-// jalan di awal saja. Sesudah itu backdrop dikunci solid (bukan ikut computed
-// dari scroll lagi) supaya tidak pernah kelihatan transparan lagi walau
+// Transisi masuk section ini dipecah 2 tahap berurutan (bukan barengan):
+// 1) Hero meredup pelan-pelan sampai BENAR-BENAR HITAM (0 -> HERO_DIM_END).
+//    Kutipan & foto masih disembunyikan total di tahap ini.
+// 2) Baru SESUDAH hitam penuh, kutipan (dan foto pertama) fade-in di atas
+//    layar hitam itu (HERO_DIM_END -> CONTENT_IN_END).
+// Keduanya SEKALI jalan di awal saja — sesudah itu backdrop dikunci solid
+// (lihat `revealed`) supaya tidak pernah kelihatan transparan lagi walau
 // scroll naik-turun di dalam section ini.
-const FADE_IN_END = 0.12;
+const HERO_DIM_END = 0.07;
+const CONTENT_IN_END = 0.15;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.
@@ -54,12 +58,17 @@ export default function Verses({ data }: { data: InvitationData }) {
   // tidak mantul) — biar gerakannya kerasa mengalir/elastis, bukan lompat
   // kaku 1:1 per pixel scroll.
   const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
-  const fadeIn = useTransform(scrollYProgress, [0, FADE_IN_END], [0, 1]);
+  // Tahap 1 — Hero meredup jadi hitam. Ini SATU-SATUNYA yang menggerakkan
+  // opacity backdrop, jadi kutipan/foto belum ikut nongol di tahap ini.
+  const heroDim = useTransform(scrollYProgress, [0, HERO_DIM_END], [0, 1]);
+  // Tahap 2 — kutipan & foto pertama fade-in, baru mulai SETELAH layar sudah
+  // hitam penuh (clamp default useTransform bikin ini 0 selama v < HERO_DIM_END).
+  const contentFade = useTransform(scrollYProgress, [HERO_DIM_END, CONTENT_IN_END], [0, 1]);
 
   // Fraksi 0..1 per lintasan foto (dipakai bersama oleh posisi & opacity di
   // bawah supaya keduanya selalu sinkron persis).
   const lapFraction = (v: number) => {
-    const local = Math.max(0, (v - FADE_IN_END) / (1 - FADE_IN_END)) * IMAGE_COUNT;
+    const local = Math.max(0, (v - CONTENT_IN_END) / (1 - CONTENT_IN_END)) * IMAGE_COUNT;
     return local - Math.floor(local);
   };
   // Ease in-out kubik — supaya foto melambat di ujung lintasan dan cepat di
@@ -73,10 +82,8 @@ export default function Verses({ data }: { data: InvitationData }) {
   const imageX = useTransform(scrollYProgress, (v) => `${easeInOutCubic(lapFraction(v)) * 70 - 35}vw`);
 
   // Opacity foto = gabungan dua hal:
-  // (1) `fadeIn` yang sama dipakai backdrop/kutipan — supaya foto TIDAK
-  //     "muncul duluan" sebelum background & teks selesai fade-in di awal
-  //     section (dulu foto ini full-opacity dari detik pertama, kelihatan
-  //     duluan padahal backdrop masih transparan).
+  // (1) `contentFade` — supaya foto TIDAK "muncul duluan": baru ikut fade-in
+  //     bareng kutipan, sesudah Hero benar-benar hitam (tahap 2 di atas).
   // (2) `lapOpacity` — turun ke 0 sesaat sebelum foto sampai ujung lintasan
   //     dan baru naik lagi sesaat setelah lintasan berikutnya mulai, supaya
   //     "teleport" balik dari +35vw ke -35vw (dan pergantian src foto) terjadi
@@ -88,14 +95,14 @@ export default function Verses({ data }: { data: InvitationData }) {
     if (frac > 1 - EDGE) return (1 - frac) / EDGE;
     return 1;
   });
-  const imageOpacity = useTransform([fadeIn, lapOpacity], (values) => {
+  const imageOpacity = useTransform([contentFade, lapOpacity], (values) => {
     const [a, b] = values as number[];
     return a * b;
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
-    if (v >= FADE_IN_END) setRevealed(true);
-    const local = Math.max(0, (v - FADE_IN_END) / (1 - FADE_IN_END)) * IMAGE_COUNT;
+    if (v >= HERO_DIM_END) setRevealed(true);
+    const local = Math.max(0, (v - CONTENT_IN_END) / (1 - CONTENT_IN_END)) * IMAGE_COUNT;
     setActiveIndex(Math.min(IMAGE_COUNT - 1, Math.floor(local)));
   });
 
@@ -108,7 +115,7 @@ export default function Verses({ data }: { data: InvitationData }) {
         {revealed ? (
           <div className="absolute inset-0 bg-black" />
         ) : (
-          <motion.div className="absolute inset-0 bg-black" style={{ opacity: fadeIn }} />
+          <motion.div className="absolute inset-0 bg-black" style={{ opacity: heroDim }} />
         )}
 
         {/* Kartu foto kecil portrait — posisi rest-nya di tengah (flex child
@@ -127,7 +134,7 @@ export default function Verses({ data }: { data: InvitationData }) {
             foto yang lewat di belakangnya) */}
         <div className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none">
           <motion.p
-            style={{ opacity: fadeIn }}
+            style={{ opacity: contentFade }}
             className="max-w-xs sm:max-w-sm md:max-w-lg text-center font-nocturne-display italic text-xl sm:text-2xl md:text-4xl leading-snug text-groove-primary-light"
           >
             {data.quote || DEFAULT_VERSE}
