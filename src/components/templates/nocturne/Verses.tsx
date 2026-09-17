@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { RefObject, useState } from "react";
 import { useScroll, useMotionValueEvent, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
@@ -17,7 +17,9 @@ const VH_PER_IMAGE = 160;
 // Keduanya SEKALI jalan di awal saja — sesudah itu backdrop dikunci solid
 // (lihat `revealed`) supaya tidak pernah kelihatan transparan lagi walau
 // scroll naik-turun di dalam section ini.
-const HERO_DIM_END = 0.07;
+// Diekspor supaya Hero bisa pakai titik yang SAMA persis buat overlay
+// peredupannya sendiri (lihat komentar di Hero.tsx).
+export const HERO_DIM_END = 0.07;
 const CONTENT_IN_END = 0.15;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
@@ -43,8 +45,17 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 //   lalu foto berikutnya mulai dari kiri lagi — terus-menerus mengikuti
 //   scroll (bukan animasi berbasis waktu), jadi kelihatan mengalir kayak
 //   marquee raksasa selebar layar.
-export default function Verses({ data }: { data: InvitationData }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+interface VersesProps {
+  data: InvitationData;
+  // Ref ke container luar (yang tinggi, non-sticky) di-lift ke NocturneTemplate
+  // supaya Hero.tsx bisa pakai sumber scroll-progress yang SAMA PERSIS untuk
+  // overlay peredupannya sendiri — lihat komentar di Hero.tsx kenapa ini
+  // penting (dulu overlay hidup di sini, foto Hero-nya masih sempat kelihatan
+  // "nyempil" sesaat sebelum section ini benar-benar menutup penuh).
+  containerRef: RefObject<HTMLDivElement>;
+}
+
+export default function Verses({ data, containerRef }: VersesProps) {
   const [revealed, setRevealed] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 

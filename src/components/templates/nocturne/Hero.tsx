@@ -1,16 +1,45 @@
+import { RefObject } from "react";
+import { useScroll, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
+import { HERO_DIM_END } from "./Verses";
 
 const DEFAULT_BACKGROUND = "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=85";
 const MARQUEE_REPEAT = 4;
+
+interface HeroProps {
+  data: InvitationData;
+  // Ref ke container Verses (di-lift dari NocturneTemplate) — dipakai buat
+  // ngukur progress scroll masuk ke Verses, SUMBER YANG SAMA dengan yang
+  // dipakai Verses sendiri untuk tahap "hero meredup"-nya (lihat HERO_DIM_END).
+  versesContainerRef: RefObject<HTMLDivElement>;
+}
 
 // Hero tema Nocturne — background video/foto full-bleed, eyebrow "THE WEDDING
 // OF" kiri-atas + tanggal kanan-atas (persis referensi client), kutipan CENTER
 // di tengah layar (revisi dari referensi yang rata kiri), dan nama pasangan
 // RAKSASA berjalan sebagai marquee di PALING BAWAH (revisi — di referensi
 // marquee ada di tengah, kutipan di bawahnya; di sini ditukar).
-export default function Hero({ data }: { data: InvitationData }) {
+export default function Hero({ data, versesContainerRef }: HeroProps) {
   const t = getDict(data.language);
+
+  // Overlay hitam Hero SENDIRI (bukan titip ke backdrop section Verses) —
+  // dulu peredupan cuma datang dari backdrop di dalam Verses' sticky viewport,
+  // yang baru benar-benar menutup penuh SESAAT SETELAH Verses jadi sticky.
+  // Pas transisi (terutama scroll cepat/momentum di HP), ada jeda singkat di
+  // mana Verses belum menutup penuh tapi kontennya sudah ke-reveal, jadi
+  // Hero kelihatan "nyempil" polos berdampingan dengan konten yang sudah
+  // gelap — keliatan seperti sambungan/seam yang kasar.
+  // Fix: taruh overlay peredupannya DI HERO SENDIRI (elemen sticky full-layar
+  // yang sama terus, tidak pernah punya masalah timing dengan dirinya
+  // sendiri), pakai sumber scroll-progress yang SAMA (containerRef Verses)
+  // supaya waktunya identik dengan tahap 1 punya Verses.
+  const { scrollYProgress: rawProgress } = useScroll({
+    target: versesContainerRef,
+    offset: ["start start", "end end"],
+  });
+  const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
+  const heroDim = useTransform(scrollYProgress, [0, HERO_DIM_END], [0, 1]);
   const eventDateLabel = new Date(data.eventDate).toLocaleDateString(t.dateLocale, {
     weekday: "long",
     day: "numeric",
@@ -23,11 +52,10 @@ export default function Hero({ data }: { data: InvitationData }) {
   const loopedTrack = [...track, ...track];
 
   return (
-    // sticky (bukan cuma relative) — dibiarkan "nempel" di top:0 pas section
-    // sesudahnya (Verses) di-scroll, jadi Hero kelihatan ketutup pelan-pelan
-    // oleh background gelap Verses alih-alih langsung discroll lewat begitu
-    // saja. Cukup lewat urutan DOM + z-0 di sini / z-10 di Verses (elemen
-    // belakangan otomatis digambar di atas), tanpa perlu wrapper tambahan.
+    // sticky (bukan cuma relative) — dibiarkan "nempel" di top:0 selama Verses
+    // di-scroll, supaya section ini (+ overlay peredupannya di bawah) selalu
+    // full-layar tanpa jeda, lalu akhirnya ketutup total begitu Verses (z-10,
+    // urutan DOM belakangan) sudah solid hitam di atasnya.
     <section id="hero" className="sticky top-0 z-0 h-[100svh] w-full overflow-hidden text-groove-bg">
       {data.heroVideoUrl ? (
         <video
@@ -72,6 +100,12 @@ export default function Hero({ data }: { data: InvitationData }) {
           ))}
         </div>
       </div>
+
+      {/* Overlay peredupan — di atas SEGALANYA di dalam Hero (background,
+          tanggal, kutipan, marquee ikut meredup bareng), opacity 0 -> 1
+          ngikutin scroll masuk ke Verses. pointer-events-none supaya nav/menu
+          Hero tetap bisa diklik selama overlay belum solid. */}
+      <motion.div className="absolute inset-0 bg-black pointer-events-none" style={{ opacity: heroDim }} />
     </section>
   );
 }
