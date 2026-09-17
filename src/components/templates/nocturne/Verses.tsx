@@ -4,7 +4,7 @@ import { RefObject, useState } from "react";
 import { useScroll, useMotionValueEvent, useTransform, useSpring, motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
-const IMAGE_COUNT = 5;
+const IMAGE_COUNT = 3;
 // vh per foto — dinaikkan dari 100 supaya tiap lintasan foto butuh scroll
 // lebih panjang (kerasa lebih pelan/halus), bukan lewat cuma dalam 1 gulungan
 // scroll singkat.
