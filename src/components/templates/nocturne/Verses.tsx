@@ -50,19 +50,47 @@ export default function Verses({ data }: { data: InvitationData }) {
     : DEFAULT_IMAGES;
 
   const { scrollYProgress: rawProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  // Spring, bukan langsung raw scroll — biar gerakannya halus (ada sedikit
-  // "lag"/inertia mengejar posisi scroll), bukan lompat kaku 1:1 per pixel.
-  const scrollYProgress = useSpring(rawProgress, { stiffness: 90, damping: 25, mass: 0.5 });
+  // Spring lebih lembut (stiffness lebih rendah, damping tinggi = overdamped,
+  // tidak mantul) — biar gerakannya kerasa mengalir/elastis, bukan lompat
+  // kaku 1:1 per pixel scroll.
+  const scrollYProgress = useSpring(rawProgress, { stiffness: 60, damping: 20, mass: 0.5 });
   const fadeIn = useTransform(scrollYProgress, [0, FADE_IN_END], [0, 1]);
+
+  // Fraksi 0..1 per lintasan foto (dipakai bersama oleh posisi & opacity di
+  // bawah supaya keduanya selalu sinkron persis).
+  const lapFraction = (v: number) => {
+    const local = Math.max(0, (v - FADE_IN_END) / (1 - FADE_IN_END)) * IMAGE_COUNT;
+    return local - Math.floor(local);
+  };
+  // Ease in-out kubik — supaya foto melambat di ujung lintasan dan cepat di
+  // tengah, kerasa "mengalir" alih-alih kecepatan konstan yang terasa mekanis.
+  const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
   // Posisi kartu foto: -35vw di awal jatahnya, 0vw (tengah layar, pas di
   // belakang kutipan) di pertengahan jatahnya, +35vw di akhir jatahnya — lalu
   // foto berikutnya mulai dari -35vw lagi. Sengaja TIDAK sampai ±100vw (luar
   // tepi layar) lagi supaya masuk/keluarnya tidak mentok banget ke pinggir.
-  const imageX = useTransform(scrollYProgress, (v) => {
-    const local = Math.max(0, (v - FADE_IN_END) / (1 - FADE_IN_END)) * IMAGE_COUNT;
-    const frac = local - Math.floor(local);
-    return `${frac * 70 - 35}vw`;
+  const imageX = useTransform(scrollYProgress, (v) => `${easeInOutCubic(lapFraction(v)) * 70 - 35}vw`);
+
+  // Opacity foto = gabungan dua hal:
+  // (1) `fadeIn` yang sama dipakai backdrop/kutipan — supaya foto TIDAK
+  //     "muncul duluan" sebelum background & teks selesai fade-in di awal
+  //     section (dulu foto ini full-opacity dari detik pertama, kelihatan
+  //     duluan padahal backdrop masih transparan).
+  // (2) `lapOpacity` — turun ke 0 sesaat sebelum foto sampai ujung lintasan
+  //     dan baru naik lagi sesaat setelah lintasan berikutnya mulai, supaya
+  //     "teleport" balik dari +35vw ke -35vw (dan pergantian src foto) terjadi
+  //     saat foto tak kasat mata — pergantian jadi terasa halus, bukan patah.
+  const EDGE = 0.1;
+  const lapOpacity = useTransform(scrollYProgress, (v) => {
+    const frac = lapFraction(v);
+    if (frac < EDGE) return frac / EDGE;
+    if (frac > 1 - EDGE) return (1 - frac) / EDGE;
+    return 1;
+  });
+  const imageOpacity = useTransform([fadeIn, lapOpacity], (values) => {
+    const [a, b] = values as number[];
+    return a * b;
   });
 
   useMotionValueEvent(scrollYProgress, "change", (v) => {
@@ -87,7 +115,7 @@ export default function Verses({ data }: { data: InvitationData }) {
             biasa, BUKAN absolute, supaya `x` di bawah ini murni jadi OFFSET
             dari posisi tengah itu, bukan ketiban logic centering lain). */}
         <motion.div
-          style={{ x: imageX }}
+          style={{ x: imageX, opacity: imageOpacity }}
           className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
