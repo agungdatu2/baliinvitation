@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
-const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=85";
+const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=85";
 // Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk
 // (foto zoom-out + fade konten), sisanya cuma "menahan" tampilan sticky-nya
 // sampai user selesai scroll ke section berikutnya (BrideSection).
