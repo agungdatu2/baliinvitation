@@ -6,23 +6,31 @@ import { ArrowUpRight } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
-const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=85";
+const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1200&q=85";
 // Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk
-// (foto zoom-out + fade konten). Sebelumnya cuma 60vh extra & REVEAL_END
-// 0.35 (~145px reveal) — jauh lebih pendek/buru-buru dibanding peredupan
-// Hero (~625px, ~0.9 layar) jadi kerasa gak sehalus Hero. Dinaikkan supaya
-// jarak reveal-nya sepadan (~0.85 x 100vh extra ≈ 1 layar, mirip Hero).
+// (foto zoom-out + fade konten), sisanya cuma "menahan" tampilan sticky-nya
+// sampai user selesai scroll ke section berikutnya (BrideSection).
 const SECTION_VH = 200;
 const REVEAL_END = 0.85;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
 
-// Section "The Bride" — tampil SESUDAH GroomSection. Struktur sama persis
-// (outer tall wrapper + inner sticky viewport) supaya section ini otomatis
-// "menutupi" GroomSection dengan cara yang SAMA PERSIS seperti Verses
-// menutupi Hero (DOM order lebih belakang + z-index lebih tinggi + sticky).
-export default function BrideSection({ data }: { data: InvitationData }) {
+// Section "The Groom" — kembaran BrideSection.tsx, tampil DULUAN (sebelum
+// Bride). Struktur sama persis dengan Verses/BrideSection (outer tall wrapper
+// + inner sticky viewport) supaya section ini otomatis "menutupi" Verses,
+// dan nanti ikut ketutup oleh BrideSection sesudahnya, dengan cara yang sama
+// persis seperti Verses menutupi Hero.
+//
+// PENTING: backdrop hitamnya HARUS scroll-reactive (opacity: reveal), BUKAN
+// className bg-black statis. Section sesudahnya (BrideSection) — sebelum
+// benar-benar "nempel" (sticky aktif) — sempat lewat fase "meluncur naik dari
+// bawah" dalam posisi normal flow, dan kalau backdrop-nya SUDAH solid hitam
+// sejak fase itu (z-index Bride lebih tinggi), itu akan menutupi SEBAGIAN
+// section ini sebelum waktunya — kelihatan seperti foto/konten "terpotong"
+// tiba-tiba di tengah (sudah pernah kejadian, foto Groom kelihatan cuma
+// setengah sebelum fix ini).
+export default function GroomSection({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -33,33 +41,22 @@ export default function BrideSection({ data }: { data: InvitationData }) {
   const reveal = useTransform(scrollYProgress, [0, REVEAL_END], [0, 1]);
   const imageScale = useTransform(scrollYProgress, [0, REVEAL_END], [IMAGE_SCALE_START, 1]);
 
-  // `brideParents` satu string gabungan (mis. "Bapak X & Ibu Y") — dipecah jadi
+  // `groomParents` satu string gabungan (mis. "Bapak X & Ibu Y") — dipecah jadi
   // baris terpisah kalau ada "&", supaya tampilannya dua baris seperti referensi
   // (tanpa perlu field terpisah untuk nama ayah/ibu).
-  const parentLines = data.brideParents
+  const parentLines = data.groomParents
     .split("&")
     .map((line) => line.trim())
     .filter(Boolean);
-  const instagramHandle = data.brideInstagram?.replace("@", "");
+  const instagramHandle = data.groomInstagram?.replace("@", "");
 
   return (
-    // marginTop negatif -100svh SENGAJA — outer wrapper GroomSection sebelum
-    // ini (pola sama: wrapper tinggi + sticky di dalam) melepas stiky-nya
-    // SATU LAYAR PENUH sebelum wrapper-nya sendiri benar-benar berakhir
-    // (begitu cara kerja sticky-dalam-wrapper: berhenti nempel begitu sisa
-    // tinggi wrapper cuma sepanjang tingginya sendiri lagi). Tanpa margin
-    // ini, ada jeda ~1 layar penuh scroll yang terasa "mati" sebelum section
-    // ini muncul. z-30 (bukan z-20) karena sekarang harus menutupi
-    // GroomSection (z-20), bukan langsung Verses (z-10) lagi.
-    //
-    // PENTING: backdrop hitamnya HARUS scroll-reactive (opacity: reveal),
-    // BUKAN className bg-black statis — sebelum section ini beneran sticky,
-    // dia sempat lewat fase "meluncur naik dari bawah" di posisi normal flow.
-    // Kalau backdrop-nya sudah solid hitam sejak fase itu (z-index section
-    // ini lebih tinggi dari GroomSection), itu menutupi SEBAGIAN
-    // GroomSection sebelum waktunya — fotonya kelihatan seperti terpotong
-    // tiba-tiba di tengah (bug yang sempat kejadian sebelum fix ini).
-    <div ref={containerRef} className="relative z-30 -mt-[100svh]" style={{ height: `${SECTION_VH}vh` }}>
+    // marginTop negatif -100svh SENGAJA — outer wrapper Verses sebelum ini
+    // (pola sama: wrapper tinggi + sticky di dalam) melepas stiky-nya SATU
+    // LAYAR PENUH sebelum wrapper-nya sendiri benar-benar berakhir. Tanpa
+    // margin ini ada jeda ~1 layar penuh scroll yang terasa "mati" sebelum
+    // section ini muncul — lihat komentar sama di BrideSection.tsx.
+    <div ref={containerRef} className="relative z-20 -mt-[100svh]" style={{ height: `${SECTION_VH}vh` }}>
       <section className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden px-6 md:px-16">
         <motion.div className="absolute inset-0 bg-black" style={{ opacity: reveal }} />
 
@@ -68,7 +65,7 @@ export default function BrideSection({ data }: { data: InvitationData }) {
             style={{ opacity: reveal }}
             className="shrink-0 font-groove-label text-xs uppercase tracking-[0.35em] text-groove-bg/60"
           >
-            {t.theBride}
+            {t.theGroom}
           </motion.p>
 
           <motion.div
@@ -77,8 +74,8 @@ export default function BrideSection({ data }: { data: InvitationData }) {
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <motion.img
-              src={data.bridePhoto || DEFAULT_PHOTO}
-              alt={data.brideFullName}
+              src={data.groomPhoto || DEFAULT_PHOTO}
+              alt={data.groomFullName}
               style={{ scale: imageScale }}
               className="absolute inset-0 h-full w-full object-cover"
             />
@@ -86,13 +83,13 @@ export default function BrideSection({ data }: { data: InvitationData }) {
 
           <motion.div style={{ opacity: reveal }} className="text-center md:text-left">
             <h2 className="font-nocturne-display text-3xl leading-[1.15] text-groove-bg/90 sm:text-4xl md:text-6xl">
-              ({data.brideNickname})
+              ({data.groomNickname})
               <br />
-              {data.brideFullName}
+              {data.groomFullName}
             </h2>
 
             <div className="mt-8 space-y-1 font-groove-body text-sm text-groove-bg/70 md:mt-14">
-              <p>{t.daughterOf}</p>
+              <p>{t.sonOf}</p>
               {parentLines.map((line, i) => (
                 <p key={i}>{line}</p>
               ))}

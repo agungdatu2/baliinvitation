@@ -9,6 +9,7 @@ import SplashGate from "./SplashGate";
 import NavMenu from "./NavMenu";
 import Hero from "./Hero";
 import Verses from "./Verses";
+import GroomSection from "./GroomSection";
 import BrideSection from "./BrideSection";
 
 // Tema baru "Nocturne" (dark & moody, layout beda dari Lume/Reverie/Muse) —
@@ -113,6 +114,7 @@ export default function NocturneTemplate({ data, guestName }: TemplateProps) {
 
           <Hero data={data} />
           <Verses data={data} />
+          <GroomSection data={data} />
           <BrideSection data={data} />
         </div>
       )}
