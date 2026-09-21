@@ -43,13 +43,14 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 // berlangsung.
 // - Backdrop hitam + kutipan fade-in/out SEPENUHNYA MENGIKUTI posisi scroll
 //   (dua arah — scroll ke atas beneran membalikkan animasinya).
-// - Kartu foto kecil portrait MELINTASI SELURUH LEBAR LAYAR (dari luar tepi
-//   kiri ke luar tepi kanan, lewat tengah pas di belakang kutipan) — bukan
-//   cuma bergeser sedikit di jendela kecil. Sisa scroll (setelah fade awal)
-//   dibagi rata ke 5 foto; tiap foto dapat jatahnya sendiri buat melintas,
-//   lalu foto berikutnya mulai dari kiri lagi — terus-menerus mengikuti
-//   scroll (bukan animasi berbasis waktu), jadi kelihatan mengalir kayak
-//   marquee raksasa selebar layar.
+// - Kartu foto kecil portrait BERPUTAR MASUK-KELUAR LEWAT LINTASAN SPIRAL:
+//   mulai dari radius penuh di tepi layar sambil berputar, mengecil & masuk
+//   ke tengah (pas di belakang kutipan) tepat di pertengahan jatahnya, lalu
+//   berputar lagi keluar ke radius penuh di sisi lain — bukan geser lurus.
+//   Sisa scroll (setelah fade awal) dibagi rata ke 3 foto; tiap foto dapat
+//   jatahnya sendiri buat satu putaran spiral itu, lalu foto berikutnya mulai
+//   dari awal spiral lagi — terus-menerus mengikuti scroll (bukan animasi
+//   berbasis waktu).
 export default function Verses({ data }: { data: InvitationData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -82,11 +83,31 @@ export default function Verses({ data }: { data: InvitationData }) {
   // tengah, kerasa "mengalir" alih-alih kecepatan konstan yang terasa mekanis.
   const easeInOutCubic = (t: number) => (t < 0.5 ? 4 * t ** 3 : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
-  // Posisi kartu foto: -35vw di awal jatahnya, 0vw (tengah layar, pas di
-  // belakang kutipan) di pertengahan jatahnya, +35vw di akhir jatahnya — lalu
-  // foto berikutnya mulai dari -35vw lagi. Sengaja TIDAK sampai ±100vw (luar
-  // tepi layar) lagi supaya masuk/keluarnya tidak mentok banget ke pinggir.
-  const imageX = useTransform(scrollYProgress, (v) => `${easeInOutCubic(lapFraction(v)) * 70 - 35}vw`);
+  // Lintasan SPIRAL: sudut berputar terus-menerus sepanjang jatah (t: 0 -> 1),
+  // sementara radius mengecil dari penuh ke 0 tepat di tengah jatah (t=0.5,
+  // pas di belakang kutipan) lalu membesar lagi ke penuh di t=1 — jadi foto
+  // "berputar masuk" ke tengah layar lalu "berputar keluar" lagi, alih-alih
+  // cuma geser lurus kiri-kanan. `angle`/`radius` dipakai bersama oleh x, y,
+  // rotate, dan scale di bawah supaya semuanya sinkron di titik yang sama.
+  const SPIRAL_TURNS = 1.25;
+  const SPIRAL_RADIUS_VW = 38;
+  const SPIRAL_RADIUS_VH = 20;
+  const spiralAngleRad = (v: number) => easeInOutCubic(lapFraction(v)) * SPIRAL_TURNS * Math.PI * 2;
+  const spiralRadiusFrac = (v: number) => Math.abs(Math.cos(easeInOutCubic(lapFraction(v)) * Math.PI));
+
+  const imageX = useTransform(
+    scrollYProgress,
+    (v) => `${Math.cos(spiralAngleRad(v)) * spiralRadiusFrac(v) * SPIRAL_RADIUS_VW}vw`
+  );
+  const imageY = useTransform(
+    scrollYProgress,
+    (v) => `${Math.sin(spiralAngleRad(v)) * spiralRadiusFrac(v) * SPIRAL_RADIUS_VH}vh`
+  );
+  // Foto berputar pada porosnya sendiri mengikuti sudut spiral yang sama.
+  const imageRotate = useTransform(scrollYProgress, (v) => (spiralAngleRad(v) * 180) / Math.PI);
+  // Sedikit mengecil saat berada di radius terjauh (tepi lintasan), penuh
+  // (scale 1) tepat saat sampai di pusat layar.
+  const imageScale = useTransform(scrollYProgress, (v) => 1 - spiralRadiusFrac(v) * 0.3);
 
   // Opacity foto = gabungan dua hal:
   // (1) `contentFade` — supaya foto TIDAK "muncul duluan": baru ikut fade-in
@@ -119,10 +140,13 @@ export default function Verses({ data }: { data: InvitationData }) {
         <motion.div className="absolute inset-0 bg-black" style={{ opacity: heroDim }} />
 
         {/* Kartu foto kecil portrait — posisi rest-nya di tengah (flex child
-            biasa, BUKAN absolute, supaya `x` di bawah ini murni jadi OFFSET
-            dari posisi tengah itu, bukan ketiban logic centering lain). */}
+            biasa, BUKAN absolute, supaya `x`/`y` di bawah ini murni jadi
+            OFFSET dari posisi tengah itu, bukan ketiban logic centering
+            lain). Berputar (rotate) + membesar/mengecil (scale) mengikuti
+            sudut/radius spiral yang sama supaya kelihatan benar-benar
+            "berputar masuk-keluar", bukan cuma geser. */}
         <motion.div
-          style={{ x: imageX, opacity: imageOpacity }}
+          style={{ x: imageX, y: imageY, rotate: imageRotate, scale: imageScale, opacity: imageOpacity }}
           className="relative w-36 sm:w-44 md:w-56 aspect-[3/4] overflow-hidden rounded-sm shrink-0"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
