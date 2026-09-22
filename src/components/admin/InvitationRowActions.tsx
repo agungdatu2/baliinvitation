@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 // Aksi cepat per baris di tabel "Undangan Berjalan" — publish/unpublish
-// (langsung PATCH status, tanpa buka form edit penuh) dan hapus permanen
-// (cascade ke Guest/RSVP/InvitationView/EventChangeRequest/Payment terkait,
-// lihat onDelete: Cascade di schema.prisma).
+// (langsung PATCH status, tanpa buka form edit penuh), duplikat (klon isi
+// undangan dengan slug baru & daftar tamu kosong — dipakai untuk pesanan
+// "split link" yang butuh dua tautan terpisah dengan isi mirip), dan hapus
+// permanen (cascade ke Guest/RSVP/InvitationView/EventChangeRequest/Payment
+// terkait, lihat onDelete: Cascade di schema.prisma).
 export default function InvitationRowActions({ id, status }: { id: string; status: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -20,6 +22,19 @@ export default function InvitationRowActions({ id, status }: { id: string; statu
     });
     setBusy(false);
     router.refresh();
+  };
+
+  const duplicate = async () => {
+    if (!confirm("Duplikat undangan ini? Isinya (foto, acara, dll) disalin dengan slug baru — daftar tamu tidak ikut disalin, isi manual untuk link ini.")) return;
+    setBusy(true);
+    const res = await fetch(`/api/invitations/${id}/duplicate`, { method: "POST" });
+    setBusy(false);
+    if (!res.ok) {
+      alert("Gagal menduplikat undangan");
+      return;
+    }
+    const created = await res.json();
+    router.push(`/admin/invitations/${created.id}/edit?duplicated=1`);
   };
 
   const remove = async () => {
@@ -45,6 +60,9 @@ export default function InvitationRowActions({ id, status }: { id: string; statu
           Publish
         </button>
       )}
+      <button onClick={duplicate} disabled={busy} className="text-indigo-600 disabled:opacity-40">
+        Duplikat
+      </button>
       <button onClick={remove} disabled={busy} className="text-red-600 disabled:opacity-40">
         Hapus
       </button>
