@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { CircleCheckBig, EyeOff, Copy, Trash2 } from "lucide-react";
+
+const iconBtn = "inline-flex h-8 w-8 items-center justify-center rounded-lg transition disabled:opacity-40 disabled:pointer-events-none";
 
 // Aksi cepat per baris di tabel "Undangan Berjalan" — publish/unpublish
 // (langsung PATCH status, tanpa buka form edit penuh), duplikat (klon isi
@@ -52,19 +55,29 @@ export default function InvitationRowActions({ id, status }: { id: string; statu
   return (
     <>
       {status === "published" ? (
-        <button onClick={() => setStatus("draft")} disabled={busy} className="text-amber-600 disabled:opacity-40">
-          Unpublish
+        <button
+          onClick={() => setStatus("draft")}
+          disabled={busy}
+          title="Unpublish"
+          className={`${iconBtn} text-amber-600 hover:bg-amber-50`}
+        >
+          <EyeOff size={16} strokeWidth={1.75} />
         </button>
       ) : (
-        <button onClick={() => setStatus("published")} disabled={busy} className="text-green-600 disabled:opacity-40">
-          Publish
+        <button
+          onClick={() => setStatus("published")}
+          disabled={busy}
+          title="Publish"
+          className={`${iconBtn} text-green-600 hover:bg-green-50`}
+        >
+          <CircleCheckBig size={16} strokeWidth={1.75} />
         </button>
       )}
-      <button onClick={duplicate} disabled={busy} className="text-indigo-600 disabled:opacity-40">
-        Duplikat
+      <button onClick={duplicate} disabled={busy} title="Duplikat" className={`${iconBtn} text-indigo-600 hover:bg-indigo-50`}>
+        <Copy size={16} strokeWidth={1.75} />
       </button>
-      <button onClick={remove} disabled={busy} className="text-red-600 disabled:opacity-40">
-        Hapus
+      <button onClick={remove} disabled={busy} title="Hapus" className={`${iconBtn} text-red-600 hover:bg-red-50`}>
+        <Trash2 size={16} strokeWidth={1.75} />
       </button>
     </>
   );
