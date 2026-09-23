@@ -561,9 +561,31 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             <option value="grid">Grid (kotak seragam)</option>
           </select>
         </Field>
+        <p className="text-xs text-gray-500">
+          Foto paling atas (pertama, bukan video) dipakai sebagai foto besar panel sticky di tema Reverie & Muse — pakai
+          tombol ↑↓ untuk mengatur urutannya.
+        </p>
         {gallery.fields.map((f, i) => (
           <div key={f.id} className="flex gap-2">
             <input {...register(`galleryImages.${i}` as const)} className="input flex-1" placeholder="https://..." />
+            <button
+              type="button"
+              onClick={() => gallery.move(i, i - 1)}
+              disabled={i === 0}
+              className="btn-remove disabled:opacity-30"
+              title="Naikkan urutan"
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              onClick={() => gallery.move(i, i + 1)}
+              disabled={i === gallery.fields.length - 1}
+              className="btn-remove disabled:opacity-30"
+              title="Turunkan urutan"
+            >
+              ↓
+            </button>
             <button type="button" onClick={() => gallery.remove(i)} className="btn-remove">
               X
             </button>
