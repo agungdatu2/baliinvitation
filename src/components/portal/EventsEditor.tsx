@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CalendarClock, MapPin, Pencil, X, Info } from "lucide-react";
 import { EventItem } from "@/types/invitation";
 
 export default function EventsEditor({
@@ -46,7 +47,8 @@ export default function EventsEditor({
   if (!clientCanEditEvents) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-gray-500 bg-gray-50 border border-lume-line rounded-lg p-3">
+        <p className="flex items-start gap-2 text-sm text-gray-600 bg-white border border-lume-line rounded-xl p-4 shadow-sm">
+          <Info size={16} strokeWidth={1.75} className="shrink-0 mt-0.5 text-lume-gold" />
           Edit jadwal acara sedang tidak diaktifkan untuk Anda. Hubungi admin kalau perlu perubahan.
         </p>
         {events.map((e, i) => (
@@ -58,10 +60,15 @@ export default function EventsEditor({
 
   return (
     <div className="space-y-3">
-      {notice && <p className="text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3">{notice}</p>}
+      {notice && (
+        <p className="flex items-start gap-2 text-sm bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4">
+          <Info size={16} strokeWidth={1.75} className="shrink-0 mt-0.5" />
+          {notice}
+        </p>
+      )}
       {events.map((event, i) => (
-        <div key={i} className="border border-lume-line rounded-lg bg-white p-4">
-          <p className="font-serif text-lg mb-2">{event.name}</p>
+        <div key={i} className="rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+          <p className="font-serif text-lg text-lume-ink mb-2">{event.name}</p>
           {editingIndex === i ? (
             <div className="space-y-2">
               <label className="block text-xs text-gray-600">
@@ -90,11 +97,15 @@ export default function EventsEditor({
                 <button
                   onClick={() => submit(i)}
                   disabled={submitting}
-                  className="px-4 py-2 rounded-lg bg-lume-ink text-white text-sm disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg bg-lume-ink text-white text-sm disabled:opacity-50 hover:opacity-90 transition"
                 >
                   {submitting ? "Menyimpan..." : "Simpan"}
                 </button>
-                <button onClick={() => setEditingIndex(null)} className="px-4 py-2 rounded-lg bg-gray-100 text-sm">
+                <button
+                  onClick={() => setEditingIndex(null)}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gray-100 text-sm hover:bg-gray-200 transition"
+                >
+                  <X size={14} strokeWidth={1.75} />
                   Batal
                 </button>
               </div>
@@ -102,7 +113,12 @@ export default function EventsEditor({
           ) : (
             <div className="flex items-start justify-between gap-2">
               <EventReadOnly event={event} bare />
-              <button onClick={() => startEdit(i, event)} className="text-xs text-blue-600 shrink-0">
+              <button
+                onClick={() => startEdit(i, event)}
+                title="Edit"
+                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 shrink-0 transition"
+              >
+                <Pencil size={13} strokeWidth={1.75} />
                 Edit
               </button>
             </div>
@@ -116,14 +132,18 @@ export default function EventsEditor({
 
 function EventReadOnly({ event, bare }: { event: EventItem; bare?: boolean }) {
   const body = (
-    <div className="text-sm text-gray-600 space-y-0.5">
-      <p>
+    <div className="text-sm text-gray-600 space-y-1">
+      <p className="flex items-center gap-1.5">
+        <CalendarClock size={14} strokeWidth={1.75} className="shrink-0 text-lume-gold" />
         {event.date} · {event.timeStart}
         {event.timeEnd ? ` - ${event.timeEnd}` : ""}
       </p>
-      <p>{event.location}</p>
+      <p className="flex items-start gap-1.5">
+        <MapPin size={14} strokeWidth={1.75} className="shrink-0 mt-0.5 text-lume-gold" />
+        <span>{event.location}</span>
+      </p>
       {event.mapsUrl && (
-        <a href={event.mapsUrl} target="_blank" rel="noreferrer" className="text-blue-600">
+        <a href={event.mapsUrl} target="_blank" rel="noreferrer" className="inline-block text-blue-600 pl-5">
           Lihat di Maps
         </a>
       )}
@@ -131,8 +151,8 @@ function EventReadOnly({ event, bare }: { event: EventItem; bare?: boolean }) {
   );
   if (bare) return body;
   return (
-    <div className="border border-lume-line rounded-lg bg-white p-4">
-      <p className="font-serif text-lg mb-1">{event.name}</p>
+    <div className="rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+      <p className="font-serif text-lg text-lume-ink mb-1">{event.name}</p>
       {body}
     </div>
   );

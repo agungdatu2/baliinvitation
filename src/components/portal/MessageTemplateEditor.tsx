@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronDown, AlertTriangle, Check } from "lucide-react";
 import { renderMessageTemplate } from "@/lib/utils/whatsapp";
 
 const SAMPLE_VARS = { nama: "Budi Santoso", link: "https://baliinvitation.com/contoh-slug?g=ABCD1234" };
@@ -41,16 +42,13 @@ export default function MessageTemplateEditor({
   };
 
   return (
-    <div className="border rounded-lg bg-white p-4 mb-4">
-      <button
-        type="button"
-        onClick={() => setExpanded((e) => !e)}
-        className="flex items-center justify-between w-full text-left"
-      >
-        <span className="font-medium text-sm">
-          Template Pesan WhatsApp {trimmed ? <span className="text-green-700">(custom)</span> : <span className="text-gray-400">(default kami)</span>}
+    <div className="rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+      <button type="button" onClick={() => setExpanded((e) => !e)} className="flex items-center justify-between w-full text-left">
+        <span className="font-medium text-sm text-lume-ink">
+          Template Pesan WhatsApp{" "}
+          {trimmed ? <span className="text-green-700">(custom)</span> : <span className="text-gray-400">(default kami)</span>}
         </span>
-        <span className="text-xs text-blue-600">{expanded ? "Tutup" : "Ubah"}</span>
+        <ChevronDown size={16} strokeWidth={1.75} className={`text-gray-500 transition-transform ${expanded ? "rotate-180" : ""}`} />
       </button>
 
       {expanded && (
@@ -69,20 +67,22 @@ export default function MessageTemplateEditor({
             pakai template standar kami lagi.
           </p>
           {missingName && (
-            <p className="text-xs text-amber-600">
-              ⚠️ Template belum ada <code>{"{{nama}}"}</code> — nama tamu tidak akan otomatis muncul.
+            <p className="flex items-center gap-1.5 text-xs text-amber-600">
+              <AlertTriangle size={13} strokeWidth={1.75} />
+              Template belum ada <code>{"{{nama}}"}</code> — nama tamu tidak akan otomatis muncul.
             </p>
           )}
           {missingLink && (
-            <p className="text-xs text-red-600">
-              ⚠️ Template belum ada <code>{"{{link}}"}</code> — tamu tidak akan menerima link undangan!
+            <p className="flex items-center gap-1.5 text-xs text-red-600">
+              <AlertTriangle size={13} strokeWidth={1.75} />
+              Template belum ada <code>{"{{link}}"}</code> — tamu tidak akan menerima link undangan!
             </p>
           )}
 
           {preview && (
             <div>
               <p className="text-xs font-medium text-gray-600 mb-1">Pratinjau (contoh nama &quot;Budi Santoso&quot;):</p>
-              <div className="border rounded p-3 bg-gray-50 text-sm whitespace-pre-wrap">{preview}</div>
+              <div className="rounded-lg border border-lume-line p-3 bg-lume-bg/60 text-sm whitespace-pre-wrap">{preview}</div>
             </div>
           )}
 
@@ -91,9 +91,10 @@ export default function MessageTemplateEditor({
               type="button"
               onClick={() => save(value)}
               disabled={saving}
-              className="bg-gray-900 text-white text-sm px-4 py-2 rounded disabled:opacity-50"
+              className="flex items-center gap-1.5 bg-lume-ink text-white text-sm px-4 py-2 rounded-lg disabled:opacity-50 hover:opacity-90 transition"
             >
-              {saving ? "Menyimpan..." : saved ? "Tersimpan ✓" : "Simpan Template"}
+              {saved ? <Check size={14} strokeWidth={1.75} /> : null}
+              {saving ? "Menyimpan..." : saved ? "Tersimpan" : "Simpan Template"}
             </button>
             {trimmed && (
               <button
@@ -103,7 +104,7 @@ export default function MessageTemplateEditor({
                   save("");
                 }}
                 disabled={saving}
-                className="text-sm text-gray-500"
+                className="text-sm text-gray-500 hover:text-lume-ink transition"
               >
                 Pakai Template Default
               </button>

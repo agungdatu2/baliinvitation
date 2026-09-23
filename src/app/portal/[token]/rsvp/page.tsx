@@ -1,3 +1,4 @@
+import { Download, Users, Gift } from "lucide-react";
 import { resolvePortalByToken } from "@/lib/portal/resolve-portal";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils/format";
@@ -15,6 +16,18 @@ const ATTENDANCE_BAR_CLASS: Record<string, string> = {
   hadir: "bg-green-600",
   tidak_hadir: "bg-red-500",
   belum_tahu: "bg-amber-500",
+};
+
+const ATTENDANCE_DOT: Record<string, string> = {
+  hadir: "bg-green-500",
+  tidak_hadir: "bg-red-500",
+  belum_tahu: "bg-amber-500",
+};
+
+const ATTENDANCE_BADGE: Record<string, string> = {
+  hadir: "bg-green-100 text-green-700",
+  tidak_hadir: "bg-red-50 text-red-600",
+  belum_tahu: "bg-amber-50 text-amber-700",
 };
 
 export default async function PortalRsvpPage({ params }: { params: { token: string } }) {
@@ -39,28 +52,46 @@ export default async function PortalRsvpPage({ params }: { params: { token: stri
       <div className="flex justify-end">
         <a
           href={`/api/portal/${params.token}/rsvp/export`}
-          className="px-3 py-1.5 rounded-lg bg-lume-ink text-white text-xs"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-lume-ink text-white text-xs font-medium shadow-sm hover:opacity-90 transition"
         >
+          <Download size={14} strokeWidth={1.75} />
           Download CSV
         </a>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="border border-lume-line rounded-lg bg-white p-4 text-center">
-          <p className="text-xs text-gray-500">Estimasi Tamu Hadir</p>
-          <p className="text-3xl font-serif text-lume-gold mt-1">{estimasiOrang} orang</p>
+        <div className="flex items-center gap-3 rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lume-gold/15 text-lume-gold">
+            <Users size={18} strokeWidth={1.75} />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs text-gray-500">Estimasi Tamu Hadir</p>
+            <p className="text-xl font-serif text-lume-ink leading-tight">{estimasiOrang} orang</p>
+          </div>
         </div>
-        <div className="border border-lume-line rounded-lg bg-white p-4 text-center">
-          <p className="text-xs text-gray-500">Konfirmasi Kirim Gift</p>
-          <p className="text-3xl font-serif text-lume-gold mt-1">{giftCount} tamu</p>
+        <div className="flex items-center gap-3 rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-lume-gold/15 text-lume-gold">
+            <Gift size={18} strokeWidth={1.75} />
+          </span>
+          <div className="min-w-0">
+            <p className="text-xs text-gray-500">Konfirmasi Kirim Gift</p>
+            <p className="text-xl font-serif text-lume-ink leading-tight">{giftCount} tamu</p>
+          </div>
         </div>
       </div>
 
-      <div className="border border-lume-line rounded-lg bg-white p-4 space-y-3" role="img" aria-label="Breakdown RSVP berdasarkan kehadiran">
+      <div
+        className="rounded-xl border border-lume-line bg-white p-5 shadow-sm space-y-3"
+        role="img"
+        aria-label="Breakdown RSVP berdasarkan kehadiran"
+      >
         {breakdown.map((b) => (
           <div key={b.key}>
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
-              <span>{ATTENDANCE_LABEL[b.key]}</span>
+            <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
+              <span className="flex items-center gap-1.5">
+                <span className={`h-1.5 w-1.5 rounded-full ${ATTENDANCE_DOT[b.key]}`} />
+                {ATTENDANCE_LABEL[b.key]}
+              </span>
               <span className="tabular-nums">{b.count}</span>
             </div>
             <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
@@ -75,18 +106,13 @@ export default async function PortalRsvpPage({ params }: { params: { token: stri
 
       <div className="space-y-2">
         {rsvps.map((r) => (
-          <div key={r.id} className="border border-lume-line rounded-lg bg-white p-3">
-            <div className="flex justify-between items-start">
-              <p className="font-medium">{r.guestName}</p>
+          <div key={r.id} className="rounded-xl border border-lume-line bg-white p-4 shadow-sm">
+            <div className="flex justify-between items-start gap-2">
+              <p className="font-medium text-lume-ink">{r.guestName}</p>
               <span
-                className={`px-2 py-0.5 rounded-full text-xs ${
-                  r.attendance === "hadir"
-                    ? "bg-green-100 text-green-700"
-                    : r.attendance === "tidak_hadir"
-                      ? "bg-red-50 text-red-600"
-                      : "bg-amber-50 text-amber-700"
-                }`}
+                className={`inline-flex items-center gap-1.5 shrink-0 px-2.5 py-1 rounded-full text-xs font-medium ${ATTENDANCE_BADGE[r.attendance] ?? "bg-gray-100 text-gray-600"}`}
               >
+                <span className={`h-1.5 w-1.5 rounded-full ${ATTENDANCE_DOT[r.attendance] ?? "bg-gray-400"}`} />
                 {ATTENDANCE_LABEL[r.attendance] ?? r.attendance}
               </span>
             </div>
