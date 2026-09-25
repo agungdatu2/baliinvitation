@@ -26,6 +26,7 @@ const defaultValues: InvitationFormValues = {
   slug: "",
   status: "draft",
   language: "id",
+  bilingualEnabled: false,
   showAsExample: false,
   templateKey: "lume",
   packageId: "",
@@ -44,13 +45,16 @@ const defaultValues: InvitationFormValues = {
   brideInstagram: "",
   bridePhoto: "",
   eventTitle: "",
+  eventTitleEn: "",
   hostName: "",
   hostLogo: "",
   hostLogoSize: "medium",
   coverImage: "",
   metaImage: "",
   quote: "",
+  quoteEn: "",
   greeting: "",
+  greetingEn: "",
   musicUrl: "",
   livestreamUrl: "",
   livestreamNote: "",
@@ -66,9 +70,9 @@ const defaultValues: InvitationFormValues = {
   eventDate: "",
   galleryImages: [],
   galleryStyle: "default",
-  loveStory: [{ title: "", story: "" }],
+  loveStory: [{ title: "", story: "", titleEn: "", storyEn: "" }],
   events: [
-    { name: "Resepsi", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" },
+    { name: "Resepsi", nameEn: "", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" },
   ],
   bankAccounts: [{ bank: "", accountNumber: "", accountName: "" }],
   dressCode: [],
@@ -157,6 +161,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const gallery = useFieldArray({ control, name: "galleryImages" as never });
   const backgroundSlideshow = useFieldArray({ control, name: "backgroundSlideshowImages" as never });
   const backgroundType = watch("backgroundType");
+  const bilingualEnabled = watch("bilingualEnabled");
   const dressCode = useFieldArray({ control, name: "dressCode" });
 
   const onSubmit = async (values: InvitationFormValues) => {
@@ -263,6 +268,16 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <input type="checkbox" {...register("neverExpires")} className="h-4 w-4" />
           Link aktif seumur hidup (add-on) — abaikan masa aktif paket untuk undangan ini saja
         </label>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("bilingualEnabled")} className="h-4 w-4" />
+          Aktifkan Toggle Bahasa ID/EN (add-on) — tamu bisa pilih bahasa sendiri di halaman undangan
+        </label>
+        {bilingualEnabled && (
+          <p className="text-xs text-gray-500 bg-gray-50 border rounded-lg p-2">
+            Isi field &quot;(EN)&quot; yang muncul di bawah (Quote, Greeting, Judul Acara, Love Story, Nama Acara).
+            Field EN yang dikosongkan otomatis pakai isi Bahasa Indonesia-nya.
+          </p>
+        )}
       </section>
 
       {/* --- Mempelai (tema wedding) --- */}
@@ -315,6 +330,11 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <Field label="Judul Acara" error={errors.eventTitle?.message}>
             <input {...register("eventTitle")} className="input" placeholder="GRAND OPENING" />
           </Field>
+          {bilingualEnabled && (
+            <Field label="Judul Acara (EN)">
+              <input {...register("eventTitleEn")} className="input" placeholder="GRAND OPENING" />
+            </Field>
+          )}
           <Field label="Nama Penyelenggara (bisnis/keluarga)" error={errors.hostName?.message}>
             <input {...register("hostName")} className="input" placeholder="Surya Perkasa Motor" />
           </Field>
@@ -401,6 +421,11 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai kutipan default)">
               <textarea {...register("quote")} className="input" rows={3} placeholder="mis. kutipan ayat, doa, atau kata-kata pernikahan" />
             </Field>
+            {bilingualEnabled && (
+              <Field label="Kutipan / Doa (EN)">
+                <textarea {...register("quoteEn")} className="input" rows={3} placeholder="mis. Bible verse, prayer, or wedding vow" />
+              </Field>
+            )}
             <Field label="URL Foto Section Save the Date (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieSaveTheDateImage")} className="input" placeholder="https://..." />
             </Field>
@@ -421,13 +446,22 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="Kalimat Pembuka / Greeting (Om Swastiastu, dst.)">
           <textarea {...register("greeting")} className="input" rows={3} />
         </Field>
+        {bilingualEnabled && (
+          <Field label="Kalimat Pembuka / Greeting (EN)">
+            <textarea {...register("greetingEn")} className="input" rows={3} />
+          </Field>
+        )}
       </section>
 
       {/* --- Love Story (dynamic repeatable) --- */}
       <section className="space-y-3 border rounded-lg p-4">
         <div className="flex justify-between items-center">
           <h2 className="font-medium">5. Love Story</h2>
-          <button type="button" onClick={() => loveStory.append({ title: "", story: "" })} className="btn-add">
+          <button
+            type="button"
+            onClick={() => loveStory.append({ title: "", story: "", titleEn: "", storyEn: "" })}
+            className="btn-add"
+          >
             + Tambah
           </button>
         </div>
@@ -439,6 +473,16 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             <Field label="Cerita">
               <textarea {...register(`loveStory.${i}.story`)} className="input" rows={3} />
             </Field>
+            {bilingualEnabled && (
+              <>
+                <Field label={`Judul #${i + 1} (EN)`}>
+                  <input {...register(`loveStory.${i}.titleEn`)} className="input" />
+                </Field>
+                <Field label="Cerita (EN)">
+                  <textarea {...register(`loveStory.${i}.storyEn`)} className="input" rows={3} />
+                </Field>
+              </>
+            )}
             {loveStory.fields.length > 1 && (
               <button type="button" onClick={() => loveStory.remove(i)} className="btn-remove">
                 Hapus
@@ -455,7 +499,17 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           <button
             type="button"
             onClick={() =>
-              events.append({ name: "", date: "", timeStart: "", timeEnd: "Selesai", timezone: "WITA", venueName: "", location: "", mapsUrl: "" })
+              events.append({
+                name: "",
+                nameEn: "",
+                date: "",
+                timeStart: "",
+                timeEnd: "Selesai",
+                timezone: "WITA",
+                venueName: "",
+                location: "",
+                mapsUrl: "",
+              })
             }
             className="btn-add"
           >
@@ -467,6 +521,11 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             <Field label="Nama Acara (Resepsi / Memadik / Akad)">
               <input {...register(`events.${i}.name`)} className="input" />
             </Field>
+            {bilingualEnabled && (
+              <Field label="Nama Acara (EN)">
+                <input {...register(`events.${i}.nameEn`)} className="input" />
+              </Field>
+            )}
             <Field label="Tanggal">
               <input type="date" {...register(`events.${i}.date`)} className="input" />
             </Field>

@@ -85,7 +85,16 @@ model Invitation {
   id            String   @id @default(cuid())
   slug          String   @unique // dipakai di URL: baliinvitation.com/{slug}
   status        String   @default("draft") // draft | published
-  language      String   @default("id") // id | en — bahasa tetap undangan, dipilih admin (tanpa switcher tamu)
+  language      String   @default("id") // id | en — bahasa DEFAULT undangan waktu dibuka (dipilih admin)
+
+  // Fitur "Undangan Multi-Bahasa" — kalau true, tamu bisa toggle ID/EN sendiri
+  // di halaman publik (lihat LanguageToggle.tsx & resolusi bahasa di
+  // src/app/[slug]/page.tsx). Off by default karena tidak semua client perlu
+  // isi versi EN dari kontennya — hanya diaktifkan per-undangan oleh admin.
+  // Field `*En` di bawah kosong = fallback otomatis ke versi ID (boleh diisi
+  // bertahap, tidak wajib sekaligus). Caption baku (RSVP, "The Bride", dst)
+  // sudah punya versi EN sendiri di kamus i18n, tidak perlu field di sini.
+  bilingualEnabled Boolean @default(false)
 
   // Ditandai admin supaya muncul di /contoh-undangan (halaman publik "Lihat Contoh
   // Undangan" di landing page) — daftar itu murni query invitation dengan flag ini
@@ -144,6 +153,7 @@ model Invitation {
   // — dipakai template selain tema mempelai. Nullable karena tidak relevan untuk
   // undangan wedding.
   eventTitle String? // headline besar, mis. "GRAND OPENING"
+  eventTitleEn String? // versi Inggris `eventTitle`
   hostName   String? // nama bisnis/keluarga penyelenggara, mis. "Surya Perkasa Motor"
   hostLogo   String? // URL logo brand penyelenggara
   hostLogoSize String @default("medium") // small | medium | large — ukuran tampilan logo di gate & hero (khusus tema Grand Opening dkk)
@@ -155,7 +165,9 @@ model Invitation {
   // generateMetadata di src/app/[slug]/page.tsx).
   metaImage     String?
   quote         String?
+  quoteEn       String? // versi Inggris `quote` — dipakai kalau bilingualEnabled & tamu pilih EN
   greeting      String?  // paragraf "Om Swastiastu ..." / pembuka sesuai adat
+  greetingEn    String? // versi Inggris `greeting`
   musicUrl      String?
 
   livestreamUrl  String? // link YouTube/Instagram Live
@@ -183,8 +195,8 @@ model Invitation {
   // Tampilan section Gallery — "default" (style asli tiap tema), "masonry", atau
   // "grid" — lihat Gallery.tsx di masing-masing folder tema.
   galleryStyle  String   @default("default")
-  loveStory     Json     @default("[]") // { title: string; story: string }[]
-  events        Json     @default("[]") // { name, date, timeStart, timeEnd, location, mapsUrl }[]
+  loveStory     Json     @default("[]") // { title, story, titleEn?, storyEn? }[] — *En dipakai kalau bilingualEnabled
+  events        Json     @default("[]") // { name, date, timeStart, timeEnd, location, mapsUrl, nameEn? }[] — nameEn dipakai kalau bilingualEnabled
   bankAccounts  Json     @default("[]") // { bank, accountNumber, accountName }[]
 
   createdAt     DateTime @default(now())

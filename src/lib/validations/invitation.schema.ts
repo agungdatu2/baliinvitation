@@ -3,10 +3,15 @@ import { z } from "zod";
 export const loveStoryItemSchema = z.object({
   title: z.string().min(1, "Judul wajib diisi"),
   story: z.string().min(1, "Cerita wajib diisi"),
+  // Versi Inggris — cuma dipakai kalau invitation.bilingualEnabled true, lihat
+  // resolusi bahasa di src/app/[slug]/page.tsx. Kosong = fallback ke title/story.
+  titleEn: z.string().optional(),
+  storyEn: z.string().optional(),
 });
 
 export const eventItemSchema = z.object({
   name: z.string().min(1, "Nama acara wajib diisi"),
+  nameEn: z.string().optional(), // versi Inggris `name` — lihat catatan bilingual di loveStoryItemSchema
   date: z.string().min(1, "Tanggal wajib diisi"),
   timeStart: z.string().min(1, "Jam mulai wajib diisi"),
   timeEnd: z.string().optional(),
@@ -36,6 +41,9 @@ export const invitationSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug hanya boleh huruf kecil, angka, dan tanda -"),
   status: z.enum(["draft", "published"]).default("draft"),
   language: z.enum(["id", "en"]).default("id"),
+  // Toggle bahasa ID/EN untuk tamu — lihat komentar Invitation.bilingualEnabled
+  // di schema.prisma.
+  bilingualEnabled: z.boolean().default(false),
   showAsExample: z.boolean().default(false),
   templateKey: z.string().min(1, "Pilih template"),
   packageId: z.string().optional().or(z.literal("")),
@@ -63,6 +71,7 @@ export const invitationSchema = z.object({
 
   // Data acara non-wedding — lihat komentar Invitation.eventTitle di schema.prisma
   eventTitle: z.string().optional(),
+  eventTitleEn: z.string().optional(),
   hostName: z.string().optional(),
   hostLogo: z.string().optional(),
   hostLogoSize: z.enum(["small", "medium", "large"]).default("medium"),
@@ -71,7 +80,9 @@ export const invitationSchema = z.object({
   // og:image eksplisit — lihat komentar Invitation.metaImage di schema.prisma
   metaImage: z.string().optional(),
   quote: z.string().optional(),
+  quoteEn: z.string().optional(),
   greeting: z.string().optional(),
+  greetingEn: z.string().optional(),
   musicUrl: z.string().optional(),
   livestreamUrl: z.string().optional(),
   livestreamNote: z.string().optional(),

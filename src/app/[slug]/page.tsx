@@ -6,6 +6,16 @@ import { prisma } from "@/lib/prisma";
 import { TEMPLATE_REGISTRY } from "@/components/templates/registry";
 import { InvitationData } from "@/types/invitation";
 import { recordInvitationView, ViaParam } from "@/lib/portal/track-view";
+import LanguageToggle from "@/components/LanguageToggle";
+
+// Pilih versi EN kalau lang==="en" DAN field EN-nya diisi, selain itu fallback
+// ke versi ID — jadi admin boleh isi field EN bertahap (Undangan Multi-Bahasa,
+// lihat komentar Invitation.bilingualEnabled di schema.prisma) tanpa bikin
+// bagian yang belum diterjemahkan jadi kosong.
+function pick(idValue: string | null | undefined, enValue: string | null | undefined, lang: "id" | "en") {
+  if (lang === "en" && enValue) return enValue;
+  return idValue ?? undefined;
+}
 
 export const dynamic = "force-dynamic";
 
@@ -82,7 +92,7 @@ export default async function InvitationPage({
   searchParams,
 }: {
   params: { slug: string };
-  searchParams: { to?: string; g?: string; portal_preview?: string };
+  searchParams: { to?: string; g?: string; portal_preview?: string; lang?: string };
 }) {
   const inv = await getInvitation(params.slug);
   if (!inv) return notFound();
@@ -156,11 +166,21 @@ export default async function InvitationPage({
 
   const guestName = guest?.name ?? (searchParams.to ? decodeURIComponent(searchParams.to) : undefined);
 
+  // Toggle ID/EN cuma berlaku kalau admin aktifkan bilingualEnabled untuk
+  // undangan ini — kalau tidak, ?lang= di URL diabaikan dan tetap pakai
+  // bahasa default (inv.language) apapun query-nya.
+  const requestedLang = searchParams.lang === "en" || searchParams.lang === "id" ? searchParams.lang : undefined;
+  const resolvedLang: "id" | "en" = inv.bilingualEnabled && requestedLang ? requestedLang : (inv.language as "id" | "en");
+
+  const loveStoryRaw =
+    (inv.loveStory as unknown as (InvitationData["loveStory"][number] & { titleEn?: string; storyEn?: string })[]) ?? [];
+  const eventsRaw = (inv.events as unknown as (InvitationData["events"][number] & { nameEn?: string })[]) ?? [];
+
   const data: InvitationData = {
     id: inv.id,
     slug: inv.slug,
     status: inv.status as "draft" | "published",
-    language: inv.language as "id" | "en",
+    language: resolvedLang,
     templateKey: inv.template.key,
     clientName: inv.clientName,
     clientPhone: inv.clientPhone ?? undefined,
@@ -175,14 +195,14 @@ export default async function InvitationPage({
     brideParents: inv.brideParents,
     brideInstagram: inv.brideInstagram ?? undefined,
     bridePhoto: inv.bridePhoto ?? undefined,
-    eventTitle: inv.eventTitle ?? undefined,
+    eventTitle: pick(inv.eventTitle, inv.eventTitleEn, resolvedLang),
     hostName: inv.hostName ?? undefined,
     hostLogo: inv.hostLogo ?? undefined,
     hostLogoSize: inv.hostLogoSize as InvitationData["hostLogoSize"],
     coverImage: inv.coverImage ?? undefined,
     metaImage: inv.metaImage ?? undefined,
-    quote: inv.quote ?? undefined,
-    greeting: inv.greeting ?? undefined,
+    quote: pick(inv.quote, inv.quoteEn, resolvedLang),
+    greeting: pick(inv.greeting, inv.greetingEn, resolvedLang),
     musicUrl: inv.musicUrl ?? undefined,
     livestreamUrl: inv.livestreamUrl ?? undefined,
     livestreamNote: inv.livestreamNote ?? undefined,
@@ -198,8 +218,14 @@ export default async function InvitationPage({
     eventDate: inv.eventDate.toISOString(),
     galleryImages: (inv.galleryImages as unknown as string[]) ?? [],
     galleryStyle: (inv.galleryStyle as InvitationData["galleryStyle"]) ?? "default",
-    loveStory: (inv.loveStory as unknown as InvitationData["loveStory"]) ?? [],
-    events: (inv.events as unknown as InvitationData["events"]) ?? [],
+    loveStory: loveStoryRaw.map((item) => ({
+      title: resolvedLang === "en" && item.titleEn ? item.titleEn : item.title,
+      story: resolvedLang === "en" && item.storyEn ? item.storyEn : item.story,
+    })),
+    events: eventsRaw.map((event) => ({
+      ...event,
+      name: resolvedLang === "en" && event.nameEn ? event.nameEn : event.name,
+    })),
     bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],
     dressCode: (inv.dressCode as unknown as InvitationData["dressCode"]) ?? [],
     hasIntro: inv.package?.hasIntro ?? true,
@@ -207,5 +233,10 @@ export default async function InvitationPage({
     initialWishes,
   };
 
-  return <Template data={data} guestName={guestName} guestId={guest?.id} />;
+  return (
+    <>
+      <Template data={data} guestName={guestName} guestId={guest?.id} />
+      {inv.bilingualEnabled && <LanguageToggle currentLang={resolvedLang} searchParams={searchParams} />}
+    </>
+  );
 }
