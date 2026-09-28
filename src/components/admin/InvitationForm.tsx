@@ -163,6 +163,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const backgroundSlideshow = useFieldArray({ control, name: "backgroundSlideshowImages" as never });
   const backgroundType = watch("backgroundType");
   const bilingualEnabled = watch("bilingualEnabled");
+  const galleryImageValues = watch("galleryImages");
   const dressCode = useFieldArray({ control, name: "dressCode" });
 
   const onSubmit = async (values: InvitationFormValues) => {
@@ -629,7 +630,20 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
           tombol ↑↓ untuk mengatur urutannya.
         </p>
         {gallery.fields.map((f, i) => (
-          <div key={f.id} className="flex gap-2">
+          <div key={f.id} className="flex gap-2 items-center">
+            <div className="h-12 w-12 shrink-0 rounded border border-gray-200 bg-gray-50 overflow-hidden">
+              {galleryImageValues?.[i] && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={galleryImageValues[i]}
+                  alt=""
+                  className="h-full w-full object-cover"
+                  onError={(e) => {
+                    e.currentTarget.style.opacity = "0";
+                  }}
+                />
+              )}
+            </div>
             <input {...register(`galleryImages.${i}` as const)} className="input flex-1" placeholder="https://..." />
             <button
               type="button"
@@ -654,6 +668,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             </button>
           </div>
         ))}
+        <button type="button" onClick={() => gallery.append("" as never)} className="btn-add">
+          + Tambah Foto
+        </button>
       </section>
 
       {(HIDEABLE_SECTIONS_BY_TEMPLATE[selectedTemplateKey]?.length ?? 0) > 0 && (
