@@ -55,6 +55,21 @@ function SlideshowGallery({ images, lang }: { images: string[]; lang?: Lang }) {
     setPreviewOpen(false);
   };
 
+  // Navigasi khusus DI DALAM preview fullscreen — beda dari `goTo` di atas
+  // (yang menutup preview, dipakai tombol panah di kartu kecil), ini cuma
+  // ganti slide dan preview TETAP terbuka, supaya tamu bisa geser next/prev
+  // beruntun tanpa keluar-masuk preview.
+  const goToPreview = (delta: number) => setIndex((i) => (i + delta + total) % total);
+
+  let previewTouchStartX = 0;
+  const onPreviewTouchStart = (e: React.TouchEvent) => {
+    previewTouchStartX = e.touches[0].clientX;
+  };
+  const onPreviewTouchEnd = (e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - previewTouchStartX;
+    if (Math.abs(delta) > 50) goToPreview(delta < 0 ? 1 : -1);
+  };
+
   return (
     <section className="relative h-[100lvh] flex items-center justify-center px-6 py-10">
       <div className="relative w-full max-w-md aspect-[3/4] rounded-2xl overflow-hidden bg-groove-stone">
@@ -135,10 +150,24 @@ function SlideshowGallery({ images, lang }: { images: string[]; lang?: Lang }) {
             <div
               className="fixed inset-0 z-50 bg-groove-stone/95 flex items-center justify-center animate-fadeIn"
               onClick={() => setPreviewOpen(false)}
+              onTouchStart={onPreviewTouchStart}
+              onTouchEnd={onPreviewTouchEnd}
             >
               <button onClick={() => setPreviewOpen(false)} className="absolute top-4 right-4 text-groove-bg/80" aria-label={t.close}>
                 <X className="h-6 w-6" />
               </button>
+              {total > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPreview(-1);
+                  }}
+                  aria-label={t.previous}
+                  className="absolute left-2 md:left-6 text-groove-bg/70 hover:text-groove-bg transition-colors"
+                >
+                  <ChevronLeft className="h-7 w-7" strokeWidth={1.5} />
+                </button>
+              )}
               <div className="relative w-full h-full max-w-2xl max-h-[80vh] mx-8" onClick={(e) => e.stopPropagation()}>
                 {isVideoSlide ? (
                   <video src={current} controls autoPlay playsInline className="h-full w-full object-contain" />
@@ -146,6 +175,23 @@ function SlideshowGallery({ images, lang }: { images: string[]; lang?: Lang }) {
                   <Image src={current} alt={`gallery-${index}`} fill className="object-contain" />
                 )}
               </div>
+              {total > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToPreview(1);
+                  }}
+                  aria-label={t.next}
+                  className="absolute right-2 md:right-6 text-groove-bg/70 hover:text-groove-bg transition-colors"
+                >
+                  <ChevronRight className="h-7 w-7" strokeWidth={1.5} />
+                </button>
+              )}
+              {total > 1 && (
+                <p className="absolute bottom-4 text-groove-bg/50 text-xs">
+                  {index + 1} / {total}
+                </p>
+              )}
             </div>
           ) : null,
           document.body
