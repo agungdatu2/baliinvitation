@@ -62,6 +62,7 @@ const defaultValues: InvitationFormValues = {
   reverieGateImage: "",
   reverieSaveTheDateImage: "",
   reverieFooterImage: "",
+  weddingGiftImage: "",
   backgroundType: "video",
   backgroundImage: "",
   backgroundColor: "",
@@ -566,6 +567,9 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             + Tambah Rekening
           </button>
         </div>
+        <Field label="URL Foto Wedding Gift (berlaku semua tema, opsional — kosongkan untuk pakai foto galeri pertama)">
+          <input {...register("weddingGiftImage")} className="input" placeholder="https://..." />
+        </Field>
         {bankAccounts.fields.map((f, i) => (
           <div key={f.id} className="border rounded p-3 grid grid-cols-3 gap-2 relative">
             <Field label="Bank">

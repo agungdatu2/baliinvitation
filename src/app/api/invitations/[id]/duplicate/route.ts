@@ -79,6 +79,7 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
       reverieGateImage: original.reverieGateImage ?? undefined,
       reverieSaveTheDateImage: original.reverieSaveTheDateImage ?? undefined,
       reverieFooterImage: original.reverieFooterImage ?? undefined,
+      weddingGiftImage: original.weddingGiftImage ?? undefined,
       hiddenSections: original.hiddenSections ?? [],
       dressCode: original.dressCode ?? undefined,
       eventDate: original.eventDate,

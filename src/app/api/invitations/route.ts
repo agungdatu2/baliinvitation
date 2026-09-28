@@ -91,6 +91,7 @@ export async function POST(req: NextRequest) {
       reverieGateImage: d.reverieGateImage,
       reverieSaveTheDateImage: d.reverieSaveTheDateImage,
       reverieFooterImage: d.reverieFooterImage,
+      weddingGiftImage: d.weddingGiftImage,
       backgroundType: d.backgroundType,
       backgroundImage: d.backgroundImage,
       backgroundColor: d.backgroundColor,

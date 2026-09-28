@@ -90,6 +90,7 @@ export const invitationSchema = z.object({
   reverieGateImage: z.string().optional(),
   reverieSaveTheDateImage: z.string().optional(),
   reverieFooterImage: z.string().optional(),
+  weddingGiftImage: z.string().optional(),
   backgroundType: z.enum(["video", "image", "slideshow", "color"]).default("video"),
   backgroundImage: z.string().optional(),
   backgroundColor: z.string().optional(),

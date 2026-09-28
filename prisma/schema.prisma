@@ -186,6 +186,10 @@ model Invitation {
   reverieGateImage String? // foto background layar gate/pembuka — khusus tema Reverie, kalau kosong pakai placeholder
   reverieSaveTheDateImage String? // foto kecil di section Save the Date/countdown — khusus tema Reverie, kalau kosong pakai placeholder
   reverieFooterImage String? // foto background footer/penutup — khusus tema Reverie, kalau kosong pakai placeholder
+  // Foto di section Wedding Gift — berlaku SEMUA tema (Lume/Muse/Nocturne/Reverie).
+  // Kalau kosong, fallback ke foto galeri pertama (perilaku lama) supaya undangan
+  // yang belum diisi field ini tidak tiba-tiba kehilangan foto.
+  weddingGiftImage String?
   hiddenSections Json @default("[]") // key section yang disembunyikan client (mis. ["prayer","gift"]) — berlaku semua tema, lihat src/lib/hideable-sections.ts
   dressCode      Json?   // { label: string; hex: string }[] — warna baju yang disarankan
 

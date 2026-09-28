@@ -183,7 +183,7 @@ export default function LumeTemplate({ data, guestName, guestId }: TemplateProps
               <Reveal id="gift">
                 <WeddingGift
                   accounts={data.bankAccounts}
-                  image={visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
+                  image={data.weddingGiftImage || visibleGalleryImages?.find((src) => !/\.(mp4|webm|mov|m3u8)(\?.*)?$/i.test(src))}
                   lang={data.language}
                 />
               </Reveal>

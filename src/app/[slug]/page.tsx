@@ -210,6 +210,7 @@ export default async function InvitationPage({
     reverieGateImage: inv.reverieGateImage ?? undefined,
     reverieSaveTheDateImage: inv.reverieSaveTheDateImage ?? undefined,
     reverieFooterImage: inv.reverieFooterImage ?? undefined,
+    weddingGiftImage: inv.weddingGiftImage ?? undefined,
     backgroundType: inv.backgroundType as InvitationData["backgroundType"],
     backgroundImage: inv.backgroundImage ?? undefined,
     backgroundColor: inv.backgroundColor ?? undefined,

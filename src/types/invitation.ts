@@ -74,6 +74,7 @@ export interface InvitationData {
   reverieGateImage?: string; // foto background layar gate — khusus tema Reverie
   reverieSaveTheDateImage?: string; // foto kecil di section Save the Date/countdown — khusus tema Reverie
   reverieFooterImage?: string; // foto background footer/penutup — khusus tema Reverie
+  weddingGiftImage?: string; // foto section Wedding Gift, semua tema — kosong = fallback ke foto galeri pertama
 
   // Background fixed di belakang seluruh section scrollable — semua tema.
   // "video" pakai heroVideoUrl (default), "image" pakai backgroundImage, "slideshow"

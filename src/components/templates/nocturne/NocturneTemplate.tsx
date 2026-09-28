@@ -128,7 +128,7 @@ export default function NocturneTemplate({ data, guestName, guestId }: TemplateP
           <SaveTheDateSection data={data} />
           <WeddingDetails data={data} />
           {data.bankAccounts && data.bankAccounts.length > 0 && (
-            <WeddingGift accounts={data.bankAccounts} image={data.reverieSaveTheDateImage} lang={data.language} />
+            <WeddingGift accounts={data.bankAccounts} image={data.weddingGiftImage || data.reverieSaveTheDateImage} lang={data.language} />
           )}
           <RSVPForm
             invitationId={data.id ?? data.slug}
