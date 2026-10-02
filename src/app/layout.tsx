@@ -1,7 +1,15 @@
 import type { Metadata } from "next";
 import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script, Bodoni_Moda } from "next/font/google";
 import localFont from "next/font/local";
+import { GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
+
+// Google Tag Manager — id dari user, dipasang site-wide (semua route, admin
+// maupun undangan publik) lewat root layout. <GoogleTagManager> dari
+// @next/third-parties sudah handle <script> gtm.js-nya; <noscript><iframe>
+// fallback (wajib dipasang manual, tidak disertakan otomatis oleh komponen
+// itu) ditaruh persis di awal <body> sesuai instruksi resmi Google.
+const GTM_ID = "GTM-PZGFFWFK";
 
 // Dipakai tema "Lume" (redesign fine-art/editorial paper) — self-hosted otomatis
 // oleh next/font, jadi tidak butuh <link> Google Fonts dan tidak ada risiko CDN gagal.
@@ -87,7 +95,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="id"
       className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable} ${bodoniModa.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          />
+        </noscript>
+        {children}
+      </body>
+      <GoogleTagManager gtmId={GTM_ID} />
     </html>
   );
 }
