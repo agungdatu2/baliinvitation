@@ -8,18 +8,23 @@ import { getDict } from "@/lib/i18n/lume";
 
 const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=85";
 // Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk
-// (foto zoom-out + fade konten). Sebelumnya cuma 60vh extra & REVEAL_END
-// 0.35 (~145px reveal) — jauh lebih pendek/buru-buru dibanding peredupan
-// Hero (~625px, ~0.9 layar) jadi kerasa gak sehalus Hero. Dinaikkan supaya
-// jarak reveal-nya sepadan (~0.85 x 100vh extra ≈ 1 layar, mirip Hero).
+// (foto zoom-out + fade konten).
 const SECTION_VH = 200;
-const REVEAL_END = 0.85;
+// REVEAL_END & EXIT_FADE_START membagi jatah scroll (100vh, dari SECTION_VH
+// 200vh dikurangi 100vh viewport) jadi 3 fase: fade-in (0 -> REVEAL_END),
+// HOLD penuh (REVEAL_END -> EXIT_FADE_START), fade-out (EXIT_FADE_START -> 1).
+// Sebelumnya REVEAL_END sempat dinaikkan ke 0.85 (supaya reveal-nya selambat
+// Hero), tapi itu cuma nyisa ~1% jatah HOLD setelah EXIT_FADE_START
+// ditambahkan — begitu foto/nama baru selesai fade-in, LANGSUNG fade-out
+// lagi beberapa px kemudian (kerasa seperti "ketutup sesuatu" waktu
+// discroll dikit). Diturunkan lagi supaya ketiga fase kebagian jatah wajar.
+const REVEAL_END = 0.3;
 // Konten HARUS fade-out lagi sebelum sticky section ini benar-benar release
 // (progress = 1) — kalau tidak, foto/nama masih full opacity tepat saat
 // LoveStorySection sesudahnya mulai muncul, menyebabkan efek "ghosting"
 // (dua foto blend bersamaan) — bug yang sama persis dengan Verses->Groom,
 // lihat komentar EXIT_FADE_START di Verses.tsx/GroomSection.tsx.
-const EXIT_FADE_START = 0.86;
+const EXIT_FADE_START = 0.75;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;

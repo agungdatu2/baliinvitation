@@ -11,14 +11,21 @@ const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1519741497674-611481863
 // (foto zoom-out + fade konten), sisanya cuma "menahan" tampilan sticky-nya
 // sampai user selesai scroll ke section berikutnya (BrideSection).
 const SECTION_VH = 200;
-const REVEAL_END = 0.85;
+// REVEAL_END & EXIT_FADE_START membagi jatah scroll (100vh, dari SECTION_VH
+// 200vh dikurangi 100vh viewport) jadi 3 fase: fade-in (0 -> REVEAL_END),
+// HOLD penuh (REVEAL_END -> EXIT_FADE_START), fade-out (EXIT_FADE_START -> 1).
+// PENTING: sisakan jatah HOLD yang cukup lebar di tengah — sebelumnya
+// REVEAL_END=0.85 & EXIT_FADE_START=0.86 cuma nyisa ~1% jatah HOLD, jadi
+// begitu foto/nama baru selesai fade-in, LANGSUNG fade-out lagi beberapa
+// px kemudian (kerasa seperti "ketutup sesuatu" waktu discroll dikit).
+const REVEAL_END = 0.3;
 // Konten HARUS fade-out lagi sebelum sticky section ini benar-benar release
 // (progress = 1) — kalau tidak, foto/nama masih full opacity tepat saat
 // BrideSection sesudahnya mulai engage, dan karena reveal Bride sendiri
 // pelan juga, konten ini "menembus" lewat backdrop Bride yang masih separuh
 // transparan untuk jarak scroll yang lumayan (bug yang sama persis dengan
 // yang terjadi di Verses->Groom, lihat komentar EXIT_FADE_START di Verses.tsx).
-const EXIT_FADE_START = 0.86;
+const EXIT_FADE_START = 0.75;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
