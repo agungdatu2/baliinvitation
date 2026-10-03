@@ -4,19 +4,22 @@ import { motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
 // Section daftar kisah cinta — tampil sesudah LoveStorySection (banner foto
-// landscape pendek "Our Love Story"). Konten NORMAL (bukan sticky/tinggi-
-// berlebih), persis pola referensi (groovepublic.com/claire) — daftar cerita
-// mengalir biasa di atas latar hitam solid.
+// full-screen "Our Love Story"). Berbeda dari section2 lain sebelumnya:
+// ini konten NORMAL (bukan sticky/tinggi-berlebih), persis pola referensi
+// (groovepublic.com/claire) — daftar cerita mengalir biasa di atas latar
+// hitam solid, bukan section penuh layar sendiri-sendiri.
 //
-// Kompensasi -mt-[100svh] untuk celah scroll "mati" sesudah rantai sticky
-// Groom/Bride sekarang sudah dipindah ke LoveStorySection (section sebelum
-// ini) karena itu sudah jadi section PERTAMA sesudah rantai sticky — jadi di
-// sini TIDAK dipakai lagi (dobel -mt akan bikin overlap).
+// marginTop negatif -100svh + z-50 tetap dipakai (walau section ini TIDAK
+// sticky) supaya menutup celah scroll "mati" ~1 layar yang muncul persis
+// setelah LoveStorySection (section sebelumnya, pola wrapper-tinggi+sticky)
+// melepas sticky-nya — lihat komentar sama di GroomSection.tsx. Karena
+// section ini normal flow (bukan sticky), bg-black statis di sini AMAN
+// (tidak ada fase "meluncur naik pra-sticky" yang perlu diwaspadai).
 export default function LoveStoryList({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
 
   return (
-    <div className="relative z-50 bg-black">
+    <div className="relative z-50 -mt-[100svh] bg-black">
       <div className="mx-auto max-w-2xl px-6 py-24 md:max-w-3xl md:px-16 md:py-32">
         <div className="space-y-20 md:space-y-28">
           {data.loveStory.map((item, i) => (
