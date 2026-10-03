@@ -38,10 +38,9 @@ const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 // pakai timer (setInterval), bukan digerakkan scroll — supaya terus
 // berganti & zoom-out selama section ini di layar, tidak peduli user diam
 // atau lagi scroll pelan/cepat.
-// Backdrop/konten tetap HARUS scroll-reactive (opacity: reveal) untuk
-// tahap masuknya — kalau tidak, section ini menutupi BrideSection sebelum
-// waktunya saat masih di fase "meluncur naik" pra-sticky (bug yang sama
-// persis dengan yang sudah diperbaiki di Groom/Bride).
+// Foto entrance pakai ZOOM scroll-reactive (scale: revealScale), BUKAN fade
+// opacity/overlay gelap lagi — supaya foto langsung terang & jelas dari awal.
+// Judul tetap pakai fade opacity (reveal) seperti biasa.
 export default function LoveStorySection({ data }: { data: InvitationData }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -59,9 +58,14 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
   }, [images.length]);
 
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  // Reveal masuk (judul + backdrop) — lokal ke container ini sendiri, jadi
-  // responsif sejak scroll pertama, tanpa jeda.
+  // Reveal masuk judul — lokal ke container ini sendiri, jadi responsif sejak
+  // scroll pertama, tanpa jeda.
   const reveal = useTransform(scrollYProgress, [0, REVEAL_END], [0, 1]);
+  // Entrance foto pakai ZOOM IN (bukan fade dari hitam/overlay gelap lagi) —
+  // foto mulai sedikit membesar (1.15x) lalu mengecil ke ukuran normal (1x)
+  // seiring scroll masuk, supaya foto langsung kelihatan jelas & terang dari
+  // awal (tidak ketutup overlay gelap seperti sebelumnya).
+  const revealScale = useTransform(scrollYProgress, [0, REVEAL_END], [1.15, 1]);
 
   return (
     // marginTop negatif -100svh SENGAJA — mengkompensasi BrideSection (outer
@@ -70,7 +74,7 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
     // yang sama di GroomSection.tsx/BrideSection.tsx.
     <div ref={containerRef} className="relative z-40 -mt-[100svh]" style={{ height: `${SECTION_VH}vh` }}>
       <section className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        <motion.div style={{ opacity: reveal }} className="absolute inset-0 bg-black">
+        <motion.div style={{ scale: revealScale }} className="absolute inset-0 bg-black overflow-hidden">
           <AnimatePresence>
             <motion.img
               key={activeIndex}
@@ -86,7 +90,6 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
               className="absolute inset-0 h-full w-full object-cover"
             />
           </AnimatePresence>
-          <div className="absolute inset-0 bg-black/25" />
         </motion.div>
 
         <motion.div
