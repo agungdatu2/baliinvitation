@@ -53,58 +53,59 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
     // PENUH sebelum wrapper-nya sendiri benar-benar berakhir. Section ini
     // sendiri TIDAK sticky, tapi tetap section PERTAMA sesudah rantai sticky
     // Groom/Bride, jadi tetap butuh kompensasi ini — lihat komentar sama di
-    // GroomSection.tsx/BrideSection.tsx. Karena section ini sekarang penuh
-    // 100svh (bukan banner pendek lagi), dead-zone-nya diserap lewat SPACER
-    // HITAM SOLID terpisah (satu layar penuh) sebelum banner-nya sendiri,
-    // supaya banner tetap utuh 100svh tanpa ketindih sisa sticky BrideSection.
-    <div className="relative z-40 -mt-[100svh] bg-black">
-      <div aria-hidden="true" style={{ height: "100svh" }} />
+    // GroomSection.tsx/BrideSection.tsx.
+    //
+    // Margin ini dipasang LANGSUNG di banner 100svh ini (BUKAN lewat spacer
+    // hitam terpisah seperti versi sebelumnya) — ternyata spacer itu tidak
+    // perlu sama sekali: margin negatif cuma GESER posisi banner ke atas
+    // persis ke titik di mana BrideSection menghilang (bukan "memotong"
+    // tingginya), jadi banner ini otomatis mengisi penuh celah itu dengan
+    // kontennya sendiri. Spacer sebelumnya cuma bikin layar hitam kosong
+    // nongol dulu sebelum foto "Our Love Story" muncul.
+    <motion.section
+      initial={{ opacity: 0, scale: 1.08 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.4 }}
+      transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+      className="relative z-40 -mt-[100svh] h-[100svh] w-full overflow-hidden bg-black"
+    >
+      <AnimatePresence>
+        <motion.img
+          key={activeIndex}
+          src={images[activeIndex]}
+          alt=""
+          initial={{ opacity: 0, scale: IMAGE_SCALE_START }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{
+            opacity: { duration: CROSSFADE_MS / 1000, ease: "linear" },
+            scale: { duration: PHOTO_INTERVAL_MS / 1000, ease: "linear" },
+          }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </AnimatePresence>
 
-      <motion.section
-        initial={{ opacity: 0, scale: 1.08 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
-        className="relative h-[100svh] w-full overflow-hidden"
-      >
-        <AnimatePresence>
-          <motion.img
-            key={activeIndex}
-            src={images[activeIndex]}
-            alt=""
-            initial={{ opacity: 0, scale: IMAGE_SCALE_START }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{
-              opacity: { duration: CROSSFADE_MS / 1000, ease: "linear" },
-              scale: { duration: PHOTO_INTERVAL_MS / 1000, ease: "linear" },
-            }}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </AnimatePresence>
-
-        <div className="absolute inset-0 flex items-center justify-center px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="flex items-center gap-3 md:gap-4"
-          >
-            <h2 className="font-nocturne-display italic text-2xl sm:text-3xl md:text-5xl text-groove-bg text-center">
-              Our Love Story
-            </h2>
-            <span className="hidden sm:flex items-center gap-1.5 text-groove-bg/60">
-              <span className="flex gap-1">
-                <span className="h-1 w-1 rounded-full bg-current" />
-                <span className="h-1 w-1 rounded-full bg-current" />
-                <span className="h-1 w-1 rounded-full bg-current" />
-              </span>
-              <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+      <div className="absolute inset-0 flex items-center justify-center px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.9, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          className="flex items-center gap-3 md:gap-4"
+        >
+          <h2 className="font-nocturne-display italic text-2xl sm:text-3xl md:text-5xl text-groove-bg text-center">
+            Our Love Story
+          </h2>
+          <span className="hidden sm:flex items-center gap-1.5 text-groove-bg/60">
+            <span className="flex gap-1">
+              <span className="h-1 w-1 rounded-full bg-current" />
+              <span className="h-1 w-1 rounded-full bg-current" />
+              <span className="h-1 w-1 rounded-full bg-current" />
             </span>
-          </motion.div>
-        </div>
-      </motion.section>
-    </div>
+            <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
+          </span>
+        </motion.div>
+      </div>
+    </motion.section>
   );
 }
