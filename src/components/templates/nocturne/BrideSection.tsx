@@ -14,6 +14,12 @@ const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1583939003579-730e3918a
 // jarak reveal-nya sepadan (~0.85 x 100vh extra ≈ 1 layar, mirip Hero).
 const SECTION_VH = 200;
 const REVEAL_END = 0.85;
+// Konten HARUS fade-out lagi sebelum sticky section ini benar-benar release
+// (progress = 1) — kalau tidak, foto/nama masih full opacity tepat saat
+// LoveStorySection sesudahnya mulai muncul, menyebabkan efek "ghosting"
+// (dua foto blend bersamaan) — bug yang sama persis dengan Verses->Groom,
+// lihat komentar EXIT_FADE_START di Verses.tsx/GroomSection.tsx.
+const EXIT_FADE_START = 0.92;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
@@ -30,7 +36,7 @@ export default function BrideSection({ data }: { data: InvitationData }) {
   // Reveal ini lokal ke container section ini sendiri (bukan progress dari
   // section lain) — jadi otomatis responsif sejak scroll pertama masuk ke
   // section ini, sama seperti overlay Hero, tanpa jeda "beberapa scroll dulu".
-  const reveal = useTransform(scrollYProgress, [0, REVEAL_END], [0, 1]);
+  const reveal = useTransform(scrollYProgress, [0, REVEAL_END, EXIT_FADE_START, 1], [0, 1, 1, 0]);
   const imageScale = useTransform(scrollYProgress, [0, REVEAL_END], [IMAGE_SCALE_START, 1]);
 
   // `brideParents` satu string gabungan (mis. "Bapak X & Ibu Y") — dipecah jadi

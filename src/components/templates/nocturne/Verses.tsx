@@ -27,6 +27,13 @@ const VH_PER_IMAGE = 160;
 // hitam (Hero sendiri sudah gelap duluan lewat overlay-nya sendiri).
 const HERO_DIM_END = 0.035;
 const CONTENT_IN_END = 0.07;
+// Kutipan & foto HARUS fade-out lagi sebelum sticky section ini benar-benar
+// release (progress = 1) — kalau tidak, keduanya masih full opacity tepat
+// saat GroomSection sesudahnya mulai engage, dan karena reveal Groom sendiri
+// pelan (ngikutin pacing Hero), kutipan ini "menembus" lewat backdrop Groom
+// yang masih separuh transparan untuk jarak scroll yang cukup lama (bug
+// nyata, kutipan kelihatan dobel-eksposur di atas foto Groom).
+const EXIT_FADE_START = 0.92;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.
@@ -70,7 +77,12 @@ export default function Verses({ data }: { data: InvitationData }) {
   const heroDim = useTransform(scrollYProgress, [0, HERO_DIM_END], [0, 1]);
   // Tahap 2 — kutipan & foto pertama fade-in, baru mulai SETELAH layar sudah
   // hitam penuh (clamp default useTransform bikin ini 0 selama v < HERO_DIM_END).
-  const contentFade = useTransform(scrollYProgress, [HERO_DIM_END, CONTENT_IN_END], [0, 1]);
+  // Lalu fade-out lagi di ujung (EXIT_FADE_START -> 1) — lihat komentar di atas.
+  const contentFade = useTransform(
+    scrollYProgress,
+    [HERO_DIM_END, CONTENT_IN_END, EXIT_FADE_START, 1],
+    [0, 1, 1, 0]
+  );
 
   // Fraksi 0..1 per lintasan foto (dipakai bersama oleh posisi & opacity di
   // bawah supaya keduanya selalu sinkron persis).

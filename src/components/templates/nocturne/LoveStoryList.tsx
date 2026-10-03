@@ -3,23 +3,22 @@
 import { motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 
-// Section daftar kisah cinta — tampil sesudah LoveStorySection (banner foto
-// full-screen "Our Love Story"). Berbeda dari section2 lain sebelumnya:
-// ini konten NORMAL (bukan sticky/tinggi-berlebih), persis pola referensi
-// (groovepublic.com/claire) — daftar cerita mengalir biasa di atas latar
-// hitam solid, bukan section penuh layar sendiri-sendiri.
+// Section daftar kisah cinta — tampil LANGSUNG sesudah LoveStorySection
+// (banner foto full-screen "Our Love Story", sekarang NON-STICKY) supaya
+// keduanya terasa "menyatu" sebagai satu alur, bukan section terpisah yang
+// nge-hold layar sendiri. Konten NORMAL flow (bukan sticky/tinggi-berlebih),
+// daftar cerita mengalir biasa di atas latar hitam solid, tiap item fade-in
+// sendiri-sendiri waktu di-scroll masuk.
 //
-// marginTop negatif -100svh + z-50 tetap dipakai (walau section ini TIDAK
-// sticky) supaya menutup celah scroll "mati" ~1 layar yang muncul persis
-// setelah LoveStorySection (section sebelumnya, pola wrapper-tinggi+sticky)
-// melepas sticky-nya — lihat komentar sama di GroomSection.tsx. Karena
-// section ini normal flow (bukan sticky), bg-black statis di sini AMAN
-// (tidak ada fase "meluncur naik pra-sticky" yang perlu diwaspadai).
+// TIDAK pakai -mt-[100svh] lagi di sini — kompensasi dead-zone BrideSection
+// sekarang sudah ditangani di DALAM LoveStorySection sendiri (spacer hitam
+// solid), karena LoveStorySection sudah non-sticky jadi tidak ada dead-zone
+// KEDUA yang perlu ditutup lagi di sini.
 export default function LoveStoryList({ data }: { data: InvitationData }) {
   if (!data.loveStory?.length) return null;
 
   return (
-    <div className="relative z-50 -mt-[100svh] bg-black">
+    <div className="relative z-50 bg-black">
       <div className="mx-auto max-w-2xl px-6 py-24 md:max-w-3xl md:px-16 md:py-32">
         <div className="space-y-20 md:space-y-28">
           {data.loveStory.map((item, i) => (

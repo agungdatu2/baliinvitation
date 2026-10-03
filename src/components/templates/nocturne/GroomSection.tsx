@@ -12,6 +12,13 @@ const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1519741497674-611481863
 // sampai user selesai scroll ke section berikutnya (BrideSection).
 const SECTION_VH = 200;
 const REVEAL_END = 0.85;
+// Konten HARUS fade-out lagi sebelum sticky section ini benar-benar release
+// (progress = 1) — kalau tidak, foto/nama masih full opacity tepat saat
+// BrideSection sesudahnya mulai engage, dan karena reveal Bride sendiri
+// pelan juga, konten ini "menembus" lewat backdrop Bride yang masih separuh
+// transparan untuk jarak scroll yang lumayan (bug yang sama persis dengan
+// yang terjadi di Verses->Groom, lihat komentar EXIT_FADE_START di Verses.tsx).
+const EXIT_FADE_START = 0.92;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
@@ -38,7 +45,7 @@ export default function GroomSection({ data }: { data: InvitationData }) {
   // Reveal ini lokal ke container section ini sendiri (bukan progress dari
   // section lain) — jadi otomatis responsif sejak scroll pertama masuk ke
   // section ini, sama seperti overlay Hero, tanpa jeda "beberapa scroll dulu".
-  const reveal = useTransform(scrollYProgress, [0, REVEAL_END], [0, 1]);
+  const reveal = useTransform(scrollYProgress, [0, REVEAL_END, EXIT_FADE_START, 1], [0, 1, 1, 0]);
   const imageScale = useTransform(scrollYProgress, [0, REVEAL_END], [IMAGE_SCALE_START, 1]);
 
   // `groomParents` satu string gabungan (mis. "Bapak X & Ibu Y") — dipecah jadi

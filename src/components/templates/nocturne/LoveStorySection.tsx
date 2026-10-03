@@ -1,26 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useScroll, useTransform, motion, AnimatePresence } from "motion/react";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import { ArrowRight } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 
 const IMAGE_COUNT = 5;
-// Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk,
-// sisanya cuma "menahan" tampilan sticky-nya sampai user selesai scroll ke
-// section berikutnya — pola sama seperti Groom/BrideSection (BUKAN pola
-// Verses lagi, karena foto di sini sudah tidak ngikutin posisi scroll).
-// Full-screen SENGAJA (dicek langsung di reference groovepublic.com/claire
-// pakai browser desktop lebar — section "A Journey in Love" di sana juga
-// penuh 100vh di desktop, cuma jadi strip pendek di breakpoint mobile sempit).
-const SECTION_VH = 200;
-const REVEAL_END = 0.85;
-// Foto berganti otomatis (timer), LEPAS dari posisi scroll — bukan ngikutin
-// slide seperti sebelumnya. Tiap foto zoom-out terus-menerus selama jatah
-// tampilnya, lalu crossfade ke foto berikutnya yang mulai zoom lagi.
-// Awalnya disamakan persis dengan referensi (slide_duration 100ms +
-// transition_duration 100ms ≈ 200ms/foto), tapi dirasa terlalu cepat —
-// dilambatkan sedikit di sini.
+// Foto berganti otomatis (timer), lepas dari posisi scroll. Tiap foto
+// zoom-out terus-menerus selama jatah tampilnya, lalu crossfade ke foto
+// berikutnya yang mulai zoom lagi. Kecepatan disamakan dengan referensi
+// (slide_duration 100ms + transition_duration 100ms ≈ 200ms/foto), lalu
+// dilambatkan sedikit karena dirasa terlalu cepat.
 const PHOTO_INTERVAL_MS = 320;
 const CROSSFADE_MS = 220;
 const IMAGE_SCALE_START = 1.25;
@@ -32,17 +22,17 @@ const DEFAULT_IMAGES = Array.from(
 
 const VIDEO_EXT_RE = /\.(mp4|webm|mov|m3u8)(\?.*)?$/i;
 
-// Section "Love Story" (chapter title) — struktur luar sama dengan
-// Groom/BrideSection (outer tall wrapper + inner sticky viewport, reveal
-// sekali di awal lalu ditahan), TAPI foto latarnya sekarang loop otomatis
-// pakai timer (setInterval), bukan digerakkan scroll — supaya terus
-// berganti & zoom-out selama section ini di layar, tidak peduli user diam
-// atau lagi scroll pelan/cepat.
-// Foto entrance pakai ZOOM scroll-reactive (scale: revealScale), BUKAN fade
-// opacity/overlay gelap lagi — supaya foto langsung terang & jelas dari awal.
-// Judul tetap pakai fade opacity (reveal) seperti biasa.
+// Section "Love Story" (chapter title) — banner foto full-screen, TAPI
+// NON-STICKY (beda dari Groom/Bride) supaya langsung "menyatu" alirannya
+// dengan LoveStoryList tepat di bawahnya, bukan nge-hold layar sendiri dulu.
+// Reveal pakai whileInView sekali lewat (fade + zoom halus), BUKAN lagi
+// discroll-link ke scrollYProgress — ini sekaligus menghindari kelas bug yang
+// sama berulang di Groom/Bride (konten section sebelumnya "menembus" lewat
+// backdrop yang masih separuh transparan selama reveal lambat berbasis
+// scroll). Foto sendiri sudah terang & jelas (tanpa overlay gelap) sejak
+// commit sebelumnya — reveal di sini cuma soal kapan BANNER INI muncul,
+// bukan soal gelap/terangnya.
 export default function LoveStorySection({ data }: { data: InvitationData }) {
-  const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const photoOnly = (data.galleryImages ?? []).filter((src) => !VIDEO_EXT_RE.test(src));
@@ -57,46 +47,50 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end end"] });
-  // Reveal masuk judul — lokal ke container ini sendiri, jadi responsif sejak
-  // scroll pertama, tanpa jeda.
-  const reveal = useTransform(scrollYProgress, [0, REVEAL_END], [0, 1]);
-  // Entrance foto pakai ZOOM IN (bukan fade dari hitam/overlay gelap lagi) —
-  // foto mulai sedikit membesar (1.15x) lalu mengecil ke ukuran normal (1x)
-  // seiring scroll masuk, supaya foto langsung kelihatan jelas & terang dari
-  // awal (tidak ketutup overlay gelap seperti sebelumnya).
-  const revealScale = useTransform(scrollYProgress, [0, REVEAL_END], [1.15, 1]);
-
   return (
     // marginTop negatif -100svh SENGAJA — mengkompensasi BrideSection (outer
-    // wrapper tinggi + sticky di dalam) yang melepas stiky-nya SATU LAYAR
-    // PENUH sebelum wrapper-nya sendiri benar-benar berakhir. Lihat komentar
-    // yang sama di GroomSection.tsx/BrideSection.tsx.
-    <div ref={containerRef} className="relative z-40 -mt-[100svh]" style={{ height: `${SECTION_VH}vh` }}>
-      <section className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        <motion.div style={{ scale: revealScale }} className="absolute inset-0 bg-black overflow-hidden">
-          <AnimatePresence>
-            <motion.img
-              key={activeIndex}
-              src={images[activeIndex]}
-              alt=""
-              initial={{ opacity: 0, scale: IMAGE_SCALE_START }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                opacity: { duration: CROSSFADE_MS / 1000, ease: "linear" },
-                scale: { duration: PHOTO_INTERVAL_MS / 1000, ease: "linear" },
-              }}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </AnimatePresence>
-        </motion.div>
+    // wrapper tinggi + sticky di dalam) yang melepas sticky-nya SATU LAYAR
+    // PENUH sebelum wrapper-nya sendiri benar-benar berakhir. Section ini
+    // sendiri TIDAK sticky, tapi tetap section PERTAMA sesudah rantai sticky
+    // Groom/Bride, jadi tetap butuh kompensasi ini — lihat komentar sama di
+    // GroomSection.tsx/BrideSection.tsx. Karena section ini sekarang penuh
+    // 100svh (bukan banner pendek lagi), dead-zone-nya diserap lewat SPACER
+    // HITAM SOLID terpisah (satu layar penuh) sebelum banner-nya sendiri,
+    // supaya banner tetap utuh 100svh tanpa ketindih sisa sticky BrideSection.
+    <div className="relative z-40 -mt-[100svh] bg-black">
+      <div aria-hidden="true" style={{ height: "100svh" }} />
 
-        <motion.div
-          style={{ opacity: reveal }}
-          className="absolute inset-0 flex items-center justify-center px-6 pointer-events-none"
-        >
-          <div className="flex items-center gap-3 md:gap-4">
+      <motion.section
+        initial={{ opacity: 0, scale: 1.08 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true, amount: 0.4 }}
+        transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] }}
+        className="relative h-[100svh] w-full overflow-hidden"
+      >
+        <AnimatePresence>
+          <motion.img
+            key={activeIndex}
+            src={images[activeIndex]}
+            alt=""
+            initial={{ opacity: 0, scale: IMAGE_SCALE_START }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              opacity: { duration: CROSSFADE_MS / 1000, ease: "linear" },
+              scale: { duration: PHOTO_INTERVAL_MS / 1000, ease: "linear" },
+            }}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </AnimatePresence>
+
+        <div className="absolute inset-0 flex items-center justify-center px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.4, 0, 0.2, 1] }}
+            className="flex items-center gap-3 md:gap-4"
+          >
             <h2 className="font-nocturne-display italic text-2xl sm:text-3xl md:text-5xl text-groove-bg text-center">
               Our Love Story
             </h2>
@@ -108,9 +102,9 @@ export default function LoveStorySection({ data }: { data: InvitationData }) {
               </span>
               <ArrowRight className="h-4 w-4 md:h-5 md:w-5" />
             </span>
-          </div>
-        </motion.div>
-      </section>
+          </motion.div>
+        </div>
+      </motion.section>
     </div>
   );
 }
