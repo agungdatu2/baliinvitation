@@ -33,7 +33,7 @@ const CONTENT_IN_END = 0.07;
 // pelan (ngikutin pacing Hero), kutipan ini "menembus" lewat backdrop Groom
 // yang masih separuh transparan untuk jarak scroll yang cukup lama (bug
 // nyata, kutipan kelihatan dobel-eksposur di atas foto Groom).
-const EXIT_FADE_START = 0.92;
+const EXIT_FADE_START = 0.86;
 // Placeholder generik (bukan kutipan client) — dipakai kalau admin belum isi
 // `quote`. Beda dari kutipan di Hero supaya dua section berdekatan ini tidak
 // menampilkan kalimat yang sama persis.

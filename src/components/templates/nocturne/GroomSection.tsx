@@ -18,7 +18,7 @@ const REVEAL_END = 0.85;
 // pelan juga, konten ini "menembus" lewat backdrop Bride yang masih separuh
 // transparan untuk jarak scroll yang lumayan (bug yang sama persis dengan
 // yang terjadi di Verses->Groom, lihat komentar EXIT_FADE_START di Verses.tsx).
-const EXIT_FADE_START = 0.92;
+const EXIT_FADE_START = 0.86;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;

@@ -19,7 +19,7 @@ const REVEAL_END = 0.85;
 // LoveStorySection sesudahnya mulai muncul, menyebabkan efek "ghosting"
 // (dua foto blend bersamaan) — bug yang sama persis dengan Verses->Groom,
 // lihat komentar EXIT_FADE_START di Verses.tsx/GroomSection.tsx.
-const EXIT_FADE_START = 0.92;
+const EXIT_FADE_START = 0.86;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;
