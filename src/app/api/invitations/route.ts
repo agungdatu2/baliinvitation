@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { invitationSchema } from "@/lib/validations/invitation.schema";
 import { generatePortalToken } from "@/lib/utils/tokens";
+import { parseBaliDateTime } from "@/lib/utils/timezone";
 
 // GET /api/invitations -> list semua undangan (untuk tabel dashboard admin)
 export async function GET() {
@@ -97,7 +98,7 @@ export async function POST(req: NextRequest) {
       backgroundColor: d.backgroundColor,
       backgroundSlideshowImages: d.backgroundSlideshowImages,
       hiddenSections: d.hiddenSections,
-      eventDate: new Date(d.eventDate),
+      eventDate: parseBaliDateTime(d.eventDate),
       galleryImages: d.galleryImages,
       galleryStyle: d.galleryStyle,
       loveStory: d.loveStory,

@@ -2,15 +2,10 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import InvitationForm from "@/components/admin/InvitationForm";
 import type { InvitationFormValues } from "@/lib/validations/invitation.schema";
+import { toBaliDatetimeLocal } from "@/lib/utils/timezone";
 
 export const dynamic = "force-dynamic";
 
-// datetime-local butuh "YYYY-MM-DDTHH:mm" dalam waktu lokal (bukan UTC/toISOString,
-// yang akan geser jam kalau timezone server/browser bukan UTC).
-function toDatetimeLocalValue(date: Date) {
-  const pad = (n: number) => String(n).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
 
 export default async function EditInvitationPage({ params }: { params: { id: string } }) {
   const invitation = await prisma.invitation.findUnique({
@@ -60,7 +55,7 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     backgroundColor: invitation.backgroundColor ?? "",
     backgroundSlideshowImages: (invitation.backgroundSlideshowImages as string[]) ?? [],
     hiddenSections: (invitation.hiddenSections as string[]) ?? [],
-    eventDate: toDatetimeLocalValue(invitation.eventDate),
+    eventDate: toBaliDatetimeLocal(invitation.eventDate),
     galleryImages: (invitation.galleryImages as string[]) ?? [],
     loveStory: (invitation.loveStory as InvitationFormValues["loveStory"]) ?? [],
     events: (invitation.events as InvitationFormValues["events"]) ?? [],

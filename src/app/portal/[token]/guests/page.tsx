@@ -1,6 +1,7 @@
 import { resolvePortalByToken } from "@/lib/portal/resolve-portal";
 import { listGuests } from "@/lib/services/guests";
 import GuestManager from "@/components/portal/GuestManager";
+import { BALI_TZ } from "@/lib/utils/timezone";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,7 @@ export default async function PortalGuestsPage({ params }: { params: { token: st
 
   const guests = await listGuests(invitation.id);
   const eventDateLabel = new Date(invitation.eventDate).toLocaleDateString("id-ID", {
+    timeZone: BALI_TZ,
     weekday: "long",
     day: "numeric",
     month: "long",

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { formatRupiah, daysUntil } from "@/lib/utils/format";
 import { getPaymentStatus, PAYMENT_STATUS_LABEL, PAYMENT_STATUS_CLASS, PaymentStatus } from "@/lib/utils/payment-status";
 import InvitationRowActions from "@/components/admin/InvitationRowActions";
+import { BALI_TZ } from "@/lib/utils/timezone";
 
 export const dynamic = "force-dynamic";
 
@@ -176,7 +177,7 @@ export default async function AdminDashboard({
                   <td className="p-3 text-gray-700">{inv.template.name}</td>
                   <td className="p-3 text-gray-700">{inv.package ? inv.package.name : <span className="text-gray-400">-</span>}</td>
                   <td className="p-3">
-                    <div className="text-gray-700">{new Date(inv.eventDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}</div>
+                    <div className="text-gray-700">{new Date(inv.eventDate).toLocaleDateString("id-ID", { timeZone: BALI_TZ, day: "numeric", month: "short", year: "numeric" })}</div>
                     <div className="text-xs text-gray-400">{dayLabel}</div>
                   </td>
                   <td className="p-3">

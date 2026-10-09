@@ -4,6 +4,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { invitationSchema, InvitationFormValues } from "@/lib/validations/invitation.schema";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { formatRupiah } from "@/lib/utils/format";
 import { HIDEABLE_SECTIONS_BY_TEMPLATE } from "@/lib/hideable-sections";
 import { TEMPLATE_CATEGORIES, TEMPLATE_CATEGORY_LABELS, TemplateCategory } from "@/lib/validations/template.schema";
@@ -86,6 +87,7 @@ interface InvitationFormProps {
 
 export default function InvitationForm({ invitationId, initialValues }: InvitationFormProps) {
   const isEdit = Boolean(invitationId);
+  const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -164,6 +166,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const backgroundType = watch("backgroundType");
   const bilingualEnabled = watch("bilingualEnabled");
   const galleryImageValues = watch("galleryImages");
+  const metaImageValue = watch("metaImage");
   const dressCode = useFieldArray({ control, name: "dressCode" });
 
   const onSubmit = async (values: InvitationFormValues) => {
@@ -182,6 +185,7 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
       }
       if (isEdit) {
         setSaved(true);
+        router.refresh();
       } else {
         const created = await res.json();
         window.location.href = `/admin/invitations/${created.id}/edit?created=1`;
@@ -362,8 +366,17 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Cover Image">
           <input {...register("coverImage")} className="input" placeholder="https://..." />
         </Field>
-        <Field label="URL Meta Image (gambar preview waktu link di-share ke WhatsApp dkk, opsional — kosongkan untuk otomatis pakai Cover Image/foto lain)">
+        <Field label="URL Meta Image (gambar preview waktu link di-share ke WhatsApp dkk, opsional — kosongkan untuk otomatis pakai Cover Image/foto lain). Gunakan foto LANDSCAPE, ideal 1200×630">
           <input {...register("metaImage")} className="input" placeholder="https://..." />
+          {metaImageValue && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={metaImageValue}
+              alt="Preview meta image"
+              onError={(e) => ((e.currentTarget as HTMLImageElement).style.display = "none")}
+              className="mt-2 aspect-[1200/630] w-full max-w-sm rounded border object-cover"
+            />
+          )}
         </Field>
         <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />

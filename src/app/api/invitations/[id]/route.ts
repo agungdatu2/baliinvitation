@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { invitationSchema } from "@/lib/validations/invitation.schema";
+import { parseBaliDateTime } from "@/lib/utils/timezone";
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const invitation = await prisma.invitation.findUnique({
@@ -47,7 +48,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       ...d,
       templateId,
       ...packageUpdate,
-      eventDate: d.eventDate ? new Date(d.eventDate) : undefined,
+      eventDate: d.eventDate ? parseBaliDateTime(d.eventDate) : undefined,
     },
   });
   return NextResponse.json(updated);
