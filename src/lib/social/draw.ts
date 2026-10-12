@@ -30,6 +30,7 @@ export interface PostInfo {
 }
 
 export interface MockupImages {
+  background: HTMLImageElement | null;
   photo1: HTMLImageElement | null;
   photo2: HTMLImageElement | null;
   screenCover: HTMLImageElement | null;
@@ -194,169 +195,7 @@ function drawPhone(
   ctx.fill();
 }
 
-// Generator acak deterministik (seed tetap) supaya tekstur sama tiap render.
-function seeded(seed: number) {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-const FLOOR_TOP = 790;
-
-// Dinding krem + bayangan dahan/daun pohon (multiply, di-blur) + sorot cahaya.
-function drawWall(ctx: CanvasRenderingContext2D) {
-  const wall = ctx.createLinearGradient(0, 0, SLIDE_W, FLOOR_TOP);
-  wall.addColorStop(0, "#d6c9b2");
-  wall.addColorStop(1, "#e9e0cf");
-  ctx.fillStyle = wall;
-  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
-
-  const rnd = seeded(7);
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, 0, SLIDE_W, FLOOR_TOP);
-  ctx.clip();
-  ctx.globalCompositeOperation = "multiply";
-  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(3px)";
-
-  // Bercak teduh besar (kanopi) di kanan-atas dan kiri-tengah.
-  const canopy = (cx: number, cy: number, r: number, a: number) => {
-    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-    g.addColorStop(0, `rgba(70,52,34,${a})`);
-    g.addColorStop(1, "rgba(70,52,34,0)");
-    ctx.fillStyle = g;
-    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
-  };
-  canopy(1000, 110, 480, 0.24);
-  canopy(100, 480, 340, 0.14);
-
-  // Dahan melengkung dari pojok kanan-atas dengan daun-daun di sepanjang dahan.
-  const branches = [
-    { x: 1180, y: 20, ang: 2.5, len: 900 },
-    { x: 1200, y: 230, ang: 2.8, len: 700 },
-    { x: 1120, y: -40, ang: 2.15, len: 640 },
-    { x: -100, y: 430, ang: -0.3, len: 560 },
-    { x: -60, y: 120, ang: 0.2, len: 420 },
-  ];
-  for (const b of branches) {
-    let x = b.x;
-    let y = b.y;
-    let ang = b.ang;
-    const steps = Math.floor(b.len / 22);
-    for (let i = 0; i < steps; i++) {
-      ang += (rnd() - 0.5) * 0.14;
-      x += Math.cos(ang) * 22;
-      y += Math.sin(ang) * 22;
-      ctx.fillStyle = "rgba(60,44,28,0.2)";
-      ctx.beginPath();
-      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
-      ctx.fill();
-      if (rnd() < 0.8) {
-        for (const side of [-1, 1]) {
-          if (rnd() < 0.25) continue;
-          const leafAng = ang + side * (0.8 + rnd() * 0.7) + (rnd() - 0.5) * 0.5;
-          const lw = 56 + rnd() * 46;
-          const lh = 15 + rnd() * 9;
-          ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate(leafAng);
-          ctx.fillStyle = `rgba(58,42,26,${0.2 + rnd() * 0.18})`;
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.quadraticCurveTo(lw * 0.5, -lh * 1.5, lw, 0);
-          ctx.quadraticCurveTo(lw * 0.5, lh * 1.5, 0, 0);
-          ctx.fill();
-          ctx.restore();
-        }
-      }
-    }
-  }
-  ctx.restore();
-
-  // Sorot cahaya hangat di sela bayangan.
-  const glow = ctx.createRadialGradient(330, 260, 20, 330, 260, 560);
-  glow.addColorStop(0, "rgba(255,250,238,0.5)");
-  glow.addColorStop(1, "rgba(255,250,238,0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, SLIDE_W, FLOOR_TOP);
-}
-
-// Lantai keramik/marmer terang dengan urat halus + bintik.
-function drawFloor(ctx: CanvasRenderingContext2D) {
-  const floor = ctx.createLinearGradient(0, FLOOR_TOP, 0, SLIDE_H);
-  floor.addColorStop(0, "#f6f2ea");
-  floor.addColorStop(1, "#e3dacb");
-  ctx.fillStyle = floor;
-  ctx.fillRect(0, FLOOR_TOP, SLIDE_W, SLIDE_H - FLOOR_TOP);
-
-  const rnd = seeded(23);
-  ctx.save();
-  ctx.beginPath();
-  ctx.rect(0, FLOOR_TOP, SLIDE_W, SLIDE_H - FLOOR_TOP);
-  ctx.clip();
-
-  // Urat marmer: kurva panjang tipis, dominan diagonal; tiap urat digambar dua
-  // kali (lebar+buram di bawah, tipis tajam di atas) supaya terlihat alami.
-  const veins = 8;
-  for (let i = 0; i < veins; i++) {
-    let x = -80 + rnd() * (SLIDE_W + 160);
-    let y = FLOOR_TOP - 30;
-    const pts: Array<[number, number]> = [[x, y]];
-    for (let k = 0; k < 22; k++) {
-      x += 14 + rnd() * 34 - 10;
-      y += 9 + rnd() * 14;
-      pts.push([x, y]);
-    }
-    const gold = i % 3 === 0;
-    const trace = () => {
-      ctx.beginPath();
-      ctx.moveTo(pts[0][0], pts[0][1]);
-      for (let k = 1; k < pts.length - 1; k++) {
-        const mx = (pts[k][0] + pts[k + 1][0]) / 2;
-        const my = (pts[k][1] + pts[k + 1][1]) / 2;
-        ctx.quadraticCurveTo(pts[k][0], pts[k][1], mx, my);
-      }
-      ctx.stroke();
-    };
-    ctx.lineCap = "round";
-    (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(5px)";
-    ctx.strokeStyle = gold ? "rgba(176,138,82,0.14)" : "rgba(110,98,86,0.12)";
-    ctx.lineWidth = 7;
-    trace();
-    (ctx as CanvasRenderingContext2D & { filter: string }).filter = "none";
-    ctx.strokeStyle = gold ? "rgba(176,138,82,0.32)" : "rgba(110,98,86,0.26)";
-    ctx.lineWidth = 0.7 + rnd() * 1.1;
-    trace();
-  }
-
-  // Awan marmer lembut + bintik halus.
-  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(18px)";
-  for (let i = 0; i < 10; i++) {
-    ctx.fillStyle = `rgba(150,136,118,${0.05 + rnd() * 0.07})`;
-    ctx.beginPath();
-    ctx.ellipse(rnd() * SLIDE_W, FLOOR_TOP + rnd() * (SLIDE_H - FLOOR_TOP), 90 + rnd() * 160, 16 + rnd() * 30, rnd() * Math.PI, 0, Math.PI * 2);
-    ctx.fill();
-  }
-  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "none";
-  for (let i = 0; i < 700; i++) {
-    ctx.fillStyle = `rgba(110,96,80,${rnd() * 0.12})`;
-    ctx.fillRect(rnd() * SLIDE_W, FLOOR_TOP + rnd() * (SLIDE_H - FLOOR_TOP), 1.2, 1.2);
-  }
-  ctx.restore();
-
-  // Garis pertemuan dinding & lantai.
-  const edge = ctx.createLinearGradient(0, FLOOR_TOP - 6, 0, FLOOR_TOP + 14);
-  edge.addColorStop(0, "rgba(60,44,28,0)");
-  edge.addColorStop(0.45, "rgba(60,44,28,0.16)");
-  edge.addColorStop(1, "rgba(60,44,28,0)");
-  ctx.fillStyle = edge;
-  ctx.fillRect(0, FLOOR_TOP - 6, SLIDE_W, 20);
-}
+export const MOCKUP_BACKGROUND = "/social/mockup-bg.jpg";
 
 // "Black & Gold" -> ["BLACK &", "GOLD"]; maksimal 2 baris, "&" ikut kata sebelumnya.
 function themeTitleLines(name: string): string[] {
@@ -371,8 +210,12 @@ function themeTitleLines(name: string): string[] {
 }
 
 export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupImages, info: PostInfo, fonts: SlideFonts) {
-  drawWall(ctx);
-  drawFloor(ctx);
+  if (images.background) {
+    drawImageCover(ctx, images.background, 0, 0, SLIDE_W, SLIDE_H);
+  } else {
+    ctx.fillStyle = "#d9b9a6";
+    ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
+  }
 
   // Nama tema + penjelasan singkat (tagline).
   ctx.textBaseline = "alphabetic";

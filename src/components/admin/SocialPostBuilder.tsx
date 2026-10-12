@@ -11,6 +11,7 @@ import {
   drawCoverSlide,
   drawMockupSlide,
   loadSlideImage,
+  MOCKUP_BACKGROUND,
 } from "@/lib/social/draw";
 
 function SlideCanvas({
@@ -56,20 +57,21 @@ function SlideCanvas({
       };
       const none = { img: null, failed: false };
       const isMock = kind === "mockup";
-      const [a, b, c, d, logo] = await Promise.all([
+      const [a, b, c, d, logo, bg] = await Promise.all([
         load(photo),
         isMock ? load(photo2) : Promise.resolve(none),
         isMock ? load(screenCover) : Promise.resolve(none),
         isMock ? load(screenInner) : Promise.resolve(none),
         kind === "cover" ? load("/brand/logo.webp") : Promise.resolve(none),
+        isMock ? load(MOCKUP_BACKGROUND) : Promise.resolve(none),
       ]);
       if (cancelled) return;
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return;
       ctx.clearRect(0, 0, SLIDE_W, SLIDE_H);
       if (kind === "cover") drawCoverSlide(ctx, a.img, logo.img, info, fonts);
-      else drawMockupSlide(ctx, { photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts);
-      setImageFailed(a.failed || b.failed || c.failed || d.failed || logo.failed);
+      else drawMockupSlide(ctx, { background: bg.img, photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts);
+      setImageFailed(a.failed || b.failed || c.failed || d.failed || logo.failed || bg.failed);
     })();
     return () => {
       cancelled = true;
