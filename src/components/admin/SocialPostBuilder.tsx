@@ -56,19 +56,20 @@ function SlideCanvas({
       };
       const none = { img: null, failed: false };
       const isMock = kind === "mockup";
-      const [a, b, c, d] = await Promise.all([
+      const [a, b, c, d, logo] = await Promise.all([
         load(photo),
         isMock ? load(photo2) : Promise.resolve(none),
         isMock ? load(screenCover) : Promise.resolve(none),
         isMock ? load(screenInner) : Promise.resolve(none),
+        kind === "cover" ? load("/brand/logo.webp") : Promise.resolve(none),
       ]);
       if (cancelled) return;
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return;
       ctx.clearRect(0, 0, SLIDE_W, SLIDE_H);
-      if (kind === "cover") drawCoverSlide(ctx, a.img, info, fonts);
+      if (kind === "cover") drawCoverSlide(ctx, a.img, logo.img, info, fonts);
       else drawMockupSlide(ctx, { photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts);
-      setImageFailed(a.failed || b.failed || c.failed || d.failed);
+      setImageFailed(a.failed || b.failed || c.failed || d.failed || logo.failed);
     })();
     return () => {
       cancelled = true;

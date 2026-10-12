@@ -81,50 +81,82 @@ function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w:
   ctx.closePath();
 }
 
-export function drawCoverSlide(ctx: CanvasRenderingContext2D, img: HTMLImageElement | null, info: PostInfo, fonts: SlideFonts) {
+// Gambar logo transparan jadi putih penuh (setara filter brightness(0) invert(1)).
+function drawWhiteLogo(ctx: CanvasRenderingContext2D, logo: HTMLImageElement, cx: number, top: number, width: number) {
+  const height = (logo.naturalHeight / logo.naturalWidth) * width;
+  const off = document.createElement("canvas");
+  off.width = Math.ceil(width);
+  off.height = Math.ceil(height);
+  const octx = off.getContext("2d");
+  if (!octx) return;
+  octx.drawImage(logo, 0, 0, off.width, off.height);
+  octx.globalCompositeOperation = "source-in";
+  octx.fillStyle = "#ffffff";
+  octx.fillRect(0, 0, off.width, off.height);
+  ctx.drawImage(off, cx - width / 2, top, width, height);
+}
+
+export function drawCoverSlide(
+  ctx: CanvasRenderingContext2D,
+  img: HTMLImageElement | null,
+  logo: HTMLImageElement | null,
+  info: PostInfo,
+  fonts: SlideFonts
+) {
   ctx.fillStyle = "#1c1814";
   ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
   if (img) drawImageCover(ctx, img, 0, 0, SLIDE_W, SLIDE_H);
 
-  // Peredam gelap di kiri-atas supaya teks putih tetap terbaca di foto terang.
-  const shade = ctx.createLinearGradient(0, 0, SLIDE_W * 0.9, SLIDE_H * 0.7);
-  shade.addColorStop(0, "rgba(0,0,0,0.42)");
-  shade.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = shade;
-  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
+  // Peredam gelap di bawah-kiri (tempat teks) dan tipis di atas (tempat logo).
+  const bottom = ctx.createLinearGradient(0, SLIDE_H * 0.4, 0, SLIDE_H);
+  bottom.addColorStop(0, "rgba(0,0,0,0)");
+  bottom.addColorStop(1, "rgba(0,0,0,0.6)");
+  ctx.fillStyle = bottom;
+  ctx.fillRect(0, SLIDE_H * 0.4, SLIDE_W, SLIDE_H * 0.6);
+  const top = ctx.createLinearGradient(0, 0, 0, 240);
+  top.addColorStop(0, "rgba(0,0,0,0.35)");
+  top.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = top;
+  ctx.fillRect(0, 0, SLIDE_W, 240);
+
+  if (logo) drawWhiteLogo(ctx, logo, SLIDE_W / 2, 64, 230);
 
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
   ctx.fillStyle = "#ffffff";
   const x = 80;
   const maxWidth = 640;
-
-  ctx.font = `400 34px ${fonts.sans}`;
-  setSpacing(ctx, 9);
-  ctx.fillText("THE WEDDING OF", x, 170);
+  const bottomY = SLIDE_H - 92;
 
   setSpacing(ctx, 0);
-  let size = 170;
+  let size = 150;
   ctx.font = `300 ${size}px ${fonts.display}`;
   const widest = () => Math.max(ctx.measureText(`${info.groom} &`).width, ctx.measureText(info.bride).width);
   while (size > 80 && widest() > maxWidth) {
     size -= 6;
     ctx.font = `300 ${size}px ${fonts.display}`;
   }
-  ctx.fillText(`${info.groom} &`, x - 4, 170 + size * 0.95);
-  ctx.fillText(info.bride, x - 4, 170 + size * 1.85);
+  const brideY = bottomY;
+  const groomY = brideY - size * 0.9;
+  ctx.fillText(info.bride, x - 4, brideY);
+  ctx.fillText(`${info.groom} &`, x - 4, groomY);
 
-  // Penanda "geser" ke slide berikutnya (>>>), makin ke kanan makin terang.
-  ctx.lineWidth = 6;
+  ctx.font = `400 30px ${fonts.sans}`;
+  setSpacing(ctx, 9);
+  ctx.fillText("THE WEDDING OF", x, groomY - size * 0.72 - 30);
+  setSpacing(ctx, 0);
+
+  // Penanda "geser" kecil (>>>) di kanan bawah, sejajar baris nama terakhir.
+  ctx.lineWidth = 4;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   [0.35, 0.65, 1].forEach((alpha, i) => {
-    const cx = 880 + i * 38;
+    const cx = 924 + i * 22;
     ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
     ctx.beginPath();
-    ctx.moveTo(cx, 940);
-    ctx.lineTo(cx + 24, 975);
-    ctx.lineTo(cx, 1010);
+    ctx.moveTo(cx, brideY - 38);
+    ctx.lineTo(cx + 14, brideY - 20);
+    ctx.lineTo(cx, brideY - 2);
     ctx.stroke();
   });
 }
