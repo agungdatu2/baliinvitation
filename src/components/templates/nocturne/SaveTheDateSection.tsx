@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
 import { InvitationData } from "@/types/invitation";
 import { buildGoogleCalendarUrl } from "@/lib/utils/calendar-link";
 import { getDict } from "@/lib/i18n/lume";
 
-const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=600&q=80";
-const MARQUEE_REPEAT = 6;
+const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=1000&q=80";
+const MARQUEE_REPEAT = 4;
 
 function getTimeParts(target: Date) {
   const diff = Math.max(0, target.getTime() - Date.now());
@@ -18,12 +17,14 @@ function getTimeParts(target: Date) {
   return { d, h, m, s };
 }
 
-// Section "Almost Time For Our Celebration" — teks raksasa berjalan (marquee,
-// dipakai ulang keyframe animate-nocturne-marquee milik Hero) sebagai latar,
-// kartu foto kecil portrait di tengah, countdown + link "Add to Calendar" di
-// bawahnya. Section NORMAL (bukan sticky/tinggi-berlebih) — section ini datang
-// SETELAH LoveStoryList yang juga normal flow, jadi tidak perlu trik
-// -mt-[100svh]/z-index seperti section2 sticky sebelumnya.
+// Section "Almost Time For Our Celebration" — layar penuh hitam: teks raksasa
+// berjalan (marquee, "<heading> / <heading> / ...") di belakang, kartu foto
+// portrait di tengah (menimpa teks), countdown 4 kolom dengan satuan 1 huruf di
+// bawah, dan tombol lingkaran "Add to Calendar" di kanan bawah. Ukuran desktop
+// diukur dari referensi lebar 2000px lalu dikonversi ke vw (foto 24.5vw, teks
+// marquee 16.5vw, digit 6.25vw, lingkaran 10vw) supaya proporsinya sama di lebar
+// layar berapa pun. Section NORMAL (bukan sticky) — datang setelah
+// LoveStoryList yang juga normal flow.
 export default function SaveTheDateSection({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   const eventDateTime = new Date(data.eventDate);
@@ -42,52 +43,56 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
     end: new Date(eventDateTime.getTime() + 3 * 60 * 60 * 1000),
   });
 
-  const marqueeText = t.saveTheDateHeading;
-  const track = Array.from({ length: MARQUEE_REPEAT }, () => marqueeText);
+  const track = Array.from({ length: MARQUEE_REPEAT }, () => t.saveTheDateHeading);
   const loopedTrack = [...track, ...track];
 
+  const countdown: [string, number][] = [
+    [t.days, parts.d],
+    [t.hours, parts.h],
+    [t.minutes, parts.m],
+    [t.seconds, parts.s],
+  ];
+
   return (
-    // relative + z-50 SENGAJA — Hero (sticky, tanpa wrapper, tetap "nempel"
-    // selama hampir seluruh halaman) otomatis menang stacking di atas ELEMEN
-    // STATIS manapun (elemen tanpa position eksplisit SELALU di lapisan
-    // paling belakang, terlepas urutan DOM) — section2 setelah LoveStoryList
-    // butuh position+z-index eksplisit supaya menang lawan Hero.
-    <section className="relative z-50 overflow-hidden bg-black py-24 md:py-32">
-      {/* Marquee raksasa — SAMA overflow-wrapping seperti Hero.tsx (tanpa
-          overflow di wrapper marquee sendiri, diserahkan ke section ini yang
-          jauh lebih tinggi, supaya descender huruf italic tidak terpotong). */}
-      <div className="pointer-events-none absolute inset-0 flex items-center">
-        <div className="flex w-max items-center gap-10 whitespace-nowrap opacity-[0.08] animate-nocturne-marquee">
-          {loopedTrack.map((word, i) => (
-            <span key={i} className="font-nocturne-display italic text-6xl md:text-9xl leading-none text-groove-bg">
-              {word}
+    // relative + z-50 SENGAJA — Hero (sticky, tanpa wrapper) otomatis menang
+    // stacking di atas elemen statis manapun, jadi section ini butuh
+    // position+z-index eksplisit supaya menang lawan Hero.
+    <section className="relative z-50 h-[100svh] min-h-[640px] w-full overflow-hidden bg-black">
+      {/* Marquee raksasa — wrapper tanpa overflow sendiri supaya descender
+          huruf italic tidak terpotong. */}
+      <div className="pointer-events-none absolute inset-x-0 top-[46%] -translate-y-1/2">
+        <div
+          className="flex w-max items-center gap-[0.35em] whitespace-nowrap font-nocturne-display text-[22vw] italic leading-none text-groove-bg/35 animate-nocturne-marquee md:text-[16.5vw]"
+          style={{ animationDuration: "90s" }}
+        >
+          {loopedTrack.map((text, i) => (
+            <span key={i} className="flex items-center gap-[0.35em]">
+              {text}
+              <span>/</span>
             </span>
           ))}
         </div>
       </div>
 
-      <div className="relative flex flex-col items-center px-6 text-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={data.reverieSaveTheDateImage || DEFAULT_PHOTO}
-          alt=""
-          className="mb-10 aspect-[3/4] w-32 object-cover md:w-40"
-        />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={data.reverieSaveTheDateImage || DEFAULT_PHOTO}
+        alt=""
+        className="absolute left-1/2 top-[9%] aspect-[7/8] w-[52vw] -translate-x-1/2 object-cover md:top-[12.8%] md:w-[24.5vw]"
+      />
 
-        <div className="mb-10 flex gap-6 md:gap-10">
-          {[
-            [t.days, parts.d],
-            [t.hours, parts.h],
-            [t.minutes, parts.m],
-            [t.seconds, parts.s],
-          ].map(([label, value]) => (
-            <div key={label as string} className="text-center">
-              <div className="font-nocturne-display text-3xl tabular-nums text-groove-bg md:text-5xl">
+      {/* Mobile: countdown + tombol ditumpuk di bawah. Desktop (md:contents):
+          wrapper ini hilang dan kedua anak diposisikan absolut ke section. */}
+      <div className="absolute inset-x-0 bottom-[5.6%] flex flex-col items-center gap-8 px-5 md:contents">
+        <div className="grid w-full grid-cols-4 md:absolute md:bottom-[7.4%] md:left-[8.5vw] md:w-[79.4vw]">
+          {countdown.map(([label, value]) => (
+            <div key={label} className="flex items-baseline justify-center gap-[0.15em] md:justify-start">
+              <span className="font-nocturne-display text-[11vw] leading-none tabular-nums text-groove-bg/75 md:text-[6.25vw]">
                 {String(value).padStart(2, "0")}
-              </div>
-              <div className="mt-1 font-groove-label text-[0.6rem] uppercase tracking-widest text-groove-bg/60 md:text-xs">
-                {label}
-              </div>
+              </span>
+              <span className="font-groove-body text-[4vw] uppercase leading-none text-groove-bg/85 md:text-[3.1vw]">
+                {label.charAt(0)}
+              </span>
             </div>
           ))}
         </div>
@@ -96,9 +101,9 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
           href={calendarUrl}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 border-b border-groove-bg/60 pb-1 font-groove-label text-xs uppercase tracking-[0.2em] text-groove-bg/90 transition-colors hover:border-groove-bg hover:text-groove-bg"
+          className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-groove-bg/70 px-3 text-center font-groove-body text-xs leading-snug text-groove-bg/90 transition-colors hover:bg-groove-bg/10 md:absolute md:bottom-[5.6%] md:right-[8.5vw] md:h-[10.1vw] md:w-[10.1vw] md:px-[1.8vw] md:text-[1.1vw]"
         >
-          {t.saveTheDate} <ArrowRight className="h-3.5 w-3.5" />
+          {t.addToCalendar}
         </a>
       </div>
     </section>

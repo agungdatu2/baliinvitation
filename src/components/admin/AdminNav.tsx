@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, Palette, Wallet, Package, LogOut, ShieldCheck, Quote } from "lucide-react";
+import { LayoutDashboard, Palette, Wallet, Package, LogOut, ShieldCheck, Quote, Share2 } from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Undangan Berjalan", icon: LayoutDashboard },
@@ -11,6 +11,7 @@ const TABS = [
   { href: "/admin/income", label: "Income", icon: Wallet },
   { href: "/admin/packages", label: "Paket", icon: Package },
   { href: "/admin/testimonials", label: "Testimoni", icon: Quote },
+  { href: "/admin/social", label: "Social Media", icon: Share2 },
   { href: "/admin/admins", label: "Admin", icon: ShieldCheck },
 ];
 

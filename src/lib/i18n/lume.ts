@@ -49,6 +49,7 @@ export const LUME_DICT = {
     seconds: "Detik",
     googleMaps: "Google Maps",
     saveTheDate: "Save The Date",
+    addToCalendar: "Tambah ke Kalender",
 
     // LiveStreaming
     liveStreamingTitle: "Live Streaming",
@@ -156,6 +157,7 @@ export const LUME_DICT = {
     seconds: "Seconds",
     googleMaps: "Google Maps",
     saveTheDate: "Save The Date",
+    addToCalendar: "Add to Calendar",
 
     liveStreamingTitle: "Live Streaming",
     liveStreamingSubtitle: "Can't Make It? Watch From Home",
