@@ -25,7 +25,15 @@ export interface PostInfo {
   groom: string;
   bride: string;
   themeName: string;
+  tagline: string;
   dateLabel: string;
+}
+
+export interface MockupImages {
+  photo1: HTMLImageElement | null;
+  photo2: HTMLImageElement | null;
+  screenCover: HTMLImageElement | null;
+  screenInner: HTMLImageElement | null;
 }
 
 const imageCache = new Map<string, Promise<HTMLImageElement>>();
@@ -40,7 +48,7 @@ export function loadSlideImage(url: string): Promise<HTMLImageElement> {
       imageCache.delete(url);
       reject(new Error("Gagal memuat gambar"));
     };
-    img.src = `/api/social/image?url=${encodeURIComponent(url)}`;
+    img.src = url.startsWith("data:") ? url : `/api/social/image?url=${encodeURIComponent(url)}`;
   });
   imageCache.set(url, p);
   return p;
@@ -154,55 +162,228 @@ function drawPhone(
   ctx.fill();
 }
 
-export function drawMockupSlide(
-  ctx: CanvasRenderingContext2D,
-  img1: HTMLImageElement | null,
-  img2: HTMLImageElement | null,
-  info: PostInfo,
-  fonts: SlideFonts
-) {
-  // Latar krem lembut + sorot cahaya, lantai terang di bawah.
-  const bg = ctx.createLinearGradient(0, 0, SLIDE_W, SLIDE_H);
-  bg.addColorStop(0, "#cdbfa6");
-  bg.addColorStop(1, "#e8dfce");
-  ctx.fillStyle = bg;
-  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
-  const glow = ctx.createRadialGradient(260, 120, 20, 260, 120, 620);
-  glow.addColorStop(0, "rgba(255,255,255,0.55)");
-  glow.addColorStop(1, "rgba(255,255,255,0)");
-  ctx.fillStyle = glow;
-  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
-  const floor = ctx.createLinearGradient(0, 900, 0, SLIDE_H);
-  floor.addColorStop(0, "#f2ede4");
-  floor.addColorStop(1, "#e5ddcf");
-  ctx.fillStyle = floor;
-  ctx.fillRect(0, 900, SLIDE_W, SLIDE_H - 900);
+// Generator acak deterministik (seed tetap) supaya tekstur sama tiap render.
+function seeded(seed: number) {
+  let a = seed;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
-  // Nama tema.
+const FLOOR_TOP = 790;
+
+// Dinding krem + bayangan dahan/daun pohon (multiply, di-blur) + sorot cahaya.
+function drawWall(ctx: CanvasRenderingContext2D) {
+  const wall = ctx.createLinearGradient(0, 0, SLIDE_W, FLOOR_TOP);
+  wall.addColorStop(0, "#d6c9b2");
+  wall.addColorStop(1, "#e9e0cf");
+  ctx.fillStyle = wall;
+  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
+
+  const rnd = seeded(7);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, SLIDE_W, FLOOR_TOP);
+  ctx.clip();
+  ctx.globalCompositeOperation = "multiply";
+  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(3px)";
+
+  // Bercak teduh besar (kanopi) di kanan-atas dan kiri-tengah.
+  const canopy = (cx: number, cy: number, r: number, a: number) => {
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+    g.addColorStop(0, `rgba(70,52,34,${a})`);
+    g.addColorStop(1, "rgba(70,52,34,0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+  };
+  canopy(1000, 110, 480, 0.24);
+  canopy(100, 480, 340, 0.14);
+
+  // Dahan melengkung dari pojok kanan-atas dengan daun-daun di sepanjang dahan.
+  const branches = [
+    { x: 1180, y: 20, ang: 2.5, len: 900 },
+    { x: 1200, y: 230, ang: 2.8, len: 700 },
+    { x: 1120, y: -40, ang: 2.15, len: 640 },
+    { x: -100, y: 430, ang: -0.3, len: 560 },
+    { x: -60, y: 120, ang: 0.2, len: 420 },
+  ];
+  for (const b of branches) {
+    let x = b.x;
+    let y = b.y;
+    let ang = b.ang;
+    const steps = Math.floor(b.len / 22);
+    for (let i = 0; i < steps; i++) {
+      ang += (rnd() - 0.5) * 0.14;
+      x += Math.cos(ang) * 22;
+      y += Math.sin(ang) * 22;
+      ctx.fillStyle = "rgba(60,44,28,0.2)";
+      ctx.beginPath();
+      ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      if (rnd() < 0.8) {
+        for (const side of [-1, 1]) {
+          if (rnd() < 0.25) continue;
+          const leafAng = ang + side * (0.8 + rnd() * 0.7) + (rnd() - 0.5) * 0.5;
+          const lw = 56 + rnd() * 46;
+          const lh = 15 + rnd() * 9;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(leafAng);
+          ctx.fillStyle = `rgba(58,42,26,${0.2 + rnd() * 0.18})`;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.quadraticCurveTo(lw * 0.5, -lh * 1.5, lw, 0);
+          ctx.quadraticCurveTo(lw * 0.5, lh * 1.5, 0, 0);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+    }
+  }
+  ctx.restore();
+
+  // Sorot cahaya hangat di sela bayangan.
+  const glow = ctx.createRadialGradient(330, 260, 20, 330, 260, 560);
+  glow.addColorStop(0, "rgba(255,250,238,0.5)");
+  glow.addColorStop(1, "rgba(255,250,238,0)");
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 0, SLIDE_W, FLOOR_TOP);
+}
+
+// Lantai keramik/marmer terang dengan urat halus + bintik.
+function drawFloor(ctx: CanvasRenderingContext2D) {
+  const floor = ctx.createLinearGradient(0, FLOOR_TOP, 0, SLIDE_H);
+  floor.addColorStop(0, "#f6f2ea");
+  floor.addColorStop(1, "#e3dacb");
+  ctx.fillStyle = floor;
+  ctx.fillRect(0, FLOOR_TOP, SLIDE_W, SLIDE_H - FLOOR_TOP);
+
+  const rnd = seeded(23);
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, FLOOR_TOP, SLIDE_W, SLIDE_H - FLOOR_TOP);
+  ctx.clip();
+
+  // Urat marmer: kurva panjang tipis, dominan diagonal; tiap urat digambar dua
+  // kali (lebar+buram di bawah, tipis tajam di atas) supaya terlihat alami.
+  const veins = 8;
+  for (let i = 0; i < veins; i++) {
+    let x = -80 + rnd() * (SLIDE_W + 160);
+    let y = FLOOR_TOP - 30;
+    const pts: Array<[number, number]> = [[x, y]];
+    for (let k = 0; k < 22; k++) {
+      x += 14 + rnd() * 34 - 10;
+      y += 9 + rnd() * 14;
+      pts.push([x, y]);
+    }
+    const gold = i % 3 === 0;
+    const trace = () => {
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (let k = 1; k < pts.length - 1; k++) {
+        const mx = (pts[k][0] + pts[k + 1][0]) / 2;
+        const my = (pts[k][1] + pts[k + 1][1]) / 2;
+        ctx.quadraticCurveTo(pts[k][0], pts[k][1], mx, my);
+      }
+      ctx.stroke();
+    };
+    ctx.lineCap = "round";
+    (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(5px)";
+    ctx.strokeStyle = gold ? "rgba(176,138,82,0.14)" : "rgba(110,98,86,0.12)";
+    ctx.lineWidth = 7;
+    trace();
+    (ctx as CanvasRenderingContext2D & { filter: string }).filter = "none";
+    ctx.strokeStyle = gold ? "rgba(176,138,82,0.32)" : "rgba(110,98,86,0.26)";
+    ctx.lineWidth = 0.7 + rnd() * 1.1;
+    trace();
+  }
+
+  // Awan marmer lembut + bintik halus.
+  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "blur(18px)";
+  for (let i = 0; i < 10; i++) {
+    ctx.fillStyle = `rgba(150,136,118,${0.05 + rnd() * 0.07})`;
+    ctx.beginPath();
+    ctx.ellipse(rnd() * SLIDE_W, FLOOR_TOP + rnd() * (SLIDE_H - FLOOR_TOP), 90 + rnd() * 160, 16 + rnd() * 30, rnd() * Math.PI, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  (ctx as CanvasRenderingContext2D & { filter: string }).filter = "none";
+  for (let i = 0; i < 700; i++) {
+    ctx.fillStyle = `rgba(110,96,80,${rnd() * 0.12})`;
+    ctx.fillRect(rnd() * SLIDE_W, FLOOR_TOP + rnd() * (SLIDE_H - FLOOR_TOP), 1.2, 1.2);
+  }
+  ctx.restore();
+
+  // Garis pertemuan dinding & lantai.
+  const edge = ctx.createLinearGradient(0, FLOOR_TOP - 6, 0, FLOOR_TOP + 14);
+  edge.addColorStop(0, "rgba(60,44,28,0)");
+  edge.addColorStop(0.45, "rgba(60,44,28,0.16)");
+  edge.addColorStop(1, "rgba(60,44,28,0)");
+  ctx.fillStyle = edge;
+  ctx.fillRect(0, FLOOR_TOP - 6, SLIDE_W, 20);
+}
+
+// "Black & Gold" -> ["BLACK &", "GOLD"]; maksimal 2 baris, "&" ikut kata sebelumnya.
+function themeTitleLines(name: string): string[] {
+  const tokens: string[] = [];
+  for (const w of name.toUpperCase().split(/\s+/).filter(Boolean)) {
+    if (w === "&" && tokens.length) tokens[tokens.length - 1] += " &";
+    else tokens.push(w);
+  }
+  if (tokens.length <= 2) return tokens;
+  const mid = Math.ceil(tokens.length / 2);
+  return [tokens.slice(0, mid).join(" "), tokens.slice(mid).join(" ")];
+}
+
+export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupImages, info: PostInfo, fonts: SlideFonts) {
+  drawWall(ctx);
+  drawFloor(ctx);
+
+  // Nama tema + penjelasan singkat (tagline).
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "center";
   ctx.fillStyle = "#ffffff";
-  ctx.shadowColor = "rgba(60,45,25,0.25)";
+  ctx.shadowColor = "rgba(60,45,25,0.28)";
   ctx.shadowBlur = 18;
   setSpacing(ctx, 6);
-  ctx.font = `400 92px ${fonts.display}`;
-  const words = info.themeName.toUpperCase().split(/\s+/).filter(Boolean).slice(0, 3);
-  words.forEach((word, i) => ctx.fillText(word, SLIDE_W / 2, 150 + i * 96));
+  ctx.font = `400 90px ${fonts.display}`;
+  const words = themeTitleLines(info.themeName);
+  const titleTop = words.length > 1 ? 150 : 170;
+  words.forEach((word, i) => ctx.fillText(word, SLIDE_W / 2, titleTop + i * 92));
   ctx.shadowColor = "transparent";
   ctx.shadowBlur = 0;
+
+  const titleBottom = titleTop + (words.length - 1) * 92;
+  if (info.tagline.trim()) {
+    ctx.font = `500 22px ${fonts.sans}`;
+    setSpacing(ctx, 7);
+    ctx.fillStyle = "rgba(255,255,255,0.92)";
+    ctx.shadowColor = "rgba(60,45,25,0.3)";
+    ctx.shadowBlur = 8;
+    ctx.fillText(info.tagline.toUpperCase(), SLIDE_W / 2, titleBottom + 48);
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+  }
   setSpacing(ctx, 0);
 
-  const phoneW = 300;
-  const phoneH = 610;
-  const gap = 44;
+  const top = titleBottom + 48 + 46;
+  const phoneH = Math.min(596, 975 - top);
+  const phoneW = (phoneH * 292) / 596;
+  const gap = 46;
   const left = (SLIDE_W - phoneW * 2 - gap) / 2;
-  const top = words.length > 2 ? 400 : 330;
 
-  // HP kiri: simulasi layar cover (foto penuh + nama + tanggal).
   drawPhone(ctx, left, top, phoneW, phoneH, (sx, sy, sw, sh) => {
+    if (images.screenCover) {
+      drawImageCover(ctx, images.screenCover, sx, sy, sw, sh);
+      return;
+    }
+    // Simulasi cover (dipakai kalau screenshot asli belum diambil).
     ctx.fillStyle = "#2a2118";
     ctx.fillRect(sx, sy, sw, sh);
-    if (img1) drawImageCover(ctx, img1, sx, sy, sw, sh);
+    if (images.photo1) drawImageCover(ctx, images.photo1, sx, sy, sw, sh);
     const g = ctx.createLinearGradient(0, sy, 0, sy + sh);
     g.addColorStop(0, "rgba(0,0,0,0.5)");
     g.addColorStop(0.55, "rgba(0,0,0,0.05)");
@@ -227,11 +408,14 @@ export function drawMockupSlide(
     setSpacing(ctx, 0);
   });
 
-  // HP kanan: simulasi layar isi (kartu putih di atas + foto).
   drawPhone(ctx, left + phoneW + gap, top, phoneW, phoneH, (sx, sy, sw, sh) => {
+    if (images.screenInner) {
+      drawImageCover(ctx, images.screenInner, sx, sy, sw, sh);
+      return;
+    }
     ctx.fillStyle = "#efe6d6";
     ctx.fillRect(sx, sy, sw, sh);
-    if (img2) drawImageCover(ctx, img2, sx, sy + sh * 0.3, sw, sh * 0.7);
+    if (images.photo2) drawImageCover(ctx, images.photo2, sx, sy + sh * 0.3, sw, sh * 0.7);
     ctx.fillStyle = "#ffffff";
     roundedRectPath(ctx, sx, sy - 40, sw, sh * 0.33 + 40, 36);
     ctx.fill();
@@ -248,5 +432,12 @@ export function drawMockupSlide(
     ctx.font = `400 12px ${fonts.sans}`;
     ctx.fillText(info.dateLabel, sx + sw / 2, sy + 134);
   });
+
+  ctx.fillStyle = "#2b241d";
+  ctx.textAlign = "center";
+  ctx.font = `400 26px ${fonts.sans}`;
+  setSpacing(ctx, 1);
+  ctx.fillText("www.baliinvitation.com", SLIDE_W / 2, 1018);
+  setSpacing(ctx, 0);
   ctx.textAlign = "left";
 }

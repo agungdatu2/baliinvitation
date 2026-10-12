@@ -92,7 +92,7 @@ export default async function InvitationPage({
   searchParams,
 }: {
   params: { slug: string };
-  searchParams: { to?: string; g?: string; portal_preview?: string; lang?: string };
+  searchParams: { to?: string; g?: string; portal_preview?: string; lang?: string; intro?: string };
 }) {
   const inv = await getInvitation(params.slug);
   if (!inv) return notFound();
@@ -229,7 +229,8 @@ export default async function InvitationPage({
     })),
     bankAccounts: (inv.bankAccounts as unknown as InvitationData["bankAccounts"]) ?? [],
     dressCode: (inv.dressCode as unknown as InvitationData["dressCode"]) ?? [],
-    hasIntro: inv.package?.hasIntro ?? true,
+    // ?intro=0 hanya dihormati untuk preview portal/admin (dipakai generator screenshot sosmed).
+    hasIntro: isPortalPreview && searchParams.intro === "0" ? false : inv.package?.hasIntro ?? true,
     maxGalleryImages: inv.package?.maxGalleryImages ?? null,
     initialWishes,
   };

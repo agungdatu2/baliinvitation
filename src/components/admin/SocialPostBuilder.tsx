@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Check, Copy, Download, ImageOff } from "lucide-react";
+import { Camera, Check, Copy, Download, ImageOff, Loader2, RotateCcw } from "lucide-react";
 import {
   PostInfo,
   SLIDE_H,
@@ -18,6 +18,8 @@ function SlideCanvas({
   kind,
   photo,
   photo2,
+  screenCover,
+  screenInner,
   info,
   fonts,
   onCanvas,
@@ -26,6 +28,8 @@ function SlideCanvas({
   kind: SlideKind;
   photo: string;
   photo2: string;
+  screenCover: string;
+  screenInner: string;
   info: PostInfo;
   fonts: SlideFonts | null;
   onCanvas: (id: string, el: HTMLCanvasElement | null) => void;
@@ -50,19 +54,26 @@ function SlideCanvas({
           return { img: null, failed: true };
         }
       };
-      const [a, b] = await Promise.all([load(photo), kind === "mockup" ? load(photo2) : Promise.resolve({ img: null, failed: false })]);
+      const none = { img: null, failed: false };
+      const isMock = kind === "mockup";
+      const [a, b, c, d] = await Promise.all([
+        load(photo),
+        isMock ? load(photo2) : Promise.resolve(none),
+        isMock ? load(screenCover) : Promise.resolve(none),
+        isMock ? load(screenInner) : Promise.resolve(none),
+      ]);
       if (cancelled) return;
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return;
       ctx.clearRect(0, 0, SLIDE_W, SLIDE_H);
       if (kind === "cover") drawCoverSlide(ctx, a.img, info, fonts);
-      else drawMockupSlide(ctx, a.img, b.img, info, fonts);
-      setImageFailed(a.failed || b.failed);
+      else drawMockupSlide(ctx, { photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts);
+      setImageFailed(a.failed || b.failed || c.failed || d.failed);
     })();
     return () => {
       cancelled = true;
     };
-  }, [kind, photo, photo2, info, fonts]);
+  }, [kind, photo, photo2, screenCover, screenInner, info, fonts]);
 
   return (
     <div className="relative">
@@ -115,17 +126,21 @@ function PhotoPicker({
 }
 
 export default function SocialPostBuilder({
+  invitationId,
   slug,
   groom,
   bride,
   themeName: initialThemeName,
+  tagline: initialTagline,
   dateLabel,
   photos,
 }: {
+  invitationId: string;
   slug: string;
   groom: string;
   bride: string;
   themeName: string;
+  tagline: string;
   dateLabel: string;
   photos: string[];
 }) {
@@ -135,6 +150,11 @@ export default function SocialPostBuilder({
   const [phone1, setPhone1] = useState(() => photoAt(1));
   const [phone2, setPhone2] = useState(() => photoAt(2));
   const [themeName, setThemeName] = useState(initialThemeName);
+  const [tagline, setTagline] = useState(initialTagline);
+  const [scrollY, setScrollY] = useState(1600);
+  const [screens, setScreens] = useState<{ cover: string; inner: string } | null>(null);
+  const [capturing, setCapturing] = useState(false);
+  const [captureError, setCaptureError] = useState<string | null>(null);
   const [captionDraft, setCaptionDraft] = useState<string | null>(null);
   const [fonts, setFonts] = useState<SlideFonts | null>(null);
   const [copied, setCopied] = useState(false);
@@ -142,7 +162,7 @@ export default function SocialPostBuilder({
   const displayProbe = useRef<HTMLSpanElement>(null);
   const sansProbe = useRef<HTMLSpanElement>(null);
 
-  const info = useMemo<PostInfo>(() => ({ groom, bride, themeName, dateLabel }), [groom, bride, themeName, dateLabel]);
+  const info = useMemo<PostInfo>(() => ({ groom, bride, themeName, tagline, dateLabel }), [groom, bride, themeName, tagline, dateLabel]);
 
   const defaultCaption = `Happy wedding ${groom} & ${bride}\n\nMereka menggunakan tema ${themeName} untuk undangan mereka, cek link di bio untuk lihat contoh lainnya.\n\n#baliinvitation #undangandigital #undanganpernikahan #digitalinvitation #weddinginvitation #baliwedding`;
   const caption = captionDraft ?? defaultCaption;
@@ -190,6 +210,25 @@ export default function SocialPostBuilder({
     await downloadSlide("cover", 0);
     await new Promise((r) => setTimeout(r, 400));
     await downloadSlide("mockup", 1);
+  };
+
+  const captureScreens = async () => {
+    setCapturing(true);
+    setCaptureError(null);
+    try {
+      const res = await fetch("/api/social/screens", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: invitationId, scrollY }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.cover) throw new Error(data.error || "Gagal mengambil screenshot");
+      setScreens({ cover: data.cover, inner: data.inner });
+    } catch (e) {
+      setCaptureError(e instanceof Error ? e.message : "Gagal mengambil screenshot");
+    } finally {
+      setCapturing(false);
+    }
   };
 
   const copyCaption = async () => {
@@ -245,7 +284,7 @@ export default function SocialPostBuilder({
               <Download size={14} />
             </button>
           </div>
-          <SlideCanvas id="cover" kind="cover" photo={coverPhoto} photo2="" info={info} fonts={fonts} onCanvas={onCanvas} />
+          <SlideCanvas id="cover" kind="cover" photo={coverPhoto} photo2="" screenCover="" screenInner="" info={info} fonts={fonts} onCanvas={onCanvas} />
           <PhotoPicker label="Foto cover (dari Gallery)" pool={pool} value={coverPhoto} onChange={setCoverPhoto} />
         </div>
 
@@ -262,13 +301,74 @@ export default function SocialPostBuilder({
               <Download size={14} />
             </button>
           </div>
-          <SlideCanvas id="mockup" kind="mockup" photo={phone1} photo2={phone2} info={info} fonts={fonts} onCanvas={onCanvas} />
-          <div className="space-y-1">
-            <p className="text-xs text-gray-500">Nama tema</p>
-            <input value={themeName} onChange={(e) => setThemeName(e.target.value)} className="input" placeholder="Nama tema" />
+          <SlideCanvas
+            id="mockup"
+            kind="mockup"
+            photo={phone1}
+            photo2={phone2}
+            screenCover={screens?.cover ?? ""}
+            screenInner={screens?.inner ?? ""}
+            info={info}
+            fonts={fonts}
+            onCanvas={onCanvas}
+          />
+          <div className="grid gap-2 sm:grid-cols-2">
+            <div className="space-y-1">
+              <p className="text-xs text-gray-500">Nama tema</p>
+              <input value={themeName} onChange={(e) => setThemeName(e.target.value)} className="input" placeholder="Nama tema" />
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs text-gray-500">Penjelasan singkat tema</p>
+              <input value={tagline} onChange={(e) => setTagline(e.target.value)} className="input" placeholder="Elegant Minimalist" />
+            </div>
           </div>
-          <PhotoPicker label="Foto HP kiri" pool={pool} value={phone1} onChange={setPhone1} />
-          <PhotoPicker label="Foto HP kanan" pool={pool} value={phone2} onChange={setPhone2} />
+
+          <div className="space-y-2 rounded-lg border border-lume-line bg-lume-bg/40 p-3">
+            <p className="text-sm font-medium text-lume-ink">Layout asli undangan client</p>
+            <p className="text-xs text-gray-500">
+              Ambil screenshot undangan client yang sebenarnya (layar cover dan satu layar bagian dalam) untuk dipasang di dua
+              HP. Butuh sekitar 20-40 detik.
+            </p>
+            <div className="flex flex-wrap items-end gap-2">
+              <div className="space-y-1">
+                <p className="text-xs text-gray-500">Posisi scroll layar kedua (px)</p>
+                <input
+                  type="number"
+                  min={0}
+                  step={100}
+                  value={scrollY}
+                  onChange={(e) => setScrollY(Number(e.target.value) || 0)}
+                  className="input w-32"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={captureScreens}
+                disabled={capturing}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-lume-ink px-3 py-2 text-sm text-white hover:opacity-90 disabled:opacity-50"
+              >
+                {capturing ? <Loader2 size={15} className="animate-spin" /> : <Camera size={15} />}
+                {capturing ? "Mengambil..." : screens ? "Ambil Ulang" : "Ambil Screenshot Asli"}
+              </button>
+              {screens && (
+                <button
+                  type="button"
+                  onClick={() => setScreens(null)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-lume-line bg-white px-3 py-2 text-sm hover:bg-lume-bg/60"
+                >
+                  <RotateCcw size={14} /> Pakai simulasi foto
+                </button>
+              )}
+            </div>
+            {captureError && <p className="text-xs text-red-600">{captureError}</p>}
+          </div>
+
+          {!screens && (
+            <>
+              <PhotoPicker label="Foto HP kiri (simulasi)" pool={pool} value={phone1} onChange={setPhone1} />
+              <PhotoPicker label="Foto HP kanan (simulasi)" pool={pool} value={phone2} onChange={setPhone2} />
+            </>
+          )}
         </div>
       </div>
 

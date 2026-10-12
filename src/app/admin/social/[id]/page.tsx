@@ -17,7 +17,7 @@ export default async function SocialPostPage({ params }: { params: { id: string 
       galleryImages: true,
       coverImage: true,
       eventDate: true,
-      template: { select: { name: true } },
+      template: { select: { name: true, tagline: true } },
     },
   });
   if (!inv) return notFound();
@@ -41,10 +41,12 @@ export default async function SocialPostPage({ params }: { params: { id: string 
       </h1>
       <p className="mb-6 text-sm text-gray-500">Postingan Instagram otomatis dari foto Gallery client (cover + mockup tema).</p>
       <SocialPostBuilder
+        invitationId={params.id}
         slug={inv.slug}
         groom={inv.groomNickname}
         bride={inv.brideNickname}
         themeName={themeName}
+        tagline={inv.template.tagline ?? ""}
         dateLabel={dateLabel}
         photos={getSocialPhotos(inv.galleryImages, inv.coverImage)}
       />
