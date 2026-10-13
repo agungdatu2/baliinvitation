@@ -10,6 +10,11 @@ const nextConfig = {
   // berisi binary & loader dinamis.
   experimental: {
     serverComponentsExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
+    // File biner Chromium dibaca lewat path dinamis, jadi tidak terdeteksi
+    // otomatis oleh file tracing Vercel — harus disertakan manual ke fungsi ini.
+    outputFileTracingIncludes: {
+      "/api/social/screens": ["./node_modules/@sparticuz/chromium/bin/**"],
+    },
   },
 };
 module.exports = nextConfig;
