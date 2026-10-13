@@ -50,6 +50,7 @@ export const invitationSchema = z.object({
   // Add-on "Link aktif seumur hidup" — override activeMonths dari Package untuk
   // invitation ini saja, lihat komentar Invitation.neverExpires di schema.prisma
   neverExpires: z.boolean().default(false),
+  isAddon: z.boolean().default(false),
 
   clientName: z.string().min(1, "Nama client wajib diisi"),
   clientPhone: z.string().optional(),

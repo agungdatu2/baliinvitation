@@ -168,7 +168,14 @@ export default async function AdminDashboard({
               return (
                 <tr key={inv.id} className="hover:bg-lume-bg/40 transition-colors">
                   <td className="p-3">
-                    <div className="font-medium text-lume-ink">{inv.clientName}</div>
+                    <div className="font-medium text-lume-ink">
+                      {inv.clientName}
+                      {inv.isAddon && (
+                        <span className="ml-2 rounded-full bg-lume-gold/15 px-2 py-0.5 align-middle text-[10px] font-medium uppercase tracking-wide text-lume-gold">
+                          Add-on
+                        </span>
+                      )}
+                    </div>
                     {inv.clientPhone && <div className="text-xs text-gray-400 mt-0.5">{inv.clientPhone}</div>}
                   </td>
                   <td className="p-3 text-gray-700">

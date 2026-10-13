@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
       packageId,
       totalPrice,
       neverExpires: d.neverExpires,
+      isAddon: d.isAddon,
       portalToken: generatePortalToken(),
       clientName: d.clientName,
       clientPhone: d.clientPhone,

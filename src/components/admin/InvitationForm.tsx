@@ -32,6 +32,7 @@ const defaultValues: InvitationFormValues = {
   templateKey: "lume",
   packageId: "",
   neverExpires: false,
+  isAddon: false,
   clientName: "",
   clientPhone: "",
   clientNotes: "",
@@ -269,6 +270,10 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("showAsExample")} className="h-4 w-4" />
           Tampilkan sebagai contoh publik di landing page (/contoh-undangan)
+        </label>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("isAddon")} className="h-4 w-4" />
+          Undangan add-on (tambahan untuk client yang sama, mis. acara kedua) — tetap ditagih terpisah, diberi label &quot;Add-on&quot; di dashboard
         </label>
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("neverExpires")} className="h-4 w-4" />
