@@ -26,3 +26,8 @@ export function toBaliDatetimeLocal(date: Date): string {
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "00";
   return `${get("year")}-${get("month")}-${get("day")}T${get("hour")}:${get("minute")}`;
 }
+
+// Date -> "YYYY-MM-DD" dalam waktu Bali, untuk <input type="date">.
+export function toBaliDate(date: Date): string {
+  return toBaliDatetimeLocal(date).slice(0, 10);
+}

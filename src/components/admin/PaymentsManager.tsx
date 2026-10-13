@@ -3,9 +3,11 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { formatRupiah, formatDate } from "@/lib/utils/format";
+import { toBaliDate } from "@/lib/utils/timezone";
 
 interface PaymentRow {
   id: string;
+  invitationId: string;
   amount: number;
   paidAt: string;
   note: string | null;
@@ -32,14 +34,15 @@ export default function PaymentsManager({
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch("/api/payments", {
-        method: "POST",
+      const res = await fetch(editingId ? `/api/payments/${editingId}` : "/api/payments", {
+        method: editingId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           invitationId: form.invitationId,
@@ -50,9 +53,10 @@ export default function PaymentsManager({
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error?.formErrors?.[0] || err.error || "Gagal mencatat pembayaran");
+        throw new Error(err.error?.formErrors?.[0] || err.error || "Gagal menyimpan pembayaran");
       }
       setForm(emptyForm);
+      setEditingId(null);
       setShowForm(false);
       router.refresh();
     } catch (e: any) {
@@ -62,11 +66,35 @@ export default function PaymentsManager({
     }
   };
 
+  const startEdit = (p: PaymentRow) => {
+    setForm({
+      invitationId: p.invitationId,
+      amount: String(p.amount),
+      paidAt: toBaliDate(new Date(p.paidAt)),
+      note: p.note ?? "",
+    });
+    setEditingId(p.id);
+    setError(null);
+    setShowForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const cancelForm = () => {
+    setForm(emptyForm);
+    setEditingId(null);
+    setShowForm(false);
+    setError(null);
+  };
+
   const remove = async (id: string) => {
     if (!confirm("Hapus catatan pembayaran ini?")) return;
     setBusyId(id);
-    await fetch(`/api/payments/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/payments/${id}`, { method: "DELETE" });
     setBusyId(null);
+    if (!res.ok) {
+      alert("Gagal menghapus catatan pembayaran");
+      return;
+    }
     router.refresh();
   };
 
@@ -78,7 +106,7 @@ export default function PaymentsManager({
         </button>
       ) : (
         <form onSubmit={onSubmit} className="border rounded-lg bg-white p-4 space-y-3 max-w-md">
-          <h3 className="font-medium">Pembayaran Baru</h3>
+          <h3 className="font-medium">{editingId ? "Edit Pembayaran" : "Pembayaran Baru"}</h3>
           {error && <p className="text-red-600 text-sm">{error}</p>}
           <label className="block text-sm">
             <span className="text-gray-700">Client / Undangan</span>
@@ -108,7 +136,7 @@ export default function PaymentsManager({
             />
           </label>
           <label className="block text-sm">
-            <span className="text-gray-700">Tanggal Bayar (opsional, default hari ini)</span>
+            <span className="text-gray-700">Tanggal Bayar {editingId ? "" : "(opsional, default hari ini)"}</span>
             <input type="date" className="input" value={form.paidAt} onChange={(e) => setForm({ ...form, paidAt: e.target.value })} />
           </label>
           <label className="block text-sm">
@@ -119,7 +147,7 @@ export default function PaymentsManager({
             <button type="submit" disabled={submitting} className="px-4 py-2 rounded-lg bg-lume-ink text-white text-sm disabled:opacity-50">
               {submitting ? "Menyimpan..." : "Simpan"}
             </button>
-            <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg bg-gray-100 text-sm">
+            <button type="button" onClick={cancelForm} className="px-4 py-2 rounded-lg bg-gray-100 text-sm">
               Batal
             </button>
           </div>
@@ -147,7 +175,10 @@ export default function PaymentsManager({
                 </td>
                 <td className="p-3 tabular-nums">{formatRupiah(p.amount)}</td>
                 <td className="p-3 text-gray-500">{p.note || "-"}</td>
-                <td className="p-3 text-right">
+                <td className="p-3 text-right whitespace-nowrap">
+                  <button onClick={() => startEdit(p)} className="mr-3 text-lume-gold">
+                    Edit
+                  </button>
                   <button onClick={() => remove(p.id)} disabled={busyId === p.id} className="text-red-600">
                     Hapus
                   </button>

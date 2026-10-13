@@ -73,6 +73,7 @@ export default async function IncomePage() {
         <PaymentsManager
           initialPayments={payments.map((p) => ({
             id: p.id,
+            invitationId: p.invitationId,
             amount: p.amount,
             paidAt: p.paidAt.toISOString(),
             note: p.note,
