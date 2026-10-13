@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { invitationSchema } from "@/lib/validations/invitation.schema";
 import { generatePortalToken } from "@/lib/utils/tokens";
 import { parseBaliDateTime } from "@/lib/utils/timezone";
+import { calcTotalPrice } from "@/lib/addons";
 
 // GET /api/invitations -> list semua undangan (untuk tabel dashboard admin)
 export async function GET() {
@@ -39,15 +40,16 @@ export async function POST(req: NextRequest) {
   }
 
   let packageId: string | undefined;
-  let totalPrice: number | undefined;
+  let packagePrice: number | null = null;
   if (d.packageId) {
     const pkg = await prisma.package.findUnique({ where: { id: d.packageId } });
     if (!pkg) {
       return NextResponse.json({ error: "Paket tidak ditemukan" }, { status: 400 });
     }
     packageId = pkg.id;
-    totalPrice = pkg.price;
+    packagePrice = pkg.price;
   }
+  const totalPrice = calcTotalPrice(packagePrice, d) ?? undefined;
 
   const invitation = await prisma.invitation.create({
     data: {
@@ -61,6 +63,8 @@ export async function POST(req: NextRequest) {
       totalPrice,
       neverExpires: d.neverExpires,
       isAddon: d.isAddon,
+      coverVideoAddon: d.coverVideoAddon,
+      extraGalleryAddon: d.extraGalleryAddon,
       portalToken: generatePortalToken(),
       clientName: d.clientName,
       clientPhone: d.clientPhone,

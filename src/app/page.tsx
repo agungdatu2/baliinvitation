@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
+import { ADDON_PRICES } from "@/lib/addons";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import PhoneFrame from "@/components/landing/PhoneFrame";
@@ -38,11 +39,11 @@ const FEATURES = [
 ];
 
 const ADDONS = [
-  { label: "Tambahan sesi acara / 2 link jadwal berbeda", price: "Rp 100.000" },
-  { label: "Ubah cover asli jadi video", price: "Rp 30.000" },
-  { label: "Tambah kuota galeri foto", price: "Rp 35.000" },
-  { label: "Undangan multi-bahasa (ID/EN)", price: "Rp 100.000" },
-  { label: "Link aktif seumur hidup", price: "Rp 100.000" },
+  { label: "Tambahan sesi acara / 2 link jadwal berbeda", price: formatRupiah(ADDON_PRICES.eventSession) },
+  { label: "Ubah cover asli jadi video", price: formatRupiah(ADDON_PRICES.coverVideo) },
+  { label: "Tambah kuota galeri foto", price: formatRupiah(ADDON_PRICES.galleryQuota) },
+  { label: "Undangan multi-bahasa (ID/EN)", price: formatRupiah(ADDON_PRICES.bilingual) },
+  { label: "Link aktif seumur hidup", price: formatRupiah(ADDON_PRICES.lifetime) },
 ];
 
 // Link "Lihat Semua Review di Google" di section Testimoni — buka listing

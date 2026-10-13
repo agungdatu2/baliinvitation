@@ -51,6 +51,8 @@ export const invitationSchema = z.object({
   // invitation ini saja, lihat komentar Invitation.neverExpires di schema.prisma
   neverExpires: z.boolean().default(false),
   isAddon: z.boolean().default(false),
+  coverVideoAddon: z.boolean().default(false),
+  extraGalleryAddon: z.boolean().default(false),
 
   clientName: z.string().min(1, "Nama client wajib diisi"),
   clientPhone: z.string().optional(),

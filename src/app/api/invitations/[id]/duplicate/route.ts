@@ -40,6 +40,8 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
       totalPrice: original.totalPrice ?? undefined,
       neverExpires: original.neverExpires,
       isAddon: original.isAddon,
+      coverVideoAddon: original.coverVideoAddon,
+      extraGalleryAddon: original.extraGalleryAddon,
       portalToken: generatePortalToken(),
       portalEnabled: original.portalEnabled,
       clientCanEditEvents: original.clientCanEditEvents,

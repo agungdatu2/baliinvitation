@@ -110,6 +110,10 @@ model Invitation {
   // Undangan tambahan untuk client yang sama (mis. acara kedua) — ditagih terpisah
   // tapi diberi label "Add-on" di dashboard supaya tidak tertukar dengan undangan utama.
   isAddon       Boolean  @default(false)
+  // Add-on berbayar lain (lihat src/lib/addons.ts) — hanya penanda tagihan, tidak
+  // mengubah perilaku undangan; harganya otomatis masuk ke totalPrice.
+  coverVideoAddon   Boolean @default(false)
+  extraGalleryAddon Boolean @default(false)
   // Override per-invitation untuk add-on "Link aktif seumur hidup" — Package.activeMonths
   // cuma bisa disetel per Package (semua invitation di paket itu ikut kena), jadi kalau
   // cuma 1 client yang beli add-on ini, true di sini bikin isExpired() di [slug]/page.tsx

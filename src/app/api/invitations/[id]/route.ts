@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { invitationSchema } from "@/lib/validations/invitation.schema";
 import { parseBaliDateTime } from "@/lib/utils/timezone";
+import { calcTotalPrice } from "@/lib/addons";
 
 export async function GET(_req: NextRequest, { params }: { params: { id: string } }) {
   const invitation = await prisma.invitation.findUnique({
@@ -20,17 +21,46 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
   const { packageId, templateKey, ...d } = parsed.data;
 
+  // Total tagihan = paket + add-on yang dicentang. Hanya dihitung ulang kalau
+  // payload menyentuh paket/add-on (toggle status saja TIDAK mengubah harga).
+  const touchesPrice =
+    packageId !== undefined ||
+    [d.isAddon, d.coverVideoAddon, d.extraGalleryAddon, d.bilingualEnabled, d.neverExpires].some((v) => v !== undefined);
+
   let packageUpdate: { packageId: string | null; totalPrice: number | null } | undefined;
-  if (packageId !== undefined) {
-    if (packageId === "") {
-      packageUpdate = { packageId: null, totalPrice: null };
-    } else {
-      const pkg = await prisma.package.findUnique({ where: { id: packageId } });
+  if (touchesPrice) {
+    const existing = await prisma.invitation.findUnique({
+      where: { id: params.id },
+      select: {
+        packageId: true,
+        isAddon: true,
+        coverVideoAddon: true,
+        extraGalleryAddon: true,
+        bilingualEnabled: true,
+        neverExpires: true,
+      },
+    });
+    if (!existing) return NextResponse.json({ error: "Tidak ditemukan" }, { status: 404 });
+
+    const effectivePackageId = packageId !== undefined ? packageId || null : existing.packageId;
+    let packagePrice: number | null = null;
+    if (effectivePackageId) {
+      const pkg = await prisma.package.findUnique({ where: { id: effectivePackageId } });
       if (!pkg) {
         return NextResponse.json({ error: "Paket tidak ditemukan" }, { status: 400 });
       }
-      packageUpdate = { packageId: pkg.id, totalPrice: pkg.price };
+      packagePrice = pkg.price;
     }
+    packageUpdate = {
+      packageId: effectivePackageId,
+      totalPrice: calcTotalPrice(packagePrice, {
+        isAddon: d.isAddon ?? existing.isAddon,
+        coverVideoAddon: d.coverVideoAddon ?? existing.coverVideoAddon,
+        extraGalleryAddon: d.extraGalleryAddon ?? existing.extraGalleryAddon,
+        bilingualEnabled: d.bilingualEnabled ?? existing.bilingualEnabled,
+        neverExpires: d.neverExpires ?? existing.neverExpires,
+      }),
+    };
   }
 
   let templateId: string | undefined;

@@ -6,6 +6,7 @@ import { invitationSchema, InvitationFormValues } from "@/lib/validations/invita
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { formatRupiah } from "@/lib/utils/format";
+import { ADDON_PRICES, calcTotalPrice } from "@/lib/addons";
 import { HIDEABLE_SECTIONS_BY_TEMPLATE } from "@/lib/hideable-sections";
 import { TEMPLATE_CATEGORIES, TEMPLATE_CATEGORY_LABELS, TemplateCategory } from "@/lib/validations/template.schema";
 
@@ -33,6 +34,8 @@ const defaultValues: InvitationFormValues = {
   packageId: "",
   neverExpires: false,
   isAddon: false,
+  coverVideoAddon: false,
+  extraGalleryAddon: false,
   clientName: "",
   clientPhone: "",
   clientNotes: "",
@@ -166,6 +169,18 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   const backgroundSlideshow = useFieldArray({ control, name: "backgroundSlideshowImages" as never });
   const backgroundType = watch("backgroundType");
   const bilingualEnabled = watch("bilingualEnabled");
+  const selectedPackageId = watch("packageId");
+  const isAddonChecked = watch("isAddon");
+  const coverVideoAddonChecked = watch("coverVideoAddon");
+  const extraGalleryAddonChecked = watch("extraGalleryAddon");
+  const neverExpiresChecked = watch("neverExpires");
+  const estimatedTotal = calcTotalPrice(packages.find((p) => p.id === selectedPackageId)?.price ?? null, {
+    isAddon: Boolean(isAddonChecked),
+    coverVideoAddon: Boolean(coverVideoAddonChecked),
+    extraGalleryAddon: Boolean(extraGalleryAddonChecked),
+    bilingualEnabled: Boolean(bilingualEnabled),
+    neverExpires: Boolean(neverExpiresChecked),
+  });
   const galleryImageValues = watch("galleryImages");
   const metaImageValue = watch("metaImage");
   const dressCode = useFieldArray({ control, name: "dressCode" });
@@ -273,15 +288,28 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         </label>
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("isAddon")} className="h-4 w-4" />
-          Undangan add-on (tambahan untuk client yang sama, mis. acara kedua) — tetap ditagih terpisah, diberi label &quot;Add-on&quot; di dashboard
+          Tambahan sesi acara / 2 link jadwal berbeda (+{formatRupiah(ADDON_PRICES.eventSession)}) — undangan add-on untuk client yang sama; harga paket tidak dihitung, hanya harga add-on
         </label>
         <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("neverExpires")} className="h-4 w-4" />
-          Link aktif seumur hidup (add-on) — abaikan masa aktif paket untuk undangan ini saja
+          Link aktif seumur hidup (+{formatRupiah(ADDON_PRICES.lifetime)}) — abaikan masa aktif paket untuk undangan ini saja
         </label>
         <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("coverVideoAddon")} className="h-4 w-4" />
+          Ubah cover asli jadi video (+{formatRupiah(ADDON_PRICES.coverVideo)})
+        </label>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" {...register("extraGalleryAddon")} className="h-4 w-4" />
+          Tambah kuota galeri foto (+{formatRupiah(ADDON_PRICES.galleryQuota)})
+        </label>
+        <p className="rounded-lg border border-lume-line bg-lume-bg/50 px-3 py-2 text-sm text-gray-700">
+          Estimasi total tagihan:{" "}
+          <span className="font-medium text-lume-ink">{estimatedTotal == null ? "tidak ada tagihan (tanpa paket & add-on)" : formatRupiah(estimatedTotal)}</span>
+          <span className="block text-xs text-gray-500">Dihitung otomatis dari paket + add-on yang dicentang, dan disimpan saat undangan disimpan.</span>
+        </p>
+        <label className="flex items-center gap-2 text-sm text-gray-700">
           <input type="checkbox" {...register("bilingualEnabled")} className="h-4 w-4" />
-          Aktifkan Toggle Bahasa ID/EN (add-on) — tamu bisa pilih bahasa sendiri di halaman undangan
+          Undangan multi-bahasa ID/EN (+{formatRupiah(ADDON_PRICES.bilingual)}) — tamu bisa pilih bahasa sendiri di halaman undangan
         </label>
         {bilingualEnabled && (
           <p className="text-xs text-gray-500 bg-gray-50 border rounded-lg p-2">

@@ -23,6 +23,8 @@ export default async function EditInvitationPage({ params }: { params: { id: str
     packageId: invitation.packageId ?? "",
     neverExpires: invitation.neverExpires,
     isAddon: invitation.isAddon,
+    coverVideoAddon: invitation.coverVideoAddon,
+    extraGalleryAddon: invitation.extraGalleryAddon,
     clientName: invitation.clientName,
     clientPhone: invitation.clientPhone ?? "",
     clientNotes: invitation.clientNotes ?? "",
