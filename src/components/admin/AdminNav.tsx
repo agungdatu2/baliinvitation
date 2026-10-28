@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, Palette, Wallet, Package, LogOut, ShieldCheck, Quote, Share2 } from "lucide-react";
+import { LayoutDashboard, Palette, Wallet, Package, LogOut, ShieldCheck, Quote, Share2, Receipt } from "lucide-react";
 
 const TABS = [
   { href: "/admin", label: "Undangan Berjalan", icon: LayoutDashboard },
   { href: "/admin/themes", label: "Tema", icon: Palette },
   { href: "/admin/income", label: "Income", icon: Wallet },
+  { href: "/admin/invoices", label: "Invoice", icon: Receipt },
   { href: "/admin/packages", label: "Paket", icon: Package },
   { href: "/admin/testimonials", label: "Testimoni", icon: Quote },
   { href: "/admin/social", label: "Social Media", icon: Share2 },
@@ -25,7 +26,7 @@ export default function AdminNav() {
   return (
     <>
       {/* Sidebar (desktop) */}
-      <aside className="hidden md:flex md:flex-col w-60 shrink-0 border-r border-lume-line bg-white min-h-screen">
+      <aside className="hidden md:flex md:flex-col w-60 shrink-0 border-r border-lume-line bg-white min-h-screen print:hidden">
         <div className="px-6 py-5 border-b border-lume-line">
           <p className="font-serif text-lg text-lume-ink">BaliInvitation</p>
           <p className="text-xs text-gray-400 mt-0.5">Admin</p>
@@ -61,7 +62,7 @@ export default function AdminNav() {
       </aside>
 
       {/* Top bar + horizontal tabs (mobile) */}
-      <div className="md:hidden border-b border-lume-line bg-white">
+      <div className="md:hidden border-b border-lume-line bg-white print:hidden">
         <div className="px-4 py-4 flex items-center justify-between">
           <p className="font-serif text-lg text-lume-ink">BaliInvitation — Admin</p>
           <button

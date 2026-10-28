@@ -8,9 +8,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
   if (pathname === "/admin/k7xq2m9pv3") return <>{children}</>;
 
   return (
-    <div className="min-h-screen bg-gray-50 md:flex">
+    <div className="min-h-screen bg-gray-50 md:flex print:block print:bg-white">
       <AdminNav />
-      <div className="flex-1 min-w-0 px-4 py-6 md:px-10 md:py-8">{children}</div>
+      <div className="flex-1 min-w-0 px-4 py-6 md:px-10 md:py-8 print:p-0">{children}</div>
     </div>
   );
 }

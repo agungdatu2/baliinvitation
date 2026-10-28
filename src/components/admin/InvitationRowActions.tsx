@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CircleCheckBig, EyeOff, Copy, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { CircleCheckBig, EyeOff, Copy, Trash2, Receipt } from "lucide-react";
 
 const iconBtn = "inline-flex h-8 w-8 items-center justify-center rounded-lg transition disabled:opacity-40 disabled:pointer-events-none";
 
@@ -73,6 +74,9 @@ export default function InvitationRowActions({ id, status }: { id: string; statu
           <CircleCheckBig size={16} strokeWidth={1.75} />
         </button>
       )}
+      <Link href={`/admin/invoices/${id}`} title="Invoice" className={`${iconBtn} text-sky-600 hover:bg-sky-50`}>
+        <Receipt size={16} strokeWidth={1.75} />
+      </Link>
       <button onClick={duplicate} disabled={busy} title="Duplikat" className={`${iconBtn} text-indigo-600 hover:bg-indigo-50`}>
         <Copy size={16} strokeWidth={1.75} />
       </button>
