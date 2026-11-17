@@ -16,11 +16,16 @@ import ClosingFooter from "./ClosingFooter";
 // polaroid -> RSVP & ucapan -> penutup. Memakai field non-wedding generik:
 // hostName = nama anak, eventTitle = judul/usia ("Ulang Tahun ke-1"),
 // greeting = kata pengantar, quote = tanda tangan orang tua.
+// Lagu bawaan tema (piano "Happy Birthday", direkam sendiri — tidak ada masalah
+// lisensi). Admin bisa menggantinya lewat field Musik di form undangan.
+const DEFAULT_MUSIC = "/audio/happy-birthday-piano.m4a";
+
 export default function ConfettiTemplate({ data, guestName, guestId }: TemplateProps) {
   const [opened, setOpened] = useState(false);
   const [musicPlaying, setMusicPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
+  const musicSrc = data.musicUrl || DEFAULT_MUSIC;
   const visibleGalleryImages = data.maxGalleryImages ? data.galleryImages.slice(0, data.maxGalleryImages) : data.galleryImages;
 
   const handleOpen = () => {
@@ -57,8 +62,8 @@ export default function ConfettiTemplate({ data, guestName, guestId }: TemplateP
     <main className="min-h-screen bg-confetti-cream font-groove-body text-confetti-ink">
       <AnimatePresence>{!opened && <GateScreen key="gate" data={data} guestName={guestName} onOpen={handleOpen} />}</AnimatePresence>
 
-      {data.musicUrl && <audio ref={audioRef} src={data.musicUrl} loop />}
-      {opened && data.musicUrl && (
+      <audio ref={audioRef} src={musicSrc} loop preload="auto" />
+      {opened && (
         <button
           type="button"
           onClick={toggleMusic}

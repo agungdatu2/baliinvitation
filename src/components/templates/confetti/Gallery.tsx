@@ -50,8 +50,8 @@ export default function Gallery({ data, images: imagesProp }: { data: Invitation
   let touchX = 0;
 
   return (
-    <div className="bg-[#eaf5fd]">
-      <Wave fill="#fff8ee" flip />
+    <div>
+      <Wave from="#ffeef3" fill="#fff8ee" />
       <section id="gallery" className="bg-confetti-cream px-5 py-16 text-center text-confetti-ink md:py-24">
         <motion.div
           initial={{ opacity: 0, y: 24 }}

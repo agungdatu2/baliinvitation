@@ -59,17 +59,16 @@ export function ConfettiField({ className = "" }: { className?: string }) {
   );
 }
 
-// Pemisah bergelombang antar section; `fill` = warna section di BAWAH gelombang.
-export function Wave({ fill, flip = false }: { fill: string; flip?: boolean }) {
+// Pemisah bergelombang antar section. `from` = warna section DI ATAS gelombang,
+// `fill` = warna section DI BAWAH gelombang (harus sama dengan background section
+// berikutnya, kalau tidak muncul "pulau" warna di tengah).
+export function Wave({ from, fill }: { from: string; fill: string }) {
   return (
-    <svg
-      viewBox="0 0 1440 80"
-      preserveAspectRatio="none"
-      className={`block h-10 w-full md:h-16 ${flip ? "rotate-180" : ""}`}
-      aria-hidden="true"
-    >
-      <path d="M0 40 C 180 0, 360 80, 540 40 S 900 0, 1080 40 S 1320 70, 1440 30 L1440 80 L0 80 Z" fill={fill} />
-    </svg>
+    <div style={{ background: from }} aria-hidden="true">
+      <svg viewBox="0 0 1440 80" preserveAspectRatio="none" className="block h-10 w-full md:h-16">
+        <path d="M0 40 C 180 0, 360 80, 540 40 S 900 0, 1080 40 S 1320 70, 1440 30 L1440 82 L0 82 Z" fill={fill} />
+      </svg>
+    </div>
   );
 }
 

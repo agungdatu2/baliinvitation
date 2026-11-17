@@ -61,8 +61,8 @@ export default function RSVPForm({
   const label = "mb-1.5 block font-groove-label text-[0.7rem] uppercase tracking-widest text-confetti-ink/70";
 
   return (
-    <div className="bg-[#ffeef3]">
-      <Wave fill="#eaf5fd" flip />
+    <div>
+      <Wave from="#fff8ee" fill="#eaf5fd" />
       <section className="bg-[#eaf5fd] px-6 py-16 text-confetti-ink md:py-24">
         <div className="mx-auto max-w-2xl">
           <motion.div

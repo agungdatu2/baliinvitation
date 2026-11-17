@@ -51,8 +51,8 @@ export default function EventDetails({ data }: { data: InvitationData }) {
   ];
 
   return (
-    <div className="bg-confetti-cream">
-      <Wave fill="#ffeef3" flip />
+    <div>
+      <Wave from="#fff8ee" fill="#ffeef3" />
       <section className="bg-[#ffeef3] px-6 py-16 text-center text-confetti-ink md:py-24">
         <motion.p {...fade(0)} className="font-groove-label text-xs uppercase tracking-[0.3em] text-confetti-ink/60">
           {t.saveTheDate}

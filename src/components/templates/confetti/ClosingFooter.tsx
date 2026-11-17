@@ -10,8 +10,8 @@ import { ConfettiField, Wave } from "./Decor";
 export default function ClosingFooter({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   return (
-    <div className="bg-confetti-cream">
-      <Wave fill="#eaf8f1" flip />
+    <div>
+      <Wave from="#eaf5fd" fill="#eaf8f1" />
       <footer className="relative overflow-hidden bg-[#eaf8f1] px-6 pb-12 pt-16 text-center text-confetti-ink md:pt-24">
         <ConfettiField />
         <motion.div
