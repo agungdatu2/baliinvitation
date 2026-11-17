@@ -31,3 +31,6 @@ npm-debug.log*
 .agents/
 skills-lock.json
 .env*
+
+# Foto client untuk review lokal — jangan pernah di-commit
+/public/dev-samples/

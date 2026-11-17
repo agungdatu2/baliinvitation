@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script, Bodoni_Moda } from "next/font/google";
+import { Cormorant, Hanken_Grotesk, Cormorant_Garamond, Dancing_Script, Bodoni_Moda, Fredoka } from "next/font/google";
 import localFont from "next/font/local";
 import { GoogleTagManager } from "@next/third-parties/google";
 import "./globals.css";
@@ -73,6 +73,13 @@ const bodoniModa = Bodoni_Moda({
   variable: "--font-nocturne-display",
 });
 
+// Dipakai khusus tema "Confetti" (ulang tahun anak) — rounded & ceria.
+const fredoka = Fredoka({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-confetti-display",
+});
+
 export const metadata: Metadata = {
   // Wajib supaya og:image dengan URL relatif (mis. "/brand/logo.webp") di-resolve
   // jadi URL absolut — tanpa ini, WhatsApp/aplikasi chat lain gagal fetch gambar
@@ -93,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="id"
-      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable} ${bodoniModa.variable}`}
+      className={`${cormorant.variable} ${hankenGrotesk.variable} ${hankenGroteskLabel.variable} ${cormorantLoading.variable} ${vogue.variable} ${museLoadingFont.variable} ${dancingScript.variable} ${bodoniModa.variable} ${fredoka.variable}`}
     >
       <body>
         <noscript>

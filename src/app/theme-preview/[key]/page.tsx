@@ -12,7 +12,24 @@ export default function ThemePreviewPage({
   searchParams,
 }: {
   params: { key: string };
-  searchParams: { lang?: string; intro?: string; hidden?: string; bg?: string; gallery?: string };
+  searchParams: {
+    lang?: string;
+    intro?: string;
+    hidden?: string;
+    bg?: string;
+    gallery?: string;
+    // Hanya tema "confetti" — isi data sendiri lewat URL saat review lokal (mis. data
+    // client asli) tanpa menyimpannya di kode: host, title, venue, place, date, time, sign, cover, photos.
+    host?: string;
+    title?: string;
+    venue?: string;
+    place?: string;
+    date?: string;
+    time?: string;
+    sign?: string;
+    cover?: string;
+    photos?: string;
+  };
 }) {
   const Template = TEMPLATE_REGISTRY[params.key];
   if (!Template) return notFound();
@@ -40,7 +57,10 @@ export default function ThemePreviewPage({
   const eventDateIso = eventDate.toISOString();
   // EventItem.date dikonsumsi sebagai tanggal-saja (digabung "T" + timeStart di
   // EventDetails), bukan datetime ISO lengkap — beda dari InvitationData.eventDate.
-  const eventDateOnly = eventDateIso.slice(0, 10);
+  const isConfetti = params.key === "confetti";
+  const confettiDate = isConfetti && /^\d{4}-\d{2}-\d{2}$/.test(searchParams.date ?? "") ? (searchParams.date as string) : null;
+  const confettiTime = isConfetti && /^\d{1,2}:\d{2}$/.test(searchParams.time ?? "") ? (searchParams.time as string) : "16:00";
+  const eventDateOnly = confettiDate ?? eventDateIso.slice(0, 10);
 
   // Konten yang diketik langsung oleh client (greeting, quote, love story, nama
   // acara) — beda dari label UI tetap yang datang dari dict getDict() — jadi perlu
@@ -77,7 +97,21 @@ export default function ThemePreviewPage({
   // Grand Opening (dan tema non-wedding sejenis) tidak punya akad/resepsi —
   // satu event tunggal dengan nama acaranya sendiri.
   const isGrandOpening = params.key === "grand-opening";
-  const events = isGrandOpening
+  const confettiEvents = [
+    {
+      name: "Birthday Party",
+      date: eventDateOnly,
+      timeStart: confettiTime,
+      timeEnd: "Selesai",
+      timezone: "WITA",
+      venueName: searchParams.venue || "Rumah Kayla",
+      location: searchParams.place || "Jl. Contoh No. 1, Denpasar, Bali",
+      mapsUrl: "https://maps.google.com",
+    },
+  ];
+  const events = isConfetti
+    ? confettiEvents
+    : isGrandOpening
     ? [
         {
           name: "Grand Opening",
@@ -125,14 +159,19 @@ export default function ThemePreviewPage({
     brideFullName: "Ni Ayu Kirana",
     brideParents: "Bapak I Nyoman Contoh & Ibu Ni Putu Contoh",
     brideInstagram: "ayu.kirana",
-    eventTitle: isGrandOpening ? "Grand Opening" : undefined,
-    hostName: isGrandOpening ? "Surya Perkasa Motor" : undefined,
-    quote: content.quote,
-    greeting: isGrandOpening
+    eventTitle: isConfetti ? searchParams.title || "Ulang Tahun ke-1" : isGrandOpening ? "Grand Opening" : undefined,
+    hostName: isConfetti ? searchParams.host || "Kayla Putri Anindya" : isGrandOpening ? "Surya Perkasa Motor" : undefined,
+    quote: isConfetti ? searchParams.sign || "Ayah & Bunda" : content.quote,
+    greeting: isConfetti
+      ? "Dengan penuh syukur dan cinta, kami mengundang Anda untuk ikut merayakan hari bahagia si kecil."
+      : isGrandOpening
       ? "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu."
       : content.greeting,
-    eventDate: eventDateIso,
-    galleryImages: [
+    eventDate: confettiDate ? `${confettiDate}T${confettiTime.padStart(5, "0")}:00+08:00` : eventDateIso,
+    coverImage: isConfetti && searchParams.cover ? searchParams.cover : undefined,
+    galleryImages: isConfetti && searchParams.photos
+      ? searchParams.photos.split(",").map((u) => u.trim()).filter(Boolean)
+      : [
       "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80",
       "https://assets.mixkit.co/videos/34371/34371-720.mp4",
       "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?auto=format&fit=crop&w=900&q=80",

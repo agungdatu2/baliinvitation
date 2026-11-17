@@ -18,6 +18,18 @@ async function main() {
     update: {},
     create: { key: "muse", name: "Muse - Editorial Free Scroll" },
   });
+  await prisma.template.upsert({
+    where: { key: "confetti" },
+    update: {},
+    create: {
+      key: "confetti",
+      name: "Confetti - Pastel & Ceria",
+      tagline: "Pastel & Ceria",
+      description: "Tema ulang tahun anak yang ceria: konfeti pastel melayang, countdown berwarna-warni, dan galeri foto gaya polaroid.",
+      features: ["Konfeti pastel dengan animasi lembut", "Countdown berwarna-warni", "Galeri polaroid dengan tampilan penuh"],
+      category: "ulang-tahun",
+    },
+  });
 
   // Bootstrap akun admin pertama dari ADMIN_EMAIL/ADMIN_PASSWORD di .env — cuma
   // jalan kalau keduanya di-set, supaya seed tetap aman dijalankan berkali-kali
