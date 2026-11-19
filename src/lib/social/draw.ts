@@ -22,8 +22,9 @@ export interface SlideFonts {
 }
 
 export interface PostInfo {
-  groom: string;
-  bride: string;
+  label: string; // teks kecil di atas nama, mis. "THE WEDDING OF" (lihat lib/social/occasion.ts)
+  nameLines: string[]; // nama besar di cover
+  fullName: string; // nama utuh satu baris
   themeName: string;
   tagline: string;
   dateLabel: string;
@@ -82,6 +83,33 @@ function roundedRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w:
   ctx.closePath();
 }
 
+// Pecah teks per kata (greedy) supaya tiap baris muat di maxWidth.
+function wrapWords(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+  const lines: string[] = [];
+  let line = "";
+  for (const word of text.split(/\s+/).filter(Boolean)) {
+    const test = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(test).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
+// Kecilkan font (sampai minSize) sampai teks muat di maxWidth; kembalikan ukuran akhir.
+function fitFont(ctx: CanvasRenderingContext2D, text: string, make: (size: number) => string, size: number, minSize: number, maxWidth: number) {
+  ctx.font = make(size);
+  while (size > minSize && ctx.measureText(text).width > maxWidth) {
+    size -= 1;
+    ctx.font = make(size);
+  }
+  return size;
+}
+
 // Gambar logo transparan jadi putih penuh (setara filter brightness(0) invert(1)).
 function drawWhiteLogo(ctx: CanvasRenderingContext2D, logo: HTMLImageElement, cx: number, top: number, width: number) {
   const height = (logo.naturalHeight / logo.naturalWidth) * width;
@@ -130,21 +158,40 @@ export function drawCoverSlide(
   const bottomY = SLIDE_H - 92;
 
   setSpacing(ctx, 0);
+  const nameFont = (sz: number) => `300 ${sz}px ${fonts.display}`;
   let size = 150;
-  ctx.font = `300 ${size}px ${fonts.display}`;
-  const widest = () => Math.max(ctx.measureText(`${info.groom} &`).width, ctx.measureText(info.bride).width);
-  while (size > 80 && widest() > maxWidth) {
-    size -= 6;
-    ctx.font = `300 ${size}px ${fonts.display}`;
+  let lines = info.nameLines;
+  if (lines.length === 1) {
+    // Satu nama panjang (penyelenggara/anak): wrap per kata, ukuran terbesar yang muat di <= 3 baris.
+    const wrapWidth = 720;
+    for (size = 150; size >= 84; size -= 6) {
+      ctx.font = nameFont(size);
+      const wrapped = wrapWords(ctx, lines[0], wrapWidth);
+      if (wrapped.length <= 3) {
+        lines = wrapped;
+        break;
+      }
+    }
+    if (lines.length === 1) {
+      size = 84;
+      ctx.font = nameFont(size);
+      lines = wrapWords(ctx, lines[0], wrapWidth);
+    }
+  } else {
+    ctx.font = nameFont(size);
+    const widest = () => Math.max(...lines.map((l) => ctx.measureText(l).width));
+    while (size > 80 && widest() > maxWidth) {
+      size -= 6;
+      ctx.font = nameFont(size);
+    }
   }
-  const brideY = bottomY;
-  const groomY = brideY - size * 0.9;
-  ctx.fillText(info.bride, x - 4, brideY);
-  ctx.fillText(`${info.groom} &`, x - 4, groomY);
+  const brideY = bottomY; // baris nama terakhir
+  const firstY = brideY - (lines.length - 1) * size * 0.9;
+  lines.forEach((line, i) => ctx.fillText(line, x - 4, firstY + i * size * 0.9));
 
-  ctx.font = `400 30px ${fonts.sans}`;
   setSpacing(ctx, 9);
-  ctx.fillText("THE WEDDING OF", x, groomY - size * 0.72 - 30);
+  fitFont(ctx, info.label, (sz) => { ctx.letterSpacing = "9px"; return `400 ${sz}px ${fonts.sans}`; }, 30, 18, SLIDE_W - x * 2);
+  ctx.fillText(info.label, x, firstY - size * 0.72 - 30);
   setSpacing(ctx, 0);
 
   // Penanda "geser" kecil (>>>) di kanan bawah, sejajar baris nama terakhir.
@@ -267,16 +314,28 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
     ctx.fillRect(sx, sy, sw, sh);
     ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center";
-    ctx.font = `400 12px ${fonts.sans}`;
     setSpacing(ctx, 3);
-    ctx.fillText("THE WEDDING OF", sx + sw / 2, sy + 92);
+    fitFont(ctx, info.label, (sz) => { ctx.letterSpacing = "3px"; return `400 ${sz}px ${fonts.sans}`; }, 12, 8, sw - 24);
+    ctx.fillText(info.label, sx + sw / 2, sy + 92);
     setSpacing(ctx, 0);
+    // Nama di tengah layar: baris eksplisit apa adanya, satu nama panjang di-wrap per kata.
     ctx.font = `300 italic 44px ${fonts.display}`;
-    ctx.fillText(info.groom, sx + sw / 2, sy + 140);
-    ctx.font = `300 italic 26px ${fonts.display}`;
-    ctx.fillText("&", sx + sw / 2, sy + 170);
-    ctx.font = `300 italic 44px ${fonts.display}`;
-    ctx.fillText(info.bride, sx + sw / 2, sy + 214);
+    let nameSize = 44;
+    let nameLines = info.nameLines;
+    if (nameLines.length === 1) {
+      for (nameSize = 44; nameSize >= 24; nameSize -= 2) {
+        ctx.font = `300 italic ${nameSize}px ${fonts.display}`;
+        const wrapped = wrapWords(ctx, nameLines[0], sw - 28);
+        if (wrapped.length <= 3) {
+          nameLines = wrapped;
+          break;
+        }
+      }
+    } else {
+      nameSize = fitFont(ctx, nameLines.reduce((a, b) => (a.length > b.length ? a : b)), (sz) => `300 italic ${sz}px ${fonts.display}`, 44, 24, sw - 28);
+    }
+    ctx.font = `300 italic ${nameSize}px ${fonts.display}`;
+    nameLines.forEach((line, i) => ctx.fillText(line, sx + sw / 2, sy + 140 + i * nameSize * 1.1));
     ctx.font = `400 12px ${fonts.sans}`;
     setSpacing(ctx, 2);
     ctx.fillText(info.dateLabel.toUpperCase(), sx + sw / 2, sy + sh - 40);
@@ -296,13 +355,13 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
     ctx.fill();
     ctx.fillStyle = "#4a4137";
     ctx.textAlign = "center";
-    ctx.font = `400 11px ${fonts.sans}`;
     setSpacing(ctx, 3);
-    ctx.fillText("THE WEDDING OF", sx + sw / 2, sy + 62);
+    fitFont(ctx, info.label, (sz) => { ctx.letterSpacing = "3px"; return `400 ${sz}px ${fonts.sans}`; }, 11, 8, sw - 24);
+    ctx.fillText(info.label, sx + sw / 2, sy + 62);
     setSpacing(ctx, 0);
     ctx.fillStyle = "#2b241d";
-    ctx.font = `400 30px ${fonts.display}`;
-    ctx.fillText(`${info.groom} & ${info.bride}`, sx + sw / 2, sy + 104);
+    fitFont(ctx, info.fullName, (sz) => `400 ${sz}px ${fonts.display}`, 30, 18, sw - 24);
+    ctx.fillText(info.fullName, sx + sw / 2, sy + 104);
     ctx.fillStyle = "#6a5f52";
     ctx.font = `400 12px ${fonts.sans}`;
     ctx.fillText(info.dateLabel, sx + sw / 2, sy + 134);

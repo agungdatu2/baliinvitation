@@ -13,6 +13,7 @@ import {
   loadSlideImage,
   MOCKUP_BACKGROUND,
 } from "@/lib/social/draw";
+import { getOccasion } from "@/lib/social/occasion";
 
 function SlideCanvas({
   id,
@@ -131,8 +132,11 @@ function PhotoPicker({
 export default function SocialPostBuilder({
   invitationId,
   slug,
+  category,
   groom,
   bride,
+  hostName,
+  eventTitle,
   themeName: initialThemeName,
   tagline: initialTagline,
   dateLabel,
@@ -140,8 +144,11 @@ export default function SocialPostBuilder({
 }: {
   invitationId: string;
   slug: string;
+  category: string;
   groom: string;
   bride: string;
+  hostName: string | null;
+  eventTitle: string | null;
   themeName: string;
   tagline: string;
   dateLabel: string;
@@ -165,9 +172,17 @@ export default function SocialPostBuilder({
   const displayProbe = useRef<HTMLSpanElement>(null);
   const sansProbe = useRef<HTMLSpanElement>(null);
 
-  const info = useMemo<PostInfo>(() => ({ groom, bride, themeName, tagline, dateLabel }), [groom, bride, themeName, tagline, dateLabel]);
+  // Teks cover/layar HP/caption menyesuaikan jenis acara (wedding, ulang tahun, melaspas, dst).
+  const occasion = useMemo(
+    () => getOccasion({ category, groom, bride, hostName, eventTitle }),
+    [category, groom, bride, hostName, eventTitle]
+  );
+  const info = useMemo<PostInfo>(
+    () => ({ label: occasion.label, nameLines: occasion.nameLines, fullName: occasion.fullName, themeName, tagline, dateLabel }),
+    [occasion, themeName, tagline, dateLabel]
+  );
 
-  const defaultCaption = `Happy wedding ${groom} & ${bride}\n\nMereka menggunakan tema ${themeName} untuk undangan mereka, cek link di bio untuk lihat contoh lainnya.\n\n#baliinvitation #undangandigital #undanganpernikahan #digitalinvitation #weddinginvitation #baliwedding`;
+  const defaultCaption = occasion.caption(themeName);
   const caption = captionDraft ?? defaultCaption;
 
   useEffect(() => {

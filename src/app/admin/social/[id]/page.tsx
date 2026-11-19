@@ -14,10 +14,12 @@ export default async function SocialPostPage({ params }: { params: { id: string 
       slug: true,
       groomNickname: true,
       brideNickname: true,
+      hostName: true,
+      eventTitle: true,
       galleryImages: true,
       coverImage: true,
       eventDate: true,
-      template: { select: { name: true, tagline: true } },
+      template: { select: { name: true, tagline: true, category: true } },
     },
   });
   if (!inv) return notFound();
@@ -37,14 +39,17 @@ export default async function SocialPostPage({ params }: { params: { id: string 
         &larr; Social Media
       </Link>
       <h1 className="mb-1 text-2xl font-semibold text-lume-ink">
-        {inv.groomNickname} &amp; {inv.brideNickname}
+        {inv.template.category === "wedding" || !inv.hostName ? `${inv.groomNickname} & ${inv.brideNickname}` : inv.hostName}
       </h1>
       <p className="mb-6 text-sm text-gray-500">Postingan Instagram otomatis dari foto Gallery client (cover + mockup tema).</p>
       <SocialPostBuilder
         invitationId={params.id}
         slug={inv.slug}
+        category={inv.template.category}
         groom={inv.groomNickname}
         bride={inv.brideNickname}
+        hostName={inv.hostName}
+        eventTitle={inv.eventTitle}
         themeName={themeName}
         tagline={inv.template.tagline ?? ""}
         dateLabel={dateLabel}

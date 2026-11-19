@@ -110,7 +110,7 @@ export function getDict(lang: Lang | undefined) {
 }
 
 // 1 -> "1st", 2 -> "2nd", 11 -> "11th" (untuk judul bahasa Inggris).
-function ordinal(n: number) {
+export function ordinal(n: number) {
   const mod100 = n % 100;
   if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
   return `${n}${({ 1: "st", 2: "nd", 3: "rd" } as Record<number, string>)[n % 10] ?? "th"}`;
