@@ -6,6 +6,8 @@
 
 export const SLIDE_W = 1080;
 export const SLIDE_H = 1080;
+// Instagram Story 9:16. Bagian atas/bawah (~250px) tertutup UI Instagram, jadi konten penting dijauhkan dari tepi.
+export const STORY_H = 1920;
 
 export type SlideKind = "cover" | "mockup";
 
@@ -130,41 +132,46 @@ export function drawCoverSlide(
   img: HTMLImageElement | null,
   logo: HTMLImageElement | null,
   info: PostInfo,
-  fonts: SlideFonts
+  fonts: SlideFonts,
+  h: number = SLIDE_H
 ) {
+  const story = h > SLIDE_H;
   ctx.fillStyle = "#1c1814";
-  ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
-  if (img) drawImageCover(ctx, img, 0, 0, SLIDE_W, SLIDE_H);
+  ctx.fillRect(0, 0, SLIDE_W, h);
+  if (img) drawImageCover(ctx, img, 0, 0, SLIDE_W, h);
 
   // Peredam gelap di bawah-kiri (tempat teks) dan tipis di atas (tempat logo).
-  const bottom = ctx.createLinearGradient(0, SLIDE_H * 0.4, 0, SLIDE_H);
+  const bottom = ctx.createLinearGradient(0, h * 0.4, 0, h);
   bottom.addColorStop(0, "rgba(0,0,0,0)");
   bottom.addColorStop(1, "rgba(0,0,0,0.6)");
   ctx.fillStyle = bottom;
-  ctx.fillRect(0, SLIDE_H * 0.4, SLIDE_W, SLIDE_H * 0.6);
-  const top = ctx.createLinearGradient(0, 0, 0, 240);
+  ctx.fillRect(0, h * 0.4, SLIDE_W, h * 0.6);
+  const topShade = story ? 420 : 240;
+  const top = ctx.createLinearGradient(0, 0, 0, topShade);
   top.addColorStop(0, "rgba(0,0,0,0.35)");
   top.addColorStop(1, "rgba(0,0,0,0)");
   ctx.fillStyle = top;
-  ctx.fillRect(0, 0, SLIDE_W, 240);
+  ctx.fillRect(0, 0, SLIDE_W, topShade);
 
-  if (logo) drawWhiteLogo(ctx, logo, SLIDE_W / 2, 64, 230);
+  // Story: logo & teks diturunkan dari tepi supaya tidak tertutup UI Instagram.
+  if (logo) drawWhiteLogo(ctx, logo, SLIDE_W / 2, story ? 230 : 64, story ? 260 : 230);
 
   ctx.textBaseline = "alphabetic";
   ctx.textAlign = "left";
   ctx.fillStyle = "#ffffff";
   const x = 80;
-  const maxWidth = 640;
-  const bottomY = SLIDE_H - 92;
+  const maxWidth = story ? 800 : 640;
+  const bottomY = story ? h - 330 : h - 92;
 
   setSpacing(ctx, 0);
   const nameFont = (sz: number) => `300 ${sz}px ${fonts.display}`;
-  let size = 150;
+  const startSize = story ? 170 : 150;
+  let size = startSize;
   let lines = info.nameLines;
   if (lines.length === 1) {
     // Satu nama panjang (penyelenggara/anak): wrap per kata, ukuran terbesar yang muat di <= 3 baris.
-    const wrapWidth = 720;
-    for (size = 150; size >= 84; size -= 6) {
+    const wrapWidth = story ? 860 : 720;
+    for (size = startSize; size >= 84; size -= 6) {
       ctx.font = nameFont(size);
       const wrapped = wrapWords(ctx, lines[0], wrapWidth);
       if (wrapped.length <= 3) {
@@ -190,11 +197,12 @@ export function drawCoverSlide(
   lines.forEach((line, i) => ctx.fillText(line, x - 4, firstY + i * size * 0.9));
 
   setSpacing(ctx, 9);
-  fitFont(ctx, info.label, (sz) => { ctx.letterSpacing = "9px"; return `400 ${sz}px ${fonts.sans}`; }, 30, 18, SLIDE_W - x * 2);
+  fitFont(ctx, info.label, (sz) => { ctx.letterSpacing = "9px"; return `400 ${sz}px ${fonts.sans}`; }, story ? 34 : 30, 18, SLIDE_W - x * 2);
   ctx.fillText(info.label, x, firstY - size * 0.72 - 30);
   setSpacing(ctx, 0);
 
-  // Penanda "geser" kecil (>>>) di kanan bawah, sejajar baris nama terakhir.
+  // Penanda "geser" kecil (>>>) hanya untuk carousel feed; Story tidak dipakai.
+  if (story) return;
   ctx.lineWidth = 4;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
@@ -215,30 +223,35 @@ function drawPhone(
   y: number,
   w: number,
   h: number,
-  drawScreen: (sx: number, sy: number, sw: number, sh: number) => void
+  drawScreen: (sx: number, sy: number, sw: number, sh: number) => void,
+  k = 1
 ) {
   ctx.save();
   ctx.shadowColor = "rgba(0,0,0,0.35)";
-  ctx.shadowBlur = 50;
-  ctx.shadowOffsetY = 28;
+  ctx.shadowBlur = 50 * k;
+  ctx.shadowOffsetY = 28 * k;
   ctx.fillStyle = "#0b0b0b";
-  roundedRectPath(ctx, x, y, w, h, 50);
+  roundedRectPath(ctx, x, y, w, h, 50 * k);
   ctx.fill();
   ctx.restore();
 
-  const inset = 12;
+  const inset = 12 * k;
   const sx = x + inset;
   const sy = y + inset;
   const sw = w - inset * 2;
   const sh = h - inset * 2;
   ctx.save();
-  roundedRectPath(ctx, sx, sy, sw, sh, 40);
+  roundedRectPath(ctx, sx, sy, sw, sh, 40 * k);
   ctx.clip();
-  drawScreen(sx, sy, sw, sh);
+  // Isi layar digambar di koordinat "HP standar" (lalu diskalakan k) supaya teks
+  // simulasi ikut membesar/mengecil bersama ukuran HP.
+  ctx.translate(sx, sy);
+  ctx.scale(k, k);
+  drawScreen(0, 0, sw / k, sh / k);
   ctx.restore();
 
   ctx.fillStyle = "#0b0b0b";
-  roundedRectPath(ctx, x + w / 2 - 48, y + inset, 96, 24, 12);
+  roundedRectPath(ctx, x + w / 2 - 48 * k, y + inset, 96 * k, 24 * k, 12 * k);
   ctx.fill();
 }
 
@@ -256,12 +269,19 @@ function themeTitleLines(name: string): string[] {
   return [tokens.slice(0, mid).join(" "), tokens.slice(mid).join(" ")];
 }
 
-export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupImages, info: PostInfo, fonts: SlideFonts) {
+export function drawMockupSlide(
+  ctx: CanvasRenderingContext2D,
+  images: MockupImages,
+  info: PostInfo,
+  fonts: SlideFonts,
+  h: number = SLIDE_H
+) {
+  const story = h > SLIDE_H;
   if (images.background) {
-    drawImageCover(ctx, images.background, 0, 0, SLIDE_W, SLIDE_H);
+    drawImageCover(ctx, images.background, 0, 0, SLIDE_W, h);
   } else {
     ctx.fillStyle = "#d9b9a6";
-    ctx.fillRect(0, 0, SLIDE_W, SLIDE_H);
+    ctx.fillRect(0, 0, SLIDE_W, h);
   }
 
   // Nama tema + penjelasan singkat (tagline).
@@ -271,14 +291,16 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
   ctx.shadowColor = "rgba(60,45,25,0.28)";
   ctx.shadowBlur = 18;
   setSpacing(ctx, 6);
-  ctx.font = `400 90px ${fonts.display}`;
+  const titleSize = story ? 104 : 90;
+  const titleLead = story ? 106 : 92;
+  ctx.font = `400 ${titleSize}px ${fonts.display}`;
   const words = themeTitleLines(info.themeName);
-  const titleTop = words.length > 1 ? 150 : 170;
-  words.forEach((word, i) => ctx.fillText(word, SLIDE_W / 2, titleTop + i * 92));
+  const titleTop = (words.length > 1 ? 150 : 170) + (story ? 250 : 0);
+  words.forEach((word, i) => ctx.fillText(word, SLIDE_W / 2, titleTop + i * titleLead));
   ctx.shadowColor = "transparent";
   ctx.shadowBlur = 0;
 
-  const titleBottom = titleTop + (words.length - 1) * 92;
+  const titleBottom = titleTop + (words.length - 1) * titleLead;
   if (info.tagline.trim()) {
     ctx.font = `500 22px ${fonts.sans}`;
     setSpacing(ctx, 7);
@@ -292,9 +314,10 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
   setSpacing(ctx, 0);
 
   const top = titleBottom + 48 + 46;
-  const phoneH = Math.min(596, 975 - top);
+  const phoneH = Math.min(story ? 800 : 596, (story ? h - 400 : 975) - top);
   const phoneW = (phoneH * 292) / 596;
   const gap = 46;
+  const k = phoneW / 292;
   const left = (SLIDE_W - phoneW * 2 - gap) / 2;
 
   drawPhone(ctx, left, top, phoneW, phoneH, (sx, sy, sw, sh) => {
@@ -340,7 +363,7 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
     setSpacing(ctx, 2);
     ctx.fillText(info.dateLabel.toUpperCase(), sx + sw / 2, sy + sh - 40);
     setSpacing(ctx, 0);
-  });
+  }, k);
 
   drawPhone(ctx, left + phoneW + gap, top, phoneW, phoneH, (sx, sy, sw, sh) => {
     if (images.screenInner) {
@@ -365,13 +388,13 @@ export function drawMockupSlide(ctx: CanvasRenderingContext2D, images: MockupIma
     ctx.fillStyle = "#6a5f52";
     ctx.font = `400 12px ${fonts.sans}`;
     ctx.fillText(info.dateLabel, sx + sw / 2, sy + 134);
-  });
+  }, k);
 
   ctx.fillStyle = "#2b241d";
   ctx.textAlign = "center";
   ctx.font = `400 26px ${fonts.sans}`;
   setSpacing(ctx, 1);
-  ctx.fillText("www.baliinvitation.com", SLIDE_W / 2, 1018);
+  ctx.fillText("www.baliinvitation.com", SLIDE_W / 2, story ? h - 290 : 1018);
   setSpacing(ctx, 0);
   ctx.textAlign = "left";
 }

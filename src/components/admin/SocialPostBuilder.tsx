@@ -6,6 +6,7 @@ import {
   PostInfo,
   SLIDE_H,
   SLIDE_W,
+  STORY_H,
   SlideFonts,
   SlideKind,
   drawCoverSlide,
@@ -24,9 +25,11 @@ function SlideCanvas({
   screenInner,
   info,
   fonts,
+  height,
   onCanvas,
 }: {
   id: string;
+  height: number;
   kind: SlideKind;
   photo: string;
   photo2: string;
@@ -69,24 +72,24 @@ function SlideCanvas({
       if (cancelled) return;
       const ctx = ref.current?.getContext("2d");
       if (!ctx) return;
-      ctx.clearRect(0, 0, SLIDE_W, SLIDE_H);
-      if (kind === "cover") drawCoverSlide(ctx, a.img, logo.img, info, fonts);
-      else drawMockupSlide(ctx, { background: bg.img, photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts);
+      ctx.clearRect(0, 0, SLIDE_W, height);
+      if (kind === "cover") drawCoverSlide(ctx, a.img, logo.img, info, fonts, height);
+      else drawMockupSlide(ctx, { background: bg.img, photo1: a.img, photo2: b.img, screenCover: c.img, screenInner: d.img }, info, fonts, height);
       setImageFailed(a.failed || b.failed || c.failed || d.failed || logo.failed || bg.failed);
     })();
     return () => {
       cancelled = true;
     };
-  }, [kind, photo, photo2, screenCover, screenInner, info, fonts]);
+  }, [kind, photo, photo2, screenCover, screenInner, info, fonts, height]);
 
   return (
-    <div className="relative">
+    <div className={`relative mx-auto w-full ${height > SLIDE_H ? "max-w-[280px]" : ""}`}>
       <canvas
         ref={ref}
         width={SLIDE_W}
-        height={SLIDE_H}
+        height={height}
         className="w-full rounded-lg border border-lume-line bg-lume-bg"
-        style={{ aspectRatio: `${SLIDE_W} / ${SLIDE_H}` }}
+        style={{ aspectRatio: `${SLIDE_W} / ${height}` }}
       />
       {imageFailed && (
         <div className="absolute left-2 top-2 flex items-center gap-1 rounded bg-red-600 px-2 py-1 text-xs text-white">
@@ -166,6 +169,8 @@ export default function SocialPostBuilder({
   const [capturing, setCapturing] = useState(false);
   const [captureError, setCaptureError] = useState<string | null>(null);
   const [captionDraft, setCaptionDraft] = useState<string | null>(null);
+  const [format, setFormat] = useState<"feed" | "story">("feed");
+  const slideHeight = format === "story" ? STORY_H : SLIDE_H;
   const [fonts, setFonts] = useState<SlideFonts | null>(null);
   const [copied, setCopied] = useState(false);
   const canvases = useRef<Record<string, HTMLCanvasElement | null>>({});
@@ -213,7 +218,7 @@ export default function SocialPostBuilder({
             const url = URL.createObjectURL(blob);
             const a = document.createElement("a");
             a.href = url;
-            a.download = `${slug}-slide-${index + 1}.jpg`;
+            a.download = `${slug}-${format === "story" ? "story" : "slide"}-${index + 1}.jpg`;
             a.click();
             setTimeout(() => URL.revokeObjectURL(url), 2000);
           }
@@ -270,7 +275,30 @@ export default function SocialPostBuilder({
       </span>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-sm text-gray-500">2 slide · 1080×1080, siap upload sebagai carousel Instagram</p>
+        <div className="space-y-1">
+          <div className="inline-flex rounded-lg border border-lume-line bg-white p-0.5 text-sm">
+            {(
+              [
+                ["feed", "Feed (1:1)"],
+                ["story", "Story (9:16)"],
+              ] as const
+            ).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setFormat(value)}
+                className={`rounded-md px-3 py-1.5 transition ${format === value ? "bg-lume-ink text-white" : "text-gray-600 hover:bg-lume-bg/60"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="text-sm text-gray-500">
+            {format === "story"
+              ? "2 Story · 1080×1920. Layout sudah menjaga area aman (±250px atas dan bawah tertutup tampilan Instagram)."
+              : "2 slide · 1080×1080, siap upload sebagai carousel Instagram"}
+          </p>
+        </div>
         <button
           type="button"
           onClick={downloadAll}
@@ -302,7 +330,7 @@ export default function SocialPostBuilder({
               <Download size={14} />
             </button>
           </div>
-          <SlideCanvas id="cover" kind="cover" photo={coverPhoto} photo2="" screenCover="" screenInner="" info={info} fonts={fonts} onCanvas={onCanvas} />
+          <SlideCanvas id="cover" kind="cover" photo={coverPhoto} photo2="" screenCover="" screenInner="" info={info} fonts={fonts} height={slideHeight} onCanvas={onCanvas} />
           <PhotoPicker label="Foto cover (dari Gallery)" pool={pool} value={coverPhoto} onChange={setCoverPhoto} />
         </div>
 
@@ -328,6 +356,7 @@ export default function SocialPostBuilder({
             screenInner={screens?.inner ?? ""}
             info={info}
             fonts={fonts}
+            height={slideHeight}
             onCanvas={onCanvas}
           />
           <div className="grid gap-2 sm:grid-cols-2">
@@ -390,6 +419,11 @@ export default function SocialPostBuilder({
         </div>
       </div>
 
+      {format === "story" ? (
+        <p className="rounded-xl border border-lume-line bg-white p-4 text-sm text-gray-600 shadow-sm">
+          Story tidak memakai caption. Setelah mengunggah, tambahkan stiker link ke undangan atau <b>baliinvitation.com</b> langsung di Instagram.
+        </p>
+      ) : (
       <div className="space-y-2 rounded-xl border border-lume-line bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <h2 className="font-medium text-lume-ink">Caption</h2>
@@ -403,6 +437,7 @@ export default function SocialPostBuilder({
         </div>
         <textarea value={caption} onChange={(e) => setCaptionDraft(e.target.value)} rows={7} className="input" />
       </div>
+      )}
     </div>
   );
 }
