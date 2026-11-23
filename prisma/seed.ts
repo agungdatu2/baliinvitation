@@ -19,6 +19,18 @@ async function main() {
     create: { key: "muse", name: "Muse - Editorial Free Scroll" },
   });
   await prisma.template.upsert({
+    where: { key: "nocturne" },
+    update: {},
+    create: {
+      key: "nocturne",
+      name: "Nocturne - Dark & Moody",
+      tagline: "Dark & Moody",
+      description: "Tema pernikahan gelap yang sinematik: transisi scroll berlapis, marquee tipografi besar, dan galeri foto yang bergerak mengikuti scroll.",
+      features: ["Transisi scroll berlapis yang sinematik", "Save the Date dengan marquee teks besar", "Galeri dua baris yang bisa digeser dengan tampilan penuh"],
+      category: "wedding",
+    },
+  });
+  await prisma.template.upsert({
     where: { key: "confetti" },
     update: {},
     create: {

@@ -15,8 +15,8 @@ export const TEMPLATE_REGISTRY: Record<string, ComponentType<TemplateProps>> = {
   reverie: ReverieTemplate,
   muse: MuseTemplate,
   "grand-opening": GrandOpeningTemplate,
-  // Belum didaftarkan ke Template DB (prisma/seed.ts) — masih dibangun section per
-  // section, jadi belum bisa dipilih di admin dashboard. Preview via /theme-preview/nocturne.
+  // Terdaftar di Template DB (prisma/seed.ts) dan bisa dipilih di admin dashboard.
+  // Preview via /theme-preview/nocturne.
   nocturne: NocturneTemplate,
   // Ulang tahun anak (kategori "ulang-tahun"), terdaftar di Template DB. Preview via /theme-preview/confetti.
   confetti: ConfettiTemplate,
