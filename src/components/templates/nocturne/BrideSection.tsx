@@ -7,24 +7,24 @@ import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
 const DEFAULT_PHOTO = "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=85";
-// Tinggi container lebih dari 100vh — extra 100vh dipakai buat reveal masuk
-// (foto zoom-out + fade konten).
-const SECTION_VH = 200;
-// REVEAL_END & EXIT_FADE_START membagi jatah scroll (100vh, dari SECTION_VH
-// 200vh dikurangi 100vh viewport) jadi 3 fase: fade-in (0 -> REVEAL_END),
-// HOLD penuh (REVEAL_END -> EXIT_FADE_START), fade-out (EXIT_FADE_START -> 1).
-// Sebelumnya REVEAL_END sempat dinaikkan ke 0.85 (supaya reveal-nya selambat
-// Hero), tapi itu cuma nyisa ~1% jatah HOLD setelah EXIT_FADE_START
-// ditambahkan — begitu foto/nama baru selesai fade-in, LANGSUNG fade-out
-// lagi beberapa px kemudian (kerasa seperti "ketutup sesuatu" waktu
-// discroll dikit). Diturunkan lagi supaya ketiga fase kebagian jatah wajar.
-const REVEAL_END = 0.3;
+// Tinggi container section ini. Jatah scroll sticky = SECTION_VH - 100vh. LoveStorySection
+// (non-sticky, -mt-[100svh]) mulai NAIK dari bawah layar tepat (SECTION_VH - 200)vh
+// setelah section ini menempel, dan menutup penuh di (SECTION_VH - 100)vh. Jadi
+// SECTION_VH = 200 bikin Love Story langsung naik begitu Bride menempel (Bride
+// cuma kelihatan penuh sebentar). 300 memberi ~100vh scroll untuk Bride
+// kelihatan penuh dulu sebelum Love Story naik menutupinya.
+const SECTION_VH = 300;
+// REVEAL_END & EXIT_FADE_START membagi jatah scroll sticky (200vh) jadi 3 fase:
+// fade-in (0 -> REVEAL_END), HOLD penuh (REVEAL_END -> EXIT_FADE_START), fade-out
+// (EXIT_FADE_START -> 1). Fade-in selesai di ~40vh; fade-out mulai di ~140vh, saat
+// Love Story sudah menutupi separuh layar lebih.
+const REVEAL_END = 0.2;
 // Konten HARUS fade-out lagi sebelum sticky section ini benar-benar release
 // (progress = 1) — kalau tidak, foto/nama masih full opacity tepat saat
-// LoveStorySection sesudahnya mulai muncul, menyebabkan efek "ghosting"
-// (dua foto blend bersamaan) — bug yang sama persis dengan Verses->Groom,
-// lihat komentar EXIT_FADE_START di Verses.tsx/GroomSection.tsx.
-const EXIT_FADE_START = 0.75;
+// LoveStorySection sesudahnya menutup, menyebabkan efek "ghosting" (dua foto
+// blend bersamaan) — bug yang sama persis dengan Verses->Groom, lihat komentar
+// EXIT_FADE_START di Verses.tsx/GroomSection.tsx.
+const EXIT_FADE_START = 0.7;
 // Foto mulai zoom-in (scale > 1) lalu zoom-out ke ukuran normal (scale 1)
 // ngikutin scroll masuk — bukan langsung muncul ukuran final.
 const IMAGE_SCALE_START = 1.35;

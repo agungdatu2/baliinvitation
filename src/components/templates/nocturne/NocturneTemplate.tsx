@@ -18,6 +18,7 @@ import WeddingDetails from "./WeddingDetails";
 import WeddingGift from "./WeddingGift";
 import RSVPForm from "./RSVPForm";
 import ClosingFooter from "./ClosingFooter";
+import GallerySection from "./GallerySection";
 
 // Tema baru "Nocturne" (dark & moody, layout beda dari Lume/Reverie/Muse) —
 // sedang dibangun section per section bareng client. Baru ada LoadingScreen +
@@ -127,6 +128,7 @@ export default function NocturneTemplate({ data, guestName, guestId }: TemplateP
           <LoveStoryList data={data} />
           <SaveTheDateSection data={data} />
           <WeddingDetails data={data} />
+          <GallerySection data={data} images={visibleGalleryImages} />
           {data.bankAccounts && data.bankAccounts.length > 0 && (
             <WeddingGift accounts={data.bankAccounts} image={data.weddingGiftImage || data.reverieSaveTheDateImage} lang={data.language} />
           )}

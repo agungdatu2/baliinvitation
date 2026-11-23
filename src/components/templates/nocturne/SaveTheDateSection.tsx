@@ -57,34 +57,42 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
     // relative + z-50 SENGAJA — Hero (sticky, tanpa wrapper) otomatis menang
     // stacking di atas elemen statis manapun, jadi section ini butuh
     // position+z-index eksplisit supaya menang lawan Hero.
-    <section className="relative z-50 h-[100svh] min-h-[640px] w-full overflow-hidden bg-black">
-      {/* Marquee raksasa — wrapper tanpa overflow sendiri supaya descender
-          huruf italic tidak terpotong. */}
-      <div className="pointer-events-none absolute inset-x-0 top-[46%] -translate-y-1/2">
-        <div
-          className="flex w-max items-center gap-[0.35em] whitespace-nowrap font-nocturne-display text-[22vw] italic leading-none text-groove-bg/35 animate-nocturne-marquee md:text-[16.5vw]"
-          style={{ animationDuration: "90s" }}
-        >
-          {loopedTrack.map((text, i) => (
-            <span key={i} className="flex items-center gap-[0.35em]">
-              {text}
-              <span>/</span>
-            </span>
-          ))}
+    <section className="relative z-50 h-[100svh] min-h-[640px] w-full overflow-hidden bg-black md:h-[112svh] md:min-h-[720px]">
+      {/* Panggung tengah: titik nol-tinggi di 44% tinggi section. Marquee DAN foto
+          sama-sama dipusatkan di titik ini (translate -50%), jadi garis tengah
+          teks selalu pas dengan garis tengah foto di ukuran layar berapa pun.
+          Tinggi foto dibatasi juga oleh tinggi layar (svh) supaya tidak menabrak
+          countdown di layar lebar yang pendek. */}
+      <div className="pointer-events-none absolute inset-x-0 top-[44%] md:top-[40%]">
+        {/* Marquee raksasa — tanpa overflow sendiri supaya descender huruf italic
+            tidak terpotong. top dalam em = koreksi optik: tengah visual teks (rata-rata
+            tengah huruf kecil & huruf kapital Bodoni) dibuat pas dengan tengah foto. */}
+        <div className="absolute inset-x-0 top-0 -translate-y-1/2">
+          <div
+            className="relative flex w-max items-center gap-[0.35em] whitespace-nowrap font-nocturne-display text-[22vw] italic leading-none text-groove-bg/35 animate-nocturne-marquee md:text-[16.5vw]"
+            style={{ animationDuration: "90s", top: "-0.055em" }}
+          >
+            {loopedTrack.map((text, i) => (
+              <span key={i} className="flex items-center gap-[0.35em]">
+                {text}
+                <span>/</span>
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={data.reverieSaveTheDateImage || DEFAULT_PHOTO}
-        alt=""
-        className="absolute left-1/2 top-[9%] aspect-[7/8] w-[52vw] -translate-x-1/2 object-cover md:top-[12.8%] md:w-[24.5vw]"
-      />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={data.reverieSaveTheDateImage || DEFAULT_PHOTO}
+          alt=""
+          className="absolute left-1/2 top-0 aspect-[7/8] h-[min(59vw,40svh)] -translate-x-1/2 -translate-y-1/2 object-cover md:h-[min(28vw,56svh)]"
+        />
+      </div>
 
       {/* Mobile: countdown + tombol ditumpuk di bawah. Desktop (md:contents):
           wrapper ini hilang dan kedua anak diposisikan absolut ke section. */}
-      <div className="absolute inset-x-0 bottom-[5.6%] flex flex-col items-center gap-8 px-5 md:contents">
-        <div className="grid w-full grid-cols-4 md:absolute md:bottom-[7.4%] md:left-[8.5vw] md:w-[79.4vw]">
+      <div className="absolute inset-x-0 bottom-[7%] flex flex-col items-center gap-8 px-5 md:contents">
+        <div className="grid w-full grid-cols-4 md:absolute md:bottom-[12.8%] md:left-[8.5vw] md:w-[79.4vw]">
           {countdown.map(([label, value]) => (
             <div key={label} className="flex items-baseline justify-center gap-[0.15em] md:justify-start">
               <span className="font-nocturne-display text-[11vw] leading-none tabular-nums text-groove-bg/75 md:text-[6.25vw]">
@@ -101,7 +109,7 @@ export default function SaveTheDateSection({ data }: { data: InvitationData }) {
           href={calendarUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-groove-bg/70 px-3 text-center font-groove-body text-xs leading-snug text-groove-bg/90 transition-colors hover:bg-groove-bg/10 md:absolute md:bottom-[5.6%] md:right-[8.5vw] md:h-[10.1vw] md:w-[10.1vw] md:px-[1.8vw] md:text-[1.1vw]"
+          className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full border border-groove-bg/70 px-3 text-center font-groove-body text-xs leading-snug text-groove-bg/90 transition-colors hover:bg-groove-bg/10 md:absolute md:bottom-[11%] md:right-[8.5vw] md:h-[10.1vw] md:w-[10.1vw] md:px-[1.8vw] md:text-[1.1vw]"
         >
           {t.addToCalendar}
         </a>

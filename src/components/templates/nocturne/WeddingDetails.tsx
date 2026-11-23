@@ -1,7 +1,10 @@
+"use client";
+
+import { motion } from "motion/react";
 import { InvitationData } from "@/types/invitation";
 import { getDict } from "@/lib/i18n/lume";
 
-// Format "15:00" -> { label: "3.00", period: "PM" }.
+// Format "08:00" -> { label: "8", period: "AM" }; menit ".30" hanya muncul kalau bukan :00.
 function formatTime12(hhmm?: string) {
   const match = /^(\d{1,2}):(\d{2})$/.exec(hhmm?.trim() ?? "");
   if (!match) return null;
@@ -9,7 +12,7 @@ function formatTime12(hhmm?: string) {
   const minute = match[2];
   const period = hour >= 12 ? "PM" : "AM";
   hour = hour % 12 || 12;
-  return { label: `${hour}.${minute}`, period };
+  return { label: minute === "00" ? `${hour}` : `${hour}.${minute}`, period };
 }
 
 function formatTimeRange(timeStart: string, timeEnd: string | undefined) {
@@ -21,114 +24,141 @@ function formatTimeRange(timeStart: string, timeEnd: string | undefined) {
   return `${start.label} ${start.period} - ${end.label} ${end.period}`;
 }
 
-// Section "Wedding / Details" — gabungan jadwal acara + dress code + livestream
-// jadi SATU section yang mengalir dengan garis pembatas tipis antar baris,
-// persis pola referensi (groovepublic.com/claire) — bedanya di sini tetap
-// gelap/hitam (bukan krem terang) supaya konsisten dengan identitas Nocturne
-// yang sudah dibangun sejak awal.
+// Fade-in tiap kali masuk layar (once: false — diputar ulang kalau user scroll
+// keluar lalu kembali ke section ini). Tiap baris dapat delay kecil bertingkat
+// supaya muncul berurutan, bukan serentak.
+const fadeIn = (delay = 0) => ({
+  initial: { opacity: 0, y: 28 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: false, amount: 0.25 },
+  transition: { duration: 0.9, delay, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
+});
+
+// Grid satu baris acara: nama+jam | alamat | panah. Ukuran desktop diukur dari
+// referensi lebar 2000px lalu dikonversi ke vw supaya proporsinya sama di lebar
+// layar berapa pun; di mobile ditumpuk.
+const ROW_GRID = "grid items-center gap-3 py-8 md:grid-cols-[16.2vw_1fr_auto] md:gap-0 md:px-[0.6vw] md:py-[2vw]";
+
+// Section "Wedding / Details" — latar abu terang (mengikuti referensi) dengan
+// label kecil di kiri dan blok tanggal + daftar acara bergaris di kanan.
 export default function WeddingDetails({ data }: { data: InvitationData }) {
   const t = getDict(data.language);
   const events = data.events ?? [];
   if (!events.length) return null;
 
-  const dateHeading = new Date(events[0].date).toLocaleDateString(t.dateLocale, {
+  // events[].date berupa "YYYY-MM-DD" — dipecah manual (bukan new Date lokal)
+  // supaya tanggalnya tidak bergeser oleh zona waktu server/browser.
+  const [year, month, day] = events[0].date.slice(0, 10).split("-");
+  const dateNumeric = `${day}.${month}.${year}`;
+  const dateHeading = new Date(`${year}-${month}-${day}T12:00:00Z`).toLocaleDateString(t.dateLocale, {
     weekday: "long",
+    timeZone: "UTC",
   });
-  const dateNumeric = new Date(events[0].date).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  });
+
+  let rowIndex = 0;
+  const nextDelay = () => 0.15 + 0.12 * rowIndex++;
 
   return (
     // relative + z-50 SENGAJA — lihat komentar sama di SaveTheDateSection.tsx
     // (Hero sticky tanpa z-index menang lawan elemen statis manapun).
-    <section className="relative z-50 bg-black px-6 py-24 text-groove-bg md:px-16 md:py-32">
-      <div className="mx-auto max-w-2xl md:max-w-3xl">
-        <h2 className="font-nocturne-display text-3xl leading-tight text-groove-bg/90 md:text-5xl">
+    <section className="relative z-50 bg-[#eaeaea] px-6 py-20 text-[#1c1c1c] md:px-0 md:py-[8vw] md:pl-[13.6vw]">
+      <div className="md:grid md:grid-cols-[23.8vw_43.6vw] md:items-start">
+        <motion.h2
+          {...fadeIn(0)}
+          className="font-groove-body text-2xl leading-snug md:text-[1.7vw] md:leading-[1.27]"
+        >
           Wedding
-          <br />
-          <span className="text-groove-bg/70">/ Details</span>
-        </h2>
+          <br />/ Details
+        </motion.h2>
 
-        <p className="mt-10 font-nocturne-display text-4xl text-groove-bg md:text-6xl">
-          {dateHeading}
-          <br />
-          {dateNumeric}
-        </p>
+        <div className="mt-10 md:mt-0">
+          <motion.p
+            {...fadeIn(0.1)}
+            className="font-nocturne-display text-5xl leading-[1.15] md:text-[6vw] md:leading-[1.17]"
+          >
+            {dateHeading}
+            <br />
+            {dateNumeric}
+          </motion.p>
 
-        <div className="mt-14 divide-y divide-groove-bg/15">
-          {events.map((ev, i) => {
-            const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd);
-            return (
-              <div key={i} className="grid gap-4 py-8 md:grid-cols-2 md:gap-10">
-                <div>
-                  <p className="font-nocturne-display text-xl text-groove-bg md:text-2xl">{ev.name}</p>
-                  {timeLabel && <p className="mt-1 font-nocturne-display text-xl text-groove-bg/70 md:text-2xl">{timeLabel}</p>}
+          <div className="mt-10 md:mt-[4vw]">
+            {events.map((ev, i) => {
+              const timeLabel = formatTimeRange(ev.timeStart, ev.timeEnd);
+              const address = [ev.venueName, ev.location].filter(Boolean).join(", ");
+              return (
+                <motion.div key={i} {...fadeIn(nextDelay())} className="border-b border-black/10 last:border-b-0">
+                  <div className={ROW_GRID}>
+                    <div className="font-nocturne-display text-lg leading-snug md:text-[1.2vw] md:leading-[1.38]">
+                      <p>{ev.name}</p>
+                      {timeLabel && <p>{timeLabel}</p>}
+                    </div>
+                    <p className="font-groove-body text-base leading-relaxed md:max-w-[19vw] md:text-[1.2vw] md:leading-[1.58]">
+                      {address}
+                    </p>
+                    {ev.mapsUrl ? (
+                      <a
+                        href={ev.mapsUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="justify-self-start transition-opacity hover:opacity-60 md:justify-self-end"
+                        aria-label={t.googleMaps}
+                      >
+                        <ArrowIcon />
+                      </a>
+                    ) : (
+                      <span />
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+
+            {data.dressCode && data.dressCode.length > 0 && (
+              <motion.div {...fadeIn(nextDelay())} className="border-b border-black/10 last:border-b-0">
+                <div className={ROW_GRID}>
+                  <p className="font-nocturne-display text-lg leading-snug md:text-[1.2vw] md:leading-[1.38]">{t.dresscode}</p>
+                  <div>
+                    <p className="font-groove-body text-base leading-relaxed md:max-w-[19vw] md:text-[1.2vw] md:leading-[1.58]">
+                      {t.dresscodeNote}
+                    </p>
+                    <div className="mt-4 flex items-center gap-3 md:mt-[1vw]">
+                      {data.dressCode.map((item, i) => (
+                        <span
+                          key={i}
+                          className="h-8 w-8 rounded-full border border-black/20 md:h-[2vw] md:w-[2vw]"
+                          style={{ backgroundColor: item.hex }}
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                  <span />
                 </div>
-                <div>
-                  {ev.venueName && <p className="font-groove-body text-sm text-groove-bg/85">{ev.venueName}</p>}
-                  {ev.location && (
-                    <p className="mt-1 font-groove-body text-sm leading-relaxed text-groove-bg/60">{ev.location}</p>
-                  )}
-                  {ev.mapsUrl && (
-                    <a
-                      href={ev.mapsUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-4 inline-flex items-center gap-1.5 text-groove-bg/80 transition-colors hover:text-groove-bg"
-                      aria-label={t.googleMaps}
-                    >
-                      <ArrowIcon />
-                    </a>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+              </motion.div>
+            )}
 
-          {data.dressCode && data.dressCode.length > 0 && (
-            <div className="grid gap-4 py-8 md:grid-cols-2 md:gap-10">
-              <div>
-                <p className="font-nocturne-display text-xl text-groove-bg md:text-2xl">{t.dresscode}</p>
-              </div>
-              <div>
-                <p className="font-groove-body text-sm leading-relaxed text-groove-bg/60">{t.dresscodeNote}</p>
-                <div className="mt-4 flex items-center gap-3">
-                  {data.dressCode.map((item, i) => (
-                    <span
-                      key={i}
-                      className="h-10 w-10 rounded-full border border-groove-bg/30"
-                      style={{ backgroundColor: item.hex }}
-                      aria-hidden="true"
-                    />
-                  ))}
+            {data.livestreamUrl && (
+              <motion.div {...fadeIn(nextDelay())} className="border-b border-black/10 last:border-b-0">
+                <div className={ROW_GRID}>
+                  <p className="font-nocturne-display text-lg leading-snug md:text-[1.2vw] md:leading-[1.38]">
+                    {t.liveStreamingTitle}
+                  </p>
+                  <p className="font-groove-body text-base leading-relaxed md:max-w-[19vw] md:text-[1.2vw] md:leading-[1.58]">
+                    {data.livestreamNote}
+                  </p>
+                  <a
+                    href={data.livestreamUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="justify-self-start transition-opacity hover:opacity-60 md:justify-self-end"
+                    aria-label={t.watchLive}
+                  >
+                    <ArrowIcon />
+                  </a>
                 </div>
-              </div>
-            </div>
-          )}
-
-          {data.livestreamUrl && (
-            <div className="grid gap-4 py-8 md:grid-cols-2 md:gap-10">
-              <div>
-                <p className="font-nocturne-display text-xl text-groove-bg md:text-2xl">{t.liveStreamingTitle}</p>
-              </div>
-              <div>
-                {data.livestreamNote && (
-                  <p className="font-groove-body text-sm leading-relaxed text-groove-bg/60">{data.livestreamNote}</p>
-                )}
-                <a
-                  href={data.livestreamUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="mt-4 inline-flex items-center gap-1.5 text-groove-bg/80 transition-colors hover:text-groove-bg"
-                  aria-label={t.watchLive}
-                >
-                  <ArrowIcon />
-                </a>
-              </div>
-            </div>
-          )}
+              </motion.div>
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -137,8 +167,8 @@ export default function WeddingDetails({ data }: { data: InvitationData }) {
 
 function ArrowIcon() {
   return (
-    <svg width="32" height="20" viewBox="0 0 32 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0 10H30M30 10L21 1M30 10L21 19" stroke="currentColor" strokeWidth={1.5} />
+    <svg viewBox="0 0 62 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-5 w-auto md:h-[1.2vw]">
+      <path d="M0 12H60M60 12L49 1M60 12L49 23" stroke="currentColor" strokeWidth={1.6} />
     </svg>
   );
 }
