@@ -71,7 +71,7 @@ export default function Hero({ data }: { data: InvitationData }) {
         />
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={DEFAULT_BACKGROUND} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={data.coverImage || DEFAULT_BACKGROUND} alt="" className="absolute inset-0 h-full w-full object-cover" />
       )}
       <div className="absolute inset-0 bg-groove-stone/45" />
 

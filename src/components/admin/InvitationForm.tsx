@@ -133,6 +133,11 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
   // template yang dipilih "reverie" — jangan bingungin admin dengan field
   // yang tidak dipakai tema lain.
   const selectedTemplateKey = watch("templateKey");
+  // Nocturne & Confetti mengatur background dan tampilan galerinya sendiri, jadi dua
+  // pengaturan generik itu tidak berpengaruh dan disembunyikan supaya tidak membingungkan.
+  const ownsBackgroundAndGallery = selectedTemplateKey === "nocturne" || selectedTemplateKey === "confetti";
+  // Gambar gate/Save the Date/footer + kutipan dibaca oleh tiga tema ini.
+  const usesGateMedia = selectedTemplateKey === "reverie" || selectedTemplateKey === "muse" || selectedTemplateKey === "nocturne";
   const filteredTemplates = templates.filter((t) => t.category === categoryFilter);
   // Field Mempelai (groom/bride) cuma relevan buat tema wedding — tema non-wedding
   // (Grand Opening dkk) pakai field eventTitle/hostName/hostLogo generik sebagai
@@ -414,7 +419,19 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
         <Field label="URL Video Hero (mp4 atau link YouTube, opsional — kosongkan untuk pakai placeholder)">
           <input {...register("heroVideoUrl")} className="input" placeholder="https://... atau https://youtube.com/watch?v=..." />
         </Field>
+        {selectedTemplateKey === "nocturne" && (
+          <p className="text-xs text-gray-500 -mt-1">
+            Tema Nocturne hanya memutar file video langsung (.mp4), bukan link YouTube. Kalau kosong, hero memakai URL Cover
+            Image di atas sebagai foto latar.
+          </p>
+        )}
 
+        {ownsBackgroundAndGallery ? (
+          <p className="text-xs text-gray-500">
+            Tema ini mengatur background-nya sendiri, jadi tidak ada pengaturan Tipe Background. Foto dan video di bawah yang dipakai.
+          </p>
+        ) : (
+          <>
         <Field label="Tipe Background (berlaku semua tema)">
           <select {...register("backgroundType")} className="input">
             <option value="video">Video</option>
@@ -461,12 +478,14 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             )}
           </div>
         )}
-        {(selectedTemplateKey === "reverie" || selectedTemplateKey === "muse") && (
+          </>
+        )}
+        {usesGateMedia && (
           <>
-            <Field label="URL Foto Background Gate (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Background Gate (tema Reverie/Muse/Nocturne, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieGateImage")} className="input" placeholder="https://..." />
             </Field>
-            <Field label="Kutipan / Doa untuk Section Doa (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai kutipan default)">
+            <Field label="Kutipan / Doa untuk Section Doa (tema Reverie/Muse/Nocturne, opsional — kosongkan untuk pakai kutipan default)">
               <textarea {...register("quote")} className="input" rows={3} placeholder="mis. kutipan ayat, doa, atau kata-kata pernikahan" />
             </Field>
             {bilingualEnabled && (
@@ -474,10 +493,10 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
                 <textarea {...register("quoteEn")} className="input" rows={3} placeholder="mis. Bible verse, prayer, or wedding vow" />
               </Field>
             )}
-            <Field label="URL Foto Section Save the Date (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Section Save the Date (tema Reverie/Muse/Nocturne, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieSaveTheDateImage")} className="input" placeholder="https://..." />
             </Field>
-            <Field label="URL Foto Footer/Penutup (khusus tema Reverie/Muse, opsional — kosongkan untuk pakai placeholder)">
+            <Field label="URL Foto Footer/Penutup (tema Reverie/Muse/Nocturne, opsional — kosongkan untuk pakai placeholder)">
               <input {...register("reverieFooterImage")} className="input" placeholder="https://..." />
             </Field>
           </>
@@ -664,16 +683,21 @@ export default function InvitationForm({ invitationId, initialValues }: Invitati
             + Tambah Foto
           </button>
         </div>
-        <Field label="Tampilan Galeri (berlaku semua tema)">
-          <select {...register("galleryStyle")} className="input">
-            <option value="default">Bawaan Tema</option>
-            <option value="masonry">Masonry (kolom, tinggi natural)</option>
-            <option value="grid">Grid (kotak seragam)</option>
-          </select>
-        </Field>
+        {!ownsBackgroundAndGallery && (
+          <Field label="Tampilan Galeri (berlaku semua tema)">
+            <select {...register("galleryStyle")} className="input">
+              <option value="default">Bawaan Tema</option>
+              <option value="masonry">Masonry (kolom, tinggi natural)</option>
+              <option value="grid">Grid (kotak seragam)</option>
+            </select>
+          </Field>
+        )}
         <p className="text-xs text-gray-500">
-          Foto paling atas (pertama, bukan video) dipakai sebagai foto besar panel sticky di tema Reverie & Muse — pakai
-          tombol ↑↓ untuk mengatur urutannya.
+          {selectedTemplateKey === "nocturne"
+            ? "Nocturne: tiga foto pertama (bukan video) dipakai sebagai kartu foto di section Verses, dan semua foto tampil di Gallery (dua baris yang bisa digeser). Disarankan minimal 4 foto. Pakai tombol ↑↓ untuk mengatur urutan."
+            : selectedTemplateKey === "confetti"
+            ? "Confetti: foto pertama dipakai di bagian hero, dan semua foto tampil di galeri polaroid. Foto untuk halaman pembuka diambil dari URL Cover Image. Pakai tombol ↑↓ untuk mengatur urutan."
+            : "Foto paling atas (pertama, bukan video) dipakai sebagai foto besar panel sticky di tema Reverie & Muse — pakai tombol ↑↓ untuk mengatur urutannya."}
         </p>
         {gallery.fields.map((f, i) => (
           <div key={f.id} className="flex gap-2 items-center">
