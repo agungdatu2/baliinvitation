@@ -2,6 +2,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { buildWaLink } from "@/lib/utils/whatsapp";
 import { ADDON_PRICES } from "@/lib/addons";
+import { normalizeFeatures } from "@/lib/utils/features";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
 import ThemeTabs from "@/components/landing/ThemeTabs";
@@ -61,20 +62,6 @@ export const revalidate = 3600;
 
 function formatRupiah(n: number) {
   return `Rp ${n.toLocaleString("id-ID")}`;
-}
-
-// Template.features seharusnya string[]; baris lama kadang tersimpan sebagai teks JSON
-// ("[\"a\",\"b\"]") — normalisasikan supaya kartu tema tidak error.
-function normalizeFeatures(value: unknown): string[] {
-  if (Array.isArray(value)) return value.filter((v): v is string => typeof v === "string");
-  if (typeof value === "string") {
-    try {
-      return normalizeFeatures(JSON.parse(value));
-    } catch {
-      return value.trim() ? [value.trim()] : [];
-    }
-  }
-  return [];
 }
 
 export default async function HomePage() {

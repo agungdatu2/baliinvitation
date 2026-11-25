@@ -1,3 +1,4 @@
+import { normalizeFeatures } from "@/lib/utils/features";
 import { prisma } from "@/lib/prisma";
 import ThemesManager from "@/components/admin/ThemesManager";
 
@@ -17,7 +18,7 @@ export default async function ThemesPage() {
         kode di <code>src/components/templates</code> dan <code>registry.ts</code> — tapi tagline, deskripsi,
         checklist fitur, dan badge Most Popular yang tampil di landing page bisa diatur langsung dari sini.
       </p>
-      <ThemesManager initialTemplates={templates.map((t) => ({ ...t, features: t.features as string[] }))} />
+      <ThemesManager initialTemplates={templates.map((t) => ({ ...t, features: normalizeFeatures(t.features) }))} />
     </div>
   );
 }
