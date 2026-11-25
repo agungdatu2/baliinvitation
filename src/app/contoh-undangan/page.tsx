@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import ScrollReveal from "@/components/landing/ScrollReveal";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contoh Undangan Digital — BaliInvitation",
+  description: "Lihat contoh undangan digital buatan BaliInvitation: pernikahan, ulang tahun, melaspas, dan acara lainnya.",
+  alternates: { canonical: "/contoh-undangan" },
+};
 
 export const dynamic = "force-dynamic";
 

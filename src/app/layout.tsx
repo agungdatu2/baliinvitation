@@ -86,7 +86,8 @@ export const metadata: Metadata = {
   // preview link (mereka butuh URL absolut, bukan relatif).
   metadataBase: new URL("https://baliinvitation.com"),
   title: "BaliInvitation - Undangan Digital",
-  description: "Admin dashboard & undangan digital BaliInvitation",
+  description:
+    "BaliInvitation — undangan digital premium untuk pernikahan, ulang tahun, melaspas, dan acara lainnya. Pilih tema, kelola tamu & RSVP dari satu tempat.",
   openGraph: {
     title: "BaliInvitation - Undangan Digital",
     description: "Buat undangan pernikahan digital, kelola tamu & RSVP, semuanya dari satu tempat.",

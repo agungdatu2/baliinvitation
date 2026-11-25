@@ -7,5 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/admin/", "/portal/", "/api/"],
     },
+    sitemap: "https://baliinvitation.com/sitemap.xml",
+    host: "https://baliinvitation.com",
   };
 }

@@ -12,6 +12,7 @@ import RevealOnLoad from "@/components/landing/RevealOnLoad";
 import FeatureShowcase from "@/components/landing/FeatureShowcase";
 import ClientCarousel from "@/components/landing/ClientCarousel";
 import { Star } from "lucide-react";
+import type { Metadata } from "next";
 
 const NAV_LINKS = [
   { label: "Tema", href: "#tema" },
@@ -64,6 +65,48 @@ function formatRupiah(n: number) {
   return `Rp ${n.toLocaleString("id-ID")}`;
 }
 
+export const metadata: Metadata = {
+  title: "BaliInvitation — Undangan Digital Pernikahan, Ulang Tahun & Acara Bali",
+  description:
+    "Buat undangan digital elegan untuk pernikahan, ulang tahun, melaspas, dan acara lainnya. Pilih tema, kelola tamu & RSVP, semuanya dari satu tempat.",
+  keywords: [
+    "undangan digital",
+    "undangan online",
+    "undangan pernikahan digital",
+    "undangan ulang tahun digital",
+    "undangan melaspas",
+    "undangan Bali",
+    "BaliInvitation",
+  ],
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "BaliInvitation — Undangan Digital Pernikahan, Ulang Tahun & Acara Bali",
+    description: "Pilih tema, kelola tamu & RSVP dari satu tempat. Pernikahan, ulang tahun, melaspas, dan lainnya.",
+    url: "/",
+    siteName: "BaliInvitation",
+    locale: "id_ID",
+    type: "website",
+    images: ["/brand/logo.webp"],
+  },
+  twitter: {
+    card: "summary",
+    title: "BaliInvitation — Undangan Digital",
+    description: "Undangan digital elegan untuk pernikahan, ulang tahun, melaspas, dan acara lainnya.",
+    images: ["/brand/logo.webp"],
+  },
+};
+
+// Data terstruktur organisasi (statis, tanpa input pengguna) untuk mesin pencari.
+const ORGANIZATION_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "BaliInvitation",
+  url: "https://baliinvitation.com",
+  logo: "https://baliinvitation.com/brand/logo.webp",
+  description: "Layanan undangan digital premium untuk pernikahan, ulang tahun, melaspas, dan acara lainnya.",
+  sameAs: ["https://www.instagram.com/baliinvitation"],
+};
+
 export default async function HomePage() {
   const packages = await prisma.package.findMany({
     where: { isActive: true },
@@ -103,6 +146,7 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-groove-bg text-groove-ink font-groove-body">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }} />
       <PageLoader />
       <FloatingWhatsApp href={heroWaLink} />
 
