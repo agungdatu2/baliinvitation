@@ -4,7 +4,11 @@ const fs = require("fs");
 
 const CHROME_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const OUT_DIR = path.join(__dirname, "..", "public", "landing", "thumbnails");
-const THEMES = ["lume", "reverie", "muse"];
+// Pemakaian: node scripts/capture-screenshots.js [key ...]   (default: semua tema di bawah)
+// BASE_URL bisa diganti lewat env, mis. BASE_URL=http://localhost:3001
+const BASE_URL = process.env.BASE_URL || "http://localhost:3001";
+const ALL_THEMES = ["lume", "reverie", "muse", "nocturne", "confetti", "grand-opening"];
+const THEMES = process.argv.slice(2).length ? process.argv.slice(2) : ALL_THEMES;
 
 const VIEWPORTS = {
   phone: { width: 390, height: 844 },
@@ -20,14 +24,14 @@ const VIEWPORTS = {
     // sekali, capture berikutnya untuk theme yang sama tidak perlu nunggu
     // network fetch lambat lagi (kena browser cache).
     const warmup = await browser.newPage();
-    await warmup.goto(`http://localhost:3000/theme-preview/${theme}?intro=0`, { waitUntil: "domcontentloaded" });
+    await warmup.goto(`${BASE_URL}/theme-preview/${theme}?intro=0`, { waitUntil: "domcontentloaded" });
     await new Promise((r) => setTimeout(r, 4000));
     await warmup.close();
 
     for (const [device, viewport] of Object.entries(VIEWPORTS)) {
       const page = await browser.newPage();
       await page.setViewport(viewport);
-      await page.goto(`http://localhost:3000/theme-preview/${theme}?intro=0`, { waitUntil: "domcontentloaded" });
+      await page.goto(`${BASE_URL}/theme-preview/${theme}?intro=0`, { waitUntil: "domcontentloaded" });
       await new Promise((r) => setTimeout(r, 2500));
       const outPath = path.join(OUT_DIR, `${theme}-${device}.png`);
       await page.screenshot({ path: outPath });

@@ -4,8 +4,7 @@ import { buildWaLink } from "@/lib/utils/whatsapp";
 import { ADDON_PRICES } from "@/lib/addons";
 import ScrollReveal from "@/components/landing/ScrollReveal";
 import FloatingWhatsApp from "@/components/landing/FloatingWhatsApp";
-import PhoneFrame from "@/components/landing/PhoneFrame";
-import LaptopFrame from "@/components/landing/LaptopFrame";
+import ThemeTabs from "@/components/landing/ThemeTabs";
 import PageLoader from "@/components/landing/PageLoader";
 import FullscreenNav from "@/components/landing/FullscreenNav";
 import RevealOnLoad from "@/components/landing/RevealOnLoad";
@@ -23,11 +22,6 @@ const CREATOR = {
   whatsappLabel: "+62 851-9009-0902",
   instagramHandle: "baliinvitation",
 };
-
-// Ukuran mockup laptop+HP di section Tema — ditampilkan berdampingan
-// (bukan tumpang tindih) supaya kedua device kelihatan utuh.
-const LAPTOP_WIDTH = 220;
-const PHONE_WIDTH = 65;
 
 const FEATURES = [
   "Slug URL personal — baliinvitation.com/(nama-kalian)",
@@ -69,6 +63,20 @@ function formatRupiah(n: number) {
   return `Rp ${n.toLocaleString("id-ID")}`;
 }
 
+// Template.features seharusnya string[]; baris lama kadang tersimpan sebagai teks JSON
+// ("[\"a\",\"b\"]") — normalisasikan supaya kartu tema tidak error.
+function normalizeFeatures(value: unknown): string[] {
+  if (Array.isArray(value)) return value.filter((v): v is string => typeof v === "string");
+  if (typeof value === "string") {
+    try {
+      return normalizeFeatures(JSON.parse(value));
+    } catch {
+      return value.trim() ? [value.trim()] : [];
+    }
+  }
+  return [];
+}
+
 export default async function HomePage() {
   const packages = await prisma.package.findMany({
     where: { isActive: true },
@@ -84,13 +92,22 @@ export default async function HomePage() {
   // otomatis muncul begitu admin isi tagline/deskripsi/fitur-nya di /admin/themes —
   // tidak perlu ubah kode di sini lagi. Screenshot laptop/HP tetap lewat convention
   // /landing/thumbnails/<key>-{laptop,phone}.png.
-  // category: "wedding" — tema non-wedding (ulang tahun/melaspas/potong gigi) sengaja
-  // tidak dipasarkan di landing page dulu, meski tetap bisa dipilih admin saat bikin
-  // undangan client (lihat komentar Template.category di schema.prisma).
-  const themes = await prisma.template.findMany({
-    where: { isActive: true, category: "wedding" },
+  // Semua kategori ditampilkan; section Tema memisahkannya jadi tab (Wedding,
+  // Birthday, dst — lihat components/landing/ThemeTabs.tsx) dan tab hanya muncul
+  // untuk kategori yang punya tema aktif.
+  const themeRows = await prisma.template.findMany({
+    where: { isActive: true },
     orderBy: { createdAt: "asc" },
   });
+  const themes = themeRows.map((t) => ({
+    key: t.key,
+    name: t.name,
+    tagline: t.tagline,
+    description: t.description,
+    features: normalizeFeatures(t.features),
+    isMostPopular: t.isMostPopular,
+    category: t.category,
+  }));
 
   const heroWaLink = buildWaLink(
     CREATOR.whatsappNumber,
@@ -254,89 +271,7 @@ export default async function HomePage() {
               Jelajahi Semua Tema
             </h2>
           </ScrollReveal>
-          <div className="grid sm:grid-cols-2 gap-8">
-            {themes.map((theme, i) => {
-              const features = theme.features as string[];
-              // Template.name disimpan lengkap ("Lume - Elegant Minimalist") untuk
-              // dropdown admin; kartu di sini cuma perlu nama pendeknya.
-              const displayName = theme.name.split(" - ")[0];
-              return (
-                // Kartu kaca beneran — pakai .groove-glass-strong (tint tipis + blur) supaya
-                // video di section ini tetap kelihatan tembus. Panel kaca ini SENGAJA tidak
-                // dibungkus ScrollReveal (opacity/transform animasi) — backdrop-filter di atas
-                // video akan "ngebug"/gak ke-apply blurnya di Safari kalau ancestor-nya lagi
-                // animasi opacity. Yang di-fade cuma konten di dalamnya (teks/gambar biasa,
-                // aman dianimasikan), sementara panel kacanya sendiri statis & selalu benar.
-                <div
-                  key={theme.key}
-                  className="groove-glass-strong relative flex flex-col items-center text-center rounded-[2.5rem] transition-all duration-500 hover:-translate-y-2 p-8 sm:p-10"
-                >
-                  <ScrollReveal delay={i * 120} className="w-full flex flex-col items-center text-center">
-                    {theme.isMostPopular && (
-                      <span
-                        className="absolute top-6 right-6 uppercase tracking-widest text-[10px] font-semibold px-3 py-1.5 rounded-full text-groove-ink"
-                        style={{ backgroundImage: "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 100%)" }}
-                      >
-                        Most Popular
-                      </span>
-                    )}
-                    {/* Nama tema — gradient emas solid, konsisten di semua tema
-                        (dulu di-mask pakai screenshot sendiri, tapi warnanya jadi
-                        acak/kusam tergantung crop foto yang kebetulan kena). */}
-                    <h3
-                      className="font-groove-display uppercase text-6xl sm:text-7xl leading-none mb-4"
-                      style={{
-                        fontWeight: 800,
-                        backgroundImage: "linear-gradient(135deg, #e8cd8a 0%, #c9a45c 45%, #8a6d2f 100%)",
-                        WebkitBackgroundClip: "text",
-                        backgroundClip: "text",
-                        color: "transparent",
-                        WebkitTextFillColor: "transparent",
-                      }}
-                    >
-                      {displayName}
-                    </h3>
-
-                    <div className="w-16 h-px bg-groove-primary-light/50 mb-6" />
-
-                    <div className="flex items-end justify-center gap-3 mb-8">
-                      <LaptopFrame
-                        src={`/landing/thumbnails/${theme.key}-laptop.png`}
-                        width={LAPTOP_WIDTH}
-                      />
-                      <PhoneFrame
-                        src={`/landing/thumbnails/${theme.key}-phone.png`}
-                        width={PHONE_WIDTH}
-                      />
-                    </div>
-
-                    <p className="text-xs uppercase tracking-widest text-groove-primary-light mb-3">{theme.tagline}</p>
-                    <p className="text-sm text-white/70 mb-6 min-h-[2.5em]">{theme.description}</p>
-                    <ul className="w-full space-y-3 mb-8 text-left">
-                      {features.map((f) => (
-                        <li key={f} className="flex items-center gap-3 text-sm text-white/80">
-                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-groove-primary-light/15 flex items-center justify-center">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-groove-primary-light">
-                              <path d="M20 6L9 17l-5-5" />
-                            </svg>
-                          </span>
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <a
-                      href={`/theme-preview/${theme.key}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block w-full px-8 py-3 rounded-full border border-white/40 text-white text-sm font-semibold hover:bg-white/10 transition"
-                    >
-                      Lihat Preview
-                    </a>
-                  </ScrollReveal>
-                </div>
-              );
-            })}
-          </div>
+          <ThemeTabs themes={themes} />
         </div>
       </section>
 

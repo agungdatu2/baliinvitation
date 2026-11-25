@@ -7,6 +7,17 @@ export const dynamic = "force-dynamic";
 // Preview tema tanpa undangan asli — dipakai tombol "Lihat" di admin/themes.
 // Semua field foto/video/musik/galeri sengaja dikosongkan supaya tiap komponen
 // jatuh ke placeholder bawaannya sendiri (picsum, DEFAULT_HERO_VIDEO_URL, dst).
+// Foto stok gratis (Unsplash) khusus sampel preview tema Confetti — jangan pakai foto client.
+const unsplash = (id: string) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=1200&q=80`;
+const CONFETTI_SAMPLE_COVER = unsplash("1757693075207-32944391b4de");
+const CONFETTI_SAMPLE_GALLERY = [
+  "1757693075165-228a9952e054",
+  "1636256373111-cddaa1470363",
+  "1631397831385-b6023fd545ac",
+  "1610851024274-0163b12f8022",
+  "1790699591510-27453855f3b1",
+].map(unsplash);
+
 export default function ThemePreviewPage({
   params,
   searchParams,
@@ -168,9 +179,11 @@ export default function ThemePreviewPage({
       ? "Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu."
       : content.greeting,
     eventDate: confettiDate ? `${confettiDate}T${confettiTime.padStart(5, "0")}:00+08:00` : eventDateIso,
-    coverImage: isConfetti && searchParams.cover ? searchParams.cover : undefined,
-    galleryImages: isConfetti && searchParams.photos
-      ? searchParams.photos.split(",").map((u) => u.trim()).filter(Boolean)
+    coverImage: isConfetti ? searchParams.cover || CONFETTI_SAMPLE_COVER : undefined,
+    galleryImages: isConfetti
+      ? searchParams.photos
+        ? searchParams.photos.split(",").map((u) => u.trim()).filter(Boolean)
+        : CONFETTI_SAMPLE_GALLERY
       : [
       "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80",
       "https://assets.mixkit.co/videos/34371/34371-720.mp4",
